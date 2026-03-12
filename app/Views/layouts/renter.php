@@ -19,6 +19,83 @@
 
     <!-- App CSS -->
     <link rel="stylesheet" href="<?= route('assets.css', 'app.css') ?>">
+
+    <!-- Renter Sidebar Styles -->
+    <style>
+        .nav-section h3 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #999;
+            padding: 0 1.5rem;
+            margin: 1.5rem 0 0.5rem;
+        }
+        .badge {
+            background: #ef4444;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 11px;
+            margin-left: auto;
+        }
+        .emergency-section {
+            margin: 2rem 1rem;
+            padding: 1rem;
+            border: 2px solid #fee2e2;
+            border-radius: 8px;
+            background: #fff5f5;
+        }
+        .emergency-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #ef4444;
+            margin-bottom: 0.75rem;
+        }
+        .emergency-header h4 {
+            margin: 0;
+            font-size: 14px;
+        }
+        .emergency-header i {
+            font-size: 16px;
+        }
+        .emergency-contact {
+            margin-bottom: 0.5rem;
+        }
+        .emergency-contact .contact-label {
+            font-size: 12px;
+            color: #666;
+        }
+        .emergency-contact .contact-value {
+            font-weight: 600;
+            color: #333;
+        }
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .nav-links li a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        .nav-links li a:hover {
+            background: #f0f7ff;
+            color: #2c5aa0;
+        }
+        .nav-links li a.active {
+            background: #2c5aa0;
+            color: white;
+            border-radius: 6px;
+            margin: 0 0.5rem;
+        }
+    </style>
 </head>
 <body>
     <!-- Public Header -->
@@ -42,42 +119,54 @@
     <div class="admin-container">
         <!-- Renter Sidebar -->
         <nav class="admin-sidebar">
-            <div class="sidebar-title">Dashboard</div>
-            <ul class="sidebar-menu">
-                <li>
-                    <a href="<?= route('renter.portal') ?>" class="<?= ($active === 'overview' || $active === 'portal') ? 'active' : '' ?>">
-                        <i class="fas fa-chart-line"></i> Overview
-                    </a>
-                </li>
-            </ul>
+            <!-- Dashboard Section -->
+            <div class="nav-section">
+                <h3>Dashboard</h3>
+                <ul class="nav-links">
+                    <li><a href="<?= route('renter.portal') ?>" class="<?= ($active ?? '') === 'portal' ? 'active' : '' ?>"><i class="fas fa-home"></i> Overview</a></li>
+                    <li><a href="<?= route('renter.portal') ?>?tab=payments" class="<?= ($active ?? '') === 'payments' ? 'active' : '' ?>"><i class="fas fa-credit-card"></i> Payments</a></li>
+                    <li><a href="<?= route('renter.portal') ?>?tab=maintenance" class="<?= ($active ?? '') === 'maintenance' ? 'active' : '' ?>"><i class="fas fa-tools"></i> Maintenance</a></li>
+                    <li><a href="<?= route('renter.portal') ?>?tab=documents" class="<?= ($active ?? '') === 'documents' ? 'active' : '' ?>"><i class="fas fa-file-alt"></i> Documents</a></li>
+                </ul>
+            </div>
 
-            <div class="sidebar-title">Account</div>
-            <ul class="sidebar-menu">
-                <li>
-                    <a href="<?= route('renter.profile') ?>" class="<?= $active === 'profile' ? 'active' : '' ?>">
-                        <i class="fas fa-user"></i> My Profile
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= route('renter.settings') ?>" class="<?= $active === 'settings' ? 'active' : '' ?>">
-                        <i class="fas fa-cog"></i> Settings
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= route('renter.help') ?>" class="<?= $active === 'help' ? 'active' : '' ?>">
-                        <i class="fas fa-question-circle"></i> Help Center
-                    </a>
-                </li>
-            </ul>
+            <!-- Communication Section -->
+            <div class="nav-section">
+                <h3>Communication</h3>
+                <ul class="nav-links">
+                    <li><a href="<?= route('renter.portal') ?>?tab=messages"><i class="fas fa-envelope"></i> Messages <span class="badge">3</span></a></li>
+                    <li><a href="<?= route('renter.portal') ?>?tab=notifications"><i class="fas fa-bell"></i> Notifications</a></li>
+                    <li><a href="<?= route('renter.portal') ?>?tab=emergency"><i class="fas fa-exclamation-triangle"></i> Emergency</a></li>
+                </ul>
+            </div>
 
-            <div class="sidebar-title">Actions</div>
-            <ul class="sidebar-menu">
-                <li>
-                    <a href="<?= route('auth.logout') ?>">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-                </li>
-            </ul>
+            <!-- Account Section -->
+            <div class="nav-section">
+                <h3>Account</h3>
+                <ul class="nav-links">
+                    <li><a href="<?= route('renter.profile') ?>" class="<?= ($active ?? '') === 'profile' ? 'active' : '' ?>"><i class="fas fa-user"></i> My Profile</a></li>
+                    <li><a href="<?= route('renter.settings') ?>" class="<?= ($active ?? '') === 'settings' ? 'active' : '' ?>"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="<?= route('renter.help') ?>" class="<?= ($active ?? '') === 'help' ? 'active' : '' ?>"><i class="fas fa-question-circle"></i> Help Center</a></li>
+                </ul>
+            </div>
+
+            <!-- Emergency Contact -->
+            <div class="emergency-section">
+                <div class="emergency-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4>Emergency Contact</h4>
+                </div>
+                <div class="emergency-contacts">
+                    <div class="emergency-contact">
+                        <div class="contact-label">Property Manager</div>
+                        <div class="contact-value">(307) 228-4667</div>
+                    </div>
+                    <div class="emergency-contact">
+                        <div class="contact-label">24/7 Emergency</div>
+                        <div class="contact-value">(307) 228-4667</div>
+                    </div>
+                </div>
+            </div>
         </nav>
 
         <!-- Main Content Area -->

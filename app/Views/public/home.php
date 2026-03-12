@@ -425,13 +425,19 @@ ob_start();
             <div class="modal-footer">
                 <p>Need help accessing your account? Contact <a href="mailto:support@sotelomanage.com">support@sotelomanage.com</a></p>
             </div>
+            <div style="margin-top: 1rem; padding: 1rem; background: #f0f7ff; border-radius: 8px; font-size: 13px;">
+                <strong>Demo credentials:</strong><br>
+                Renter: username: <strong>test</strong><br>
+                Admin: username: <strong>admin</strong><br>
+                Password for both: <strong>password</strong>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
     // Get modal elements
-    const openModalBtn = document.querySelector('.portal-btn') || document.querySelector('[data-open-login]');
+    const openModalBtn = document.getElementById('openModal') || document.querySelector('.client-portal-btn') || document.querySelector('.portal-btn') || document.querySelector('[data-open-login]');
     const closeModalBtn = document.getElementById('closeModal');
     const loginModal = document.getElementById('loginModal');
 

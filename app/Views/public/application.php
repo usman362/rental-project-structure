@@ -720,6 +720,33 @@ ob_start();
                             >
                         </div>
                     </div>
+
+                    <div class="form-row">
+                        <div class="form-group-full">
+                            <label for="ssn" class="required">SSN (Last 4 Digits)</label>
+                            <input
+                                type="text"
+                                id="ssn"
+                                name="ssn_last4"
+                                maxlength="4"
+                                pattern="\d{4}"
+                                placeholder="Last 4 digits only"
+                                value="<?= e(old('ssn_last4')) ?>"
+                                required
+                            >
+                            <small>Required for credit check. We only need the last 4 digits.</small>
+                        </div>
+                        <div class="form-group-full">
+                            <label for="dob" class="required">Date of Birth</label>
+                            <input
+                                type="date"
+                                id="dob"
+                                name="date_of_birth"
+                                value="<?= e(old('date_of_birth')) ?>"
+                                required
+                            >
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Employment & Income Information -->
@@ -727,13 +754,36 @@ ob_start();
                     <h3><i class="fas fa-briefcase"></i> Employment & Income Information</h3>
                     <div class="form-row">
                         <div class="form-group-full">
-                            <label for="employment" class="required">Current Employment</label>
+                            <label for="employer" class="required">Current Employer</label>
                             <input
                                 type="text"
-                                id="employment"
-                                name="employment"
-                                placeholder="Company name and position"
-                                value="<?= e(old('employment')) ?>"
+                                id="employer"
+                                name="employer"
+                                value="<?= e(old('employer')) ?>"
+                                required
+                            >
+                        </div>
+                        <div class="form-group-full">
+                            <label for="jobTitle" class="required">Job Title/Position</label>
+                            <input
+                                type="text"
+                                id="jobTitle"
+                                name="job_title"
+                                value="<?= e(old('job_title')) ?>"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group-full">
+                            <label for="employmentLength" class="required">Length of Employment (Months)</label>
+                            <input
+                                type="number"
+                                id="employmentLength"
+                                name="employment_length"
+                                min="0"
+                                value="<?= e(old('employment_length')) ?>"
                                 required
                             >
                         </div>
@@ -753,21 +803,143 @@ ob_start();
                     </div>
                 </div>
 
-                <!-- Credit Information -->
+                <!-- Rental History -->
                 <div class="form-section">
-                    <h3><i class="fas fa-credit-card"></i> Credit Information</h3>
+                    <h3><i class="fas fa-history"></i> Rental History</h3>
                     <div class="form-row">
                         <div class="form-group-full">
-                            <label for="creditScore">Credit Score (Optional)</label>
+                            <label for="currentAddress" class="required">Current Address</label>
+                            <input
+                                type="text"
+                                id="currentAddress"
+                                name="current_address"
+                                value="<?= e(old('current_address')) ?>"
+                                required
+                            >
+                        </div>
+                        <div class="form-group-full">
+                            <label for="currentLandlord">Current Landlord/Property Manager</label>
+                            <input
+                                type="text"
+                                id="currentLandlord"
+                                name="current_landlord"
+                                value="<?= e(old('current_landlord')) ?>"
+                            >
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group-full">
+                            <label for="landlordPhone">Landlord Phone Number</label>
+                            <input
+                                type="tel"
+                                id="landlordPhone"
+                                name="landlord_phone"
+                                value="<?= e(old('landlord_phone')) ?>"
+                            >
+                        </div>
+                        <div class="form-group-full">
+                            <label for="monthsAtAddress">Months at Current Address</label>
                             <input
                                 type="number"
-                                id="creditScore"
-                                name="credit_score"
-                                min="300"
-                                max="850"
-                                value="<?= e(old('credit_score')) ?>"
+                                id="monthsAtAddress"
+                                name="months_at_address"
+                                min="0"
+                                value="<?= e(old('months_at_address')) ?>"
                             >
-                            <small>If you know your approximate credit score</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Occupants Information -->
+                <div class="form-section">
+                    <h3><i class="fas fa-users"></i> Occupants Information</h3>
+                    <div class="form-row">
+                        <div class="form-group-full">
+                            <label for="totalOccupants" class="required">Total Number of Occupants</label>
+                            <input
+                                type="number"
+                                id="totalOccupants"
+                                name="total_occupants"
+                                min="1"
+                                value="<?= e(old('total_occupants')) ?>"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="occupants-section">
+                        <h4 style="color: #2c5aa0; margin-top: 0;">Additional Occupants</h4>
+                        <div id="occupantsContainer"></div>
+                        <button type="button" class="add-occupant-btn" id="addOccupantBtn">
+                            <i class="fas fa-plus"></i> Add Occupant
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pet Information -->
+                <div class="form-section">
+                    <h3><i class="fas fa-paw"></i> Pet Information</h3>
+                    <div class="form-row">
+                        <div class="form-group-full">
+                            <label for="hasPets" class="required">Do you have any pets?</label>
+                            <select
+                                id="hasPets"
+                                name="has_pets"
+                                required
+                            >
+                                <option value="">Select...</option>
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="petDetailsSection" style="display: none;">
+                        <div class="form-row">
+                            <div class="form-group-full">
+                                <label for="petType">Type of Pet</label>
+                                <input
+                                    type="text"
+                                    id="petType"
+                                    name="pet_type"
+                                    placeholder="e.g., Dog, Cat, Bird"
+                                    value="<?= e(old('pet_type')) ?>"
+                                >
+                            </div>
+                            <div class="form-group-full">
+                                <label for="petBreed">Breed</label>
+                                <input
+                                    type="text"
+                                    id="petBreed"
+                                    name="pet_breed"
+                                    value="<?= e(old('pet_breed')) ?>"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group-full">
+                                <label for="petWeight">Weight (lbs)</label>
+                                <input
+                                    type="number"
+                                    id="petWeight"
+                                    name="pet_weight"
+                                    min="0"
+                                    step="0.1"
+                                    value="<?= e(old('pet_weight')) ?>"
+                                >
+                            </div>
+                            <div class="form-group-full">
+                                <label for="petAge">Age (Years)</label>
+                                <input
+                                    type="number"
+                                    id="petAge"
+                                    name="pet_age"
+                                    min="0"
+                                    step="0.1"
+                                    value="<?= e(old('pet_age')) ?>"
+                                >
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -777,7 +949,11 @@ ob_start();
                     <h3><i class="fas fa-file-contract"></i> Required Disclosures</h3>
                     <div class="disclosure-content">
                         <p>
-                            <strong>Authorization:</strong> By submitting this application, you authorize us to obtain your credit report and verify the information provided. Application fee will be charged if your application proceeds to the screening stage.
+                            <strong>Megan's Law Disclosure:</strong> Pursuant to Section 290.46 of the California Penal Code, information about specified registered sex offenders is available to the public via an Internet Web site maintained by the Department of Justice at www.meganslaw.ca.gov.
+                        </p>
+
+                        <p>
+                            <strong>Credit Check Authorization:</strong> By submitting this application, you authorize us to obtain your credit report and verify the information provided. Application fee: $52.46 (California maximum).
                         </p>
 
                         <p>
@@ -788,12 +964,36 @@ ob_start();
                     <div class="terms-agreement">
                         <input
                             type="checkbox"
-                            id="agreeTerms"
-                            name="agree_terms"
+                            id="agreeDisclosures"
+                            name="agree_disclosures"
                             required
                         >
-                        <label for="agreeTerms" class="required">
+                        <label for="agreeDisclosures" class="required">
+                            I have read and understand all disclosures above.
+                        </label>
+                    </div>
+
+                    <div class="terms-agreement">
+                        <input
+                            type="checkbox"
+                            id="agreeCertify"
+                            name="agree_certify"
+                            required
+                        >
+                        <label for="agreeCertify" class="required">
                             I certify that all information provided in this application is true and complete. I authorize verification of all information provided, including credit, criminal, employment, and rental history checks.
+                        </label>
+                    </div>
+
+                    <div class="terms-agreement">
+                        <input
+                            type="checkbox"
+                            id="agreeFee"
+                            name="agree_fee"
+                            required
+                        >
+                        <label for="agreeFee" class="required">
+                            I understand there is a non-refundable application fee of $52.46 (California maximum) that will be required if my application proceeds to the screening stage.
                         </label>
                     </div>
                 </div>
@@ -957,6 +1157,69 @@ ob_start();
             portalLoginModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
+    }
+
+    // Pet information conditional display
+    const hasPetsSelect = document.getElementById('hasPets');
+    const petDetailsSection = document.getElementById('petDetailsSection');
+
+    if (hasPetsSelect) {
+        hasPetsSelect.addEventListener('change', function() {
+            if (this.value === 'yes') {
+                petDetailsSection.style.display = 'block';
+            } else {
+                petDetailsSection.style.display = 'none';
+            }
+        });
+    }
+
+    // Occupants add/remove functionality
+    let occupantCount = 0;
+    const addOccupantBtn = document.getElementById('addOccupantBtn');
+    const occupantsContainer = document.getElementById('occupantsContainer');
+
+    if (addOccupantBtn) {
+        addOccupantBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            addOccupant();
+        });
+    }
+
+    function addOccupant() {
+        occupantCount++;
+        const occupantRow = document.createElement('div');
+        occupantRow.className = 'form-row';
+        occupantRow.id = 'occupant-' + occupantCount;
+        occupantRow.style.marginTop = '1rem';
+
+        occupantRow.innerHTML = `
+            <div class="form-group-full">
+                <label>Full Name</label>
+                <input type="text" name="occupant_names[]" value="">
+            </div>
+            <div class="form-group-full">
+                <label>Relationship</label>
+                <input type="text" name="occupant_relationships[]" value="">
+            </div>
+            <div class="form-group-full">
+                <label>Age</label>
+                <input type="number" name="occupant_ages[]" value="" min="0">
+            </div>
+            <div style="display: flex; align-items: flex-end;">
+                <button type="button" class="remove-occupant-btn" onclick="removeOccupant('occupant-${occupantCount}')">
+                    &times;
+                </button>
+            </div>
+        `;
+
+        occupantsContainer.appendChild(occupantRow);
+    }
+
+    function removeOccupant(id) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.remove();
+        }
     }
 
     // Handle application form submission

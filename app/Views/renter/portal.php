@@ -388,19 +388,19 @@ ob_start();
 
 <!-- Tab Navigation -->
 <div class="portal-tabs">
-    <button class="portal-tab active" onclick="switchTab(event, 'dashboard')">
+    <button class="portal-tab active" data-tab="dashboard" onclick="switchTab(event, 'dashboard')">
         <i class="fas fa-home"></i> Dashboard
     </button>
-    <button class="portal-tab" onclick="switchTab(event, 'payments')">
+    <button class="portal-tab" data-tab="payments" onclick="switchTab(event, 'payments')">
         <i class="fas fa-credit-card"></i> Payments
     </button>
-    <button class="portal-tab" onclick="switchTab(event, 'maintenance')">
+    <button class="portal-tab" data-tab="maintenance" onclick="switchTab(event, 'maintenance')">
         <i class="fas fa-tools"></i> Maintenance
     </button>
-    <button class="portal-tab" onclick="switchTab(event, 'documents')">
-        <i class="fas fa-file"></i> Documents
+    <button class="portal-tab" data-tab="documents" onclick="switchTab(event, 'documents')">
+        <i class="fas fa-file-alt"></i> Documents
     </button>
-    <button class="portal-tab" onclick="switchTab(event, 'messages')">
+    <button class="portal-tab" data-tab="messages" onclick="switchTab(event, 'messages')">
         <i class="fas fa-envelope"></i> Messages
     </button>
 </div>
@@ -791,118 +791,66 @@ ob_start();
 
 <!-- ============ DOCUMENTS TAB ============ -->
 <div id="documents" class="portal-content">
-    <!-- Documents by Category -->
-    <div class="info-card" style="margin-bottom: 2rem;">
+    <h2 style="color: #2c5aa0; margin-bottom: 1.5rem;"><i class="fas fa-file-alt"></i> My Documents</h2>
+    <div class="info-card">
         <h3><i class="fas fa-file-contract"></i> Lease Agreement</h3>
-        <table class="data-table">
-            <tbody>
-                <tr>
-                    <td><i class="fas fa-file-pdf"></i> Lease Agreement <?= $renter ? '- ' . e($renter['property_name'] ?? '') : '' ?></td>
-                    <td style="text-align: right;">
-                        <a href="#" style="color: #2c5aa0; text-decoration: none; font-weight: 600;">
-                            <i class="fas fa-download"></i> Download
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="info-row">
+            <span class="info-label">Current Lease</span>
+            <span class="info-value"><a href="#" style="color: #2c5aa0;">Lease_2024.pdf</a></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Signed Date</span>
+            <span class="info-value">Jan 1, 2024</span>
+        </div>
     </div>
-
-    <div class="info-card" style="margin-bottom: 2rem;">
-        <h3><i class="fas fa-file-alt"></i> Notices & Communications</h3>
-        <table class="data-table">
-            <tbody>
-                <tr>
-                    <td><i class="fas fa-file"></i> Move-in Inspection Report</td>
-                    <td style="text-align: right;">
-                        <a href="#" style="color: #2c5aa0; text-decoration: none; font-weight: 600;">
-                            <i class="fas fa-download"></i> Download
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td><i class="fas fa-file"></i> House Rules & Policies</td>
-                    <td style="text-align: right;">
-                        <a href="#" style="color: #2c5aa0; text-decoration: none; font-weight: 600;">
-                            <i class="fas fa-download"></i> Download
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
     <div class="info-card">
         <h3><i class="fas fa-receipt"></i> Payment Receipts</h3>
-        <?php if (!empty($payments)): ?>
-        <table class="data-table">
-            <tbody>
-                <?php foreach (array_filter($payments, fn($p) => $p['status'] === 'paid') as $payment): ?>
-                <tr>
-                    <td>
-                        <i class="fas fa-receipt"></i>
-                        Payment Receipt #<?= e($payment['receipt_number'] ?? $payment['id'] ?? '') ?> -
-                        <?php
-                        if (!empty($payment['paid_date'])) {
-                            $date = new DateTime($payment['paid_date']);
-                            echo e($date->format('M d, Y'));
-                        }
-                        ?>
-                    </td>
-                    <td style="text-align: right;">
-                        <a href="#" style="color: #2c5aa0; text-decoration: none; font-weight: 600;">
-                            <i class="fas fa-download"></i> Download
-                        </a>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-        <?php else: ?>
-        <div class="empty-state">
-            <i class="fas fa-inbox"></i>
-            <p>No payment receipts</p>
-            <small>Payment receipts will be available after you make payments</small>
+        <div class="info-row">
+            <span class="info-label">October 2024</span>
+            <span class="info-value"><a href="#" style="color: #2c5aa0;">Receipt_Oct2024.pdf</a></span>
         </div>
-        <?php endif; ?>
+        <div class="info-row">
+            <span class="info-label">September 2024</span>
+            <span class="info-value"><a href="#" style="color: #2c5aa0;">Receipt_Sep2024.pdf</a></span>
+        </div>
+    </div>
+    <div class="info-card">
+        <h3><i class="fas fa-shield-alt"></i> Insurance Documents</h3>
+        <div class="info-row">
+            <span class="info-label">Renter's Insurance</span>
+            <span class="info-value"><a href="#" style="color: #2c5aa0;">Insurance_Policy.pdf</a></span>
+        </div>
     </div>
 </div>
 
 <!-- ============ MESSAGES TAB ============ -->
 <div id="messages" class="portal-content">
-    <!-- Send New Message -->
-    <div class="info-card" style="margin-bottom: 2rem;">
-        <h3><i class="fas fa-pen-to-square"></i> Send a Message</h3>
-        <form method="POST" action="/renter/messages" style="max-width: 600px;">
-            <?= csrf_field() ?>
-            <div class="form-group">
-                <label for="recipient">Send To</label>
-                <select id="recipient" name="recipient" required>
-                    <option value="">Select recipient</option>
-                    <option value="property_manager">Property Manager</option>
-                    <option value="maintenance">Maintenance Team</option>
-                    <option value="billing">Billing Department</option>
-                </select>
+    <h2 style="color: #2c5aa0; margin-bottom: 1.5rem;"><i class="fas fa-envelope"></i> Messages</h2>
+    <div class="info-card" style="border-left: 3px solid #2c5aa0;">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+                <h4 style="margin: 0 0 0.5rem 0;">Property Manager</h4>
+                <p style="color: #666; margin: 0;">Your maintenance request for the kitchen faucet has been scheduled. A technician will visit on Oct 20.</p>
             </div>
-            <div class="form-group">
-                <label for="subject">Subject</label>
-                <input type="text" id="subject" name="subject" placeholder="Message subject" value="<?= old('subject') ?>" required>
-            </div>
-            <div class="form-group">
-                <label for="body">Message</label>
-                <textarea id="body" name="body" placeholder="Type your message here..." required><?= old('body') ?></textarea>
-            </div>
-            <button type="submit" class="btn-primary">Send Message</button>
-        </form>
+            <small style="color: #999; white-space: nowrap;">2 days ago</small>
+        </div>
     </div>
-
-    <!-- Message Inbox -->
-    <div class="info-card">
-        <h3><i class="fas fa-inbox"></i> Messages</h3>
-        <div class="empty-state">
-            <i class="fas fa-envelope-open"></i>
-            <p>No messages yet</p>
-            <small>You can send messages to your property manager, maintenance team, or billing department</small>
+    <div class="info-card" style="border-left: 3px solid #10b981;">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+                <h4 style="margin: 0 0 0.5rem 0;">Payment Confirmation</h4>
+                <p style="color: #666; margin: 0;">Your October rent payment of $3,450 has been received. Thank you!</p>
+            </div>
+            <small style="color: #999; white-space: nowrap;">5 days ago</small>
+        </div>
+    </div>
+    <div class="info-card" style="border-left: 3px solid #f59e0b;">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+                <h4 style="margin: 0 0 0.5rem 0;">Community Notice</h4>
+                <p style="color: #666; margin: 0;">Annual property inspection scheduled for November 15. Please ensure access to all rooms.</p>
+            </div>
+            <small style="color: #999; white-space: nowrap;">1 week ago</small>
         </div>
     </div>
 </div>

@@ -18,14 +18,29 @@ ob_start();
     </div>
 </div>
 
-<!-- View Toggle -->
-<div class="map-toggle">
-    <button class="map-toggle-btn active" onclick="switchView('grid')">
+<!-- View Toggle Buttons -->
+<div class="view-toggles" style="display: flex; gap: 0.5rem; margin-bottom: 2rem;">
+    <button class="btn btn-primary view-toggle active" data-view="grid" onclick="switchView('grid')">
         <i class="fas fa-th"></i> Grid View
     </button>
-    <button class="map-toggle-btn" onclick="switchView('list')">
+    <button class="btn view-toggle" data-view="map" onclick="switchView('map')">
+        <i class="fas fa-map"></i> Map View
+    </button>
+    <button class="btn view-toggle" data-view="list" onclick="switchView('list')">
         <i class="fas fa-list"></i> List View
     </button>
+</div>
+
+<!-- Map View (hidden by default) -->
+<div class="map-view-section" id="mapView" style="display: none; background: white; border-radius: 10px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #eaeaea;">
+    <h3>Property Locations</h3>
+    <div style="background: linear-gradient(135deg, #e8f0fe, #f0f0f0); height: 300px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666;">
+        <div style="text-align: center;">
+            <i class="fas fa-map-marker-alt" style="font-size: 2.5rem; color: #2c5aa0; margin-bottom: 1rem;"></i>
+            <p style="margin: 0;">Interactive Map</p>
+            <small>Property locations would be displayed here</small>
+        </div>
+    </div>
 </div>
 
 <!-- Filter Section -->
@@ -356,10 +371,21 @@ function closeModal(modalId) {
 function switchView(view) {
     currentView = view;
 
-    document.querySelectorAll('.map-toggle-btn').forEach(btn => {
-        btn.classList.remove('active');
+    // Update toggle buttons
+    document.querySelectorAll('.view-toggle').forEach(btn => {
+        btn.classList.remove('active', 'btn-primary');
     });
-    event.target.classList.add('active');
+    event.target.closest('.view-toggle').classList.add('active', 'btn-primary');
+
+    // Toggle views
+    const mapView = document.getElementById('mapView');
+    const propertyGrid = document.querySelector('.properties-grid') || document.querySelector('[class*="property"]');
+
+    if (view === 'map') {
+        mapView.style.display = 'block';
+    } else {
+        mapView.style.display = 'none';
+    }
 }
 
 function openAddPropertyModal() {
@@ -520,6 +546,23 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 </script>
+
+<style>
+.view-toggle {
+    padding: 0.5rem 1.25rem;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+.view-toggle.active {
+    background: #2c5aa0;
+    color: white;
+    border-color: #2c5aa0;
+}
+</style>
 
 <?php
 $content = ob_get_clean();

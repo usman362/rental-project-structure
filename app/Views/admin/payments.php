@@ -19,6 +19,9 @@ $collectionRate = $totalExpected > 0 ? (int) (($summary['total_collected'] / $to
 <div class="content-header">
     <h1>Payment Management</h1>
     <div class="content-actions">
+        <button class="btn btn-primary" onclick="sendReminders()">
+            <i class="fas fa-bell"></i> Send Reminders
+        </button>
         <button class="btn btn-secondary" onclick="exportPayments()">
             <i class="fas fa-download"></i> Export
         </button>
@@ -46,6 +49,55 @@ $collectionRate = $totalExpected > 0 ? (int) (($summary['total_collected'] / $to
         <div class="summary-value" id="collectionRate"><?= $collectionRate ?>%</div>
         <div class="summary-label">Collection Rate</div>
     </div>
+</div>
+
+<!-- Payment Method Breakdown -->
+<div class="payment-methods">
+    <div class="method-card">
+        <div class="method-icon">
+            <i class="fas fa-university"></i>
+        </div>
+        <div class="method-name">Bank Transfer</div>
+        <div class="method-amount">$28,500</div>
+        <div class="summary-label">65% of total</div>
+    </div>
+    <div class="method-card">
+        <div class="method-icon">
+            <i class="fab fa-cc-visa"></i>
+        </div>
+        <div class="method-name">Credit Card</div>
+        <div class="method-amount">$9,850</div>
+        <div class="summary-label">23% of total</div>
+    </div>
+    <div class="method-card">
+        <div class="method-icon">
+            <i class="fas fa-mobile-alt"></i>
+        </div>
+        <div class="method-name">Mobile Pay</div>
+        <div class="method-amount">$4,500</div>
+        <div class="summary-label">10% of total</div>
+    </div>
+</div>
+
+<!-- Payment Calendar -->
+<div class="payment-calendar">
+    <div class="calendar-header">
+        <h3 id="calendarMonth"></h3>
+        <div class="calendar-nav">
+            <button onclick="changeMonth(-1)">&larr; Prev</button>
+            <button onclick="changeMonth(1)">Next &rarr;</button>
+        </div>
+    </div>
+    <div class="calendar-grid">
+        <div class="calendar-day-header">Sun</div>
+        <div class="calendar-day-header">Mon</div>
+        <div class="calendar-day-header">Tue</div>
+        <div class="calendar-day-header">Wed</div>
+        <div class="calendar-day-header">Thu</div>
+        <div class="calendar-day-header">Fri</div>
+        <div class="calendar-day-header">Sat</div>
+    </div>
+    <div class="calendar-body" id="calendarBody"></div>
 </div>
 
 <!-- Filter Section -->
@@ -98,7 +150,7 @@ $collectionRate = $totalExpected > 0 ? (int) (($summary['total_collected'] / $to
 <!-- Payments Table -->
 <div class="table-container">
     <div class="table-title">
-        <span>Payments (<?= count($payments) ?>)</span>
+        <span>Recent Transactions</span> <button class="btn btn-small" onclick="location.reload()">View All</button>
     </div>
     <?php if (empty($payments)): ?>
         <div style="padding: 2rem; text-align: center; color: #999;">
@@ -340,6 +392,81 @@ $collectionRate = $totalExpected > 0 ? (int) (($summary['total_collected'] / $to
     </div>
 </div>
 
+<style>
+.payment-methods {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+.method-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid #eaeaea;
+}
+.method-icon {
+    font-size: 2rem;
+    color: #2c5aa0;
+    margin-bottom: 0.5rem;
+}
+.method-name {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+.method-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c5aa0;
+}
+.payment-calendar {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid #eaeaea;
+}
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.calendar-header h3 { margin: 0; }
+.calendar-nav button {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+}
+.calendar-day-header {
+    padding: 0.75rem;
+    text-align: center;
+    font-weight: 600;
+    color: #666;
+    background: #f8f9fa;
+}
+.calendar-day {
+    padding: 0.75rem;
+    text-align: right;
+    min-height: 60px;
+    border: 1px solid #eee;
+    background: white;
+}
+.calendar-day.empty { background: #f9f9f9; }
+.calendar-day.today { background: #e8f4fc; }
+</style>
+
 <script>
 // Pass payments data to JavaScript
 const paymentsData = <?= json_encode(array_map(function($p) {
@@ -462,6 +589,44 @@ function sendReceipt(id) {
 function exportPayments() {
     alert('Exporting payments data...');
 }
+
+function sendReminders() {
+    alert('Payment reminders sent to all tenants with pending payments.');
+}
+
+// Calendar functionality
+let currentCalendarDate = new Date();
+
+function renderCalendar() {
+    const month = currentCalendarDate.getMonth();
+    const year = currentCalendarDate.getFullYear();
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December'];
+
+    document.getElementById('calendarMonth').textContent = monthNames[month] + ' ' + year;
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const today = new Date();
+
+    let html = '';
+    for (let i = 0; i < firstDay; i++) {
+        html += '<div class="calendar-day empty"></div>';
+    }
+    for (let day = 1; day <= daysInMonth; day++) {
+        const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+        html += '<div class="calendar-day' + (isToday ? ' today' : '') + '">' + day + '</div>';
+    }
+    document.getElementById('calendarBody').innerHTML = html;
+}
+
+function changeMonth(offset) {
+    currentCalendarDate.setMonth(currentCalendarDate.getMonth() + offset);
+    renderCalendar();
+}
+
+// Initialize calendar
+renderCalendar();
 
 // Close modal when clicking outside
 document.querySelectorAll('.modal-overlay').forEach(modal => {

@@ -21,6 +21,9 @@ $completedThisMonth = $completedThisMonth ?? 0;
         <button class="btn btn-primary" onclick="createRequest()">
             <i class="fas fa-plus"></i> New Request
         </button>
+        <button class="btn btn-success" onclick="scheduleInspection()">
+            <i class="fas fa-calendar-check"></i> Schedule
+        </button>
     </div>
 </div>
 
@@ -417,6 +420,10 @@ function updateRequestStatus(id) {
 
 function exportMaintenance() {
     alert('Exporting maintenance data...');
+}
+
+function scheduleInspection() {
+    alert('Schedule inspection feature coming soon.');
 }
 
 // Close modal when clicking outside
