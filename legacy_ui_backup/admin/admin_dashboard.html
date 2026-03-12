@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from www.sotelomanagement.com/admin/admin_dashboard.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:21 GMT -->
+<head><script src="main.html"></script>
+<meta charset="UTF-8">
+<title>SOTELO MANAGEMENT LLC - Admin Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SOTELO MANAGEMENT LLC - Admin Dashboard">
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+* { 
+    box-sizing: border-box; 
+    font-family: 'Inter', system-ui, sans-serif; 
+}
+
+body { 
+    margin: 0; 
+    background: #f5f7fa; 
+    color: #333333;
+    min-height: 100vh;
+}
+
+/* Header */
+.admin-header {
+    background: #ffffff;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2c5aa0 0%, #1d3a6e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(44, 90, 160, 0.2);
+}
+
+.company-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.5px;
+}
+
+.admin-user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.admin-user span {
+    font-weight: 500;
+    color: #444;
+}
+
+.admin-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2c5aa0, #3a6bc5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+/* Main Layout */
+.admin-container {
+    display: flex;
+    min-height: calc(100vh - 80px);
+}
+
+/* Sidebar */
+.admin-sidebar {
+    width: 250px;
+    background: #ffffff;
+    border-right: 1px solid #eaeaea;
+    padding: 2rem 1rem;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.03);
+}
+
+.sidebar-title {
+    color: #666;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 1.5rem 0 0.5rem 1rem;
+    font-weight: 600;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    color: #555;
+    border-radius: 6px;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.sidebar-menu a:hover {
+    background: #f0f5ff;
+    color: #2c5aa0;
+}
+
+.sidebar-menu a.active {
+    background: #2c5aa0;
+    color: white;
+}
+
+.sidebar-menu a i {
+    width: 20px;
+    text-align: center;
+}
+
+/* Main Content */
+.admin-content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.content-header h1 {
+    font-size: 1.8rem;
+    color: #1a1a1a;
+    margin: 0;
+    font-weight: 700;
+}
+
+.content-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: #2c5aa0;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4a8a;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #f0f5ff;
+    color: #2c5aa0;
+}
+
+.btn-secondary:hover {
+    background: #e0ebff;
+}
+
+.btn-success {
+    background: #10b981;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #0da271;
+}
+
+/* Dashboard Stats */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eaeaea;
+    transition: transform 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+}
+
+.stat-icon.blue {
+    background: linear-gradient(135deg, #2c5aa0, #3a6bc5);
+}
+
+.stat-icon.green {
+    background: linear-gradient(135deg, #10b981, #34d399);
+}
+
+.stat-icon.orange {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+}
+
+.stat-icon.red {
+    background: linear-gradient(135deg, #ef4444, #f87171);
+}
+
+.stat-icon.purple {
+    background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+}
+
+.stat-title {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0.5rem 0;
+}
+
+.stat-change {
+    font-size: 12px;
+    color: #10b981;
+    font-weight: 600;
+}
+
+.stat-change.negative {
+    color: #ef4444;
+}
+
+/* Charts */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.chart-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.chart-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1a1a1a;
+}
+
+.chart-container {
+    height: 300px;
+    position: relative;
+}
+
+/* Recent Activity */
+.activity-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+.activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.activity-item {
+    padding: 1rem;
+    border-bottom: 1px solid #eaeaea;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f0f5ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2c5aa0;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-title {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.activity-time {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .admin-container {
+        flex-direction: column;
+    }
+    
+    .admin-sidebar {
+        width: 100%;
+        padding: 1rem;
+    }
+    
+    .sidebar-menu {
+        display: flex;
+        overflow-x: auto;
+        gap: 0.5rem;
+    }
+    
+    .sidebar-menu li {
+        margin: 0;
+    }
+    
+    .sidebar-menu a {
+        white-space: nowrap;
+    }
+    
+    .sidebar-title {
+        display: none;
+    }
+    
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .content-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .admin-content {
+        padding: 1rem;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- Admin Header -->
+<header class="admin-header">
+    <div class="logo-container">
+        <div class="logo-circle">SM</div>
+        <div class="company-name">SOTELO MANAGEMENT LLC - Admin</div>
+    </div>
+    <div class="admin-user">
+        <span>Admin User</span>
+        <div class="admin-avatar">A</div>
+    </div>
+</header>
+
+<!-- Main Container -->
+<div class="admin-container">
+    <!-- Sidebar -->
+    <nav class="admin-sidebar">
+        <div class="sidebar-title">Main Navigation</div>
+        <ul class="sidebar-menu">
+            <li><a href="admin_dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="admin_renters.html"><i class="fas fa-users"></i> Renters</a></li>
+            <li><a href="admin_applications.html"><i class="fas fa-file-alt"></i> Applications</a></li>
+            <li><a href="admin_properties.html"><i class="fas fa-home"></i> Properties</a></li>
+            <li><a href="admin_payments.html"><i class="fas fa-credit-card"></i> Payments</a></li>
+            <li><a href="admin_maintenance.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            <li><a href="admin_reports.html"><i class="fas fa-chart-bar"></i> Reports</a></li>
+        </ul>
+        
+        <div class="sidebar-title" style="margin-top: 2rem;">System</div>
+        <ul class="sidebar-menu">
+            <li><a href="admin_settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="admin_dashboard.html"><i class="fas fa-sign-out-alt"></i> Back to Site</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+        <!-- Dashboard Header -->
+        <div class="content-header">
+            <h1>Dashboard Overview</h1>
+            <div class="content-actions">
+                <button class="btn btn-secondary" onclick="window.location.href='admin_renters.html'">
+                    <i class="fas fa-users"></i> View Renters
+                </button>
+                <button class="btn btn-primary" onclick="window.location.href='admin_applications.html'">
+                    <i class="fas fa-plus"></i> New Application
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Total Renters</span>
+                    <div class="stat-icon blue">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="totalRenters">24</div>
+                <div class="stat-change">+2 this month</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Active Properties</span>
+                    <div class="stat-icon green">
+                        <i class="fas fa-home"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="activeProperties">18</div>
+                <div class="stat-change">+1 this month</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Pending Applications</span>
+                    <div class="stat-icon orange">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="pendingApplications">7</div>
+                <div class="stat-change">-2 this week</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Revenue This Month</span>
+                    <div class="stat-icon red">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <div class="stat-value">$42,850</div>
+                <div class="stat-change">+12% from last month</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Active Maintenance</span>
+                    <div class="stat-icon purple">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                </div>
+                <div class="stat-value">5</div>
+                <div class="stat-change">+1 this week</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Occupancy Rate</span>
+                    <div class="stat-icon blue">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                </div>
+                <div class="stat-value">94%</div>
+                <div class="stat-change">+2% from last month</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3 class="chart-title">Monthly Revenue</h3>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h3 class="chart-title">Property Occupancy</h3>
+                <div class="chart-container">
+                    <canvas id="occupancyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="activity-card">
+            <h3 class="chart-title">Recent Activity</h3>
+            <ul class="activity-list" id="activityList">
+                <!-- Activities loaded by JavaScript -->
+            </ul>
+        </div>
+    </main>
+</div>
+
+<script>
+// Sample Data
+const recentActivities = [
+    {
+        icon: 'fa-user-plus',
+        title: 'New renter registered',
+        description: 'John Smith signed up for a new account',
+        time: '10 minutes ago',
+        color: '#2c5aa0'
+    },
+    {
+        icon: 'fa-file-alt',
+        title: 'Application submitted',
+        description: 'Sarah Johnson submitted a rental application for 123 Main St',
+        time: '1 hour ago',
+        color: '#10b981'
+    },
+    {
+        icon: 'fa-credit-card',
+        title: 'Payment received',
+        description: 'Payment of $1,200 received from Michael Brown',
+        time: '3 hours ago',
+        color: '#8b5cf6'
+    },
+    {
+        icon: 'fa-tools',
+        title: 'Maintenance request',
+        description: 'New maintenance request submitted for Apt 4B',
+        time: '5 hours ago',
+        color: '#f59e0b'
+    },
+    {
+        icon: 'fa-home',
+        title: 'Property added',
+        description: 'New property added: 456 Oak Avenue',
+        time: '1 day ago',
+        color: '#ef4444'
+    }
+];
+
+// Initialize Dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCharts();
+    loadActivities();
+    
+    // Update time every minute
+    setInterval(updateDashboardData, 60000);
+});
+
+function initializeCharts() {
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+            datasets: [{
+                label: 'Revenue ($)',
+                data: [38000, 42000, 45000, 48000, 46000, 50000, 52000],
+                borderColor: '#2c5aa0',
+                backgroundColor: 'rgba(44, 90, 160, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                }
+            }
+        }
+    });
+    
+    // Occupancy Chart
+    const occupancyCtx = document.getElementById('occupancyChart').getContext('2d');
+    new Chart(occupancyCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Occupied', 'Available', 'Maintenance'],
+            datasets: [{
+                data: [18, 4, 2],
+                backgroundColor: [
+                    '#10b981',
+                    '#2c5aa0',
+                    '#f59e0b'
+                ],
+                borderWidth: 1,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+
+function loadActivities() {
+    const activityList = document.getElementById('activityList');
+    activityList.innerHTML = '';
+    
+    recentActivities.forEach(activity => {
+        const activityItem = document.createElement('li');
+        activityItem.className = 'activity-item';
+        activityItem.innerHTML = `
+            <div class="activity-icon" style="background-color: ${activity.color}20; color: ${activity.color}">
+                <i class="fas ${activity.icon}"></i>
+            </div>
+            <div class="activity-content">
+                <div class="activity-title">${activity.title}</div>
+                <div class="activity-description" style="font-size: 14px; color: #666; margin-bottom: 0.25rem;">
+                    ${activity.description}
+                </div>
+                <div class="activity-time">${activity.time}</div>
+            </div>
+        `;
+        activityList.appendChild(activityItem);
+    });
+}
+
+function updateDashboardData() {
+    // Simulate data updates
+    const pendingApps = document.getElementById('pendingApplications');
+    const current = parseInt(pendingApps.textContent);
+    const randomChange = Math.random() > 0.5 ? 1 : -1;
+    const newValue = Math.max(0, current + randomChange);
+    pendingApps.textContent = newValue;
+}
+
+// Navigation
+document.querySelectorAll('.sidebar-menu a').forEach(link => {
+    link.addEventListener('click', function(e) {
+        if (this.getAttribute('href').startsWith('admin_')) {
+            e.preventDefault();
+            const page = this.getAttribute('href');
+            window.location.href = page;
+        }
+    });
+});
+</script>
+
+</body>
+
+<!-- Mirrored from www.sotelomanagement.com/admin/admin_dashboard.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:29 GMT -->
+</html>

@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from www.sotelomanagement.com/renter/settings.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:29 GMT -->
+<head><script src="main.html"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - SOTELO MANAGEMENT LLC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Inter', system-ui, sans-serif; 
+        }
+        
+        body { 
+            background: #f8f9fa; 
+            color: #333333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2c5aa0 0%, #1d3a6e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(44, 90, 160, 0.2);
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .company-name-header {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: 0.5px;
+        }
+        
+        .company-slogan-header {
+            font-size: 13px;
+            color: #666;
+            margin-top: 2px;
+            letter-spacing: 0.3px;
+        }
+        
+        /* User Menu */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2c5aa0, #3a6bc5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .logout-btn {
+            background-color: #f8f9fa;
+            color: #2c5aa0;
+            border: 1px solid #ddd;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: #2c5aa0;
+            color: white;
+            border-color: #2c5aa0;
+        }
+        
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #444;
+            cursor: pointer;
+            padding: 8px;
+        }
+        
+        /* Main Container */
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 100px auto 40px;
+            width: 100%;
+            padding: 0 20px;
+            gap: 30px;
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+        
+        .nav-section h3 {
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+            padding-left: 10px;
+        }
+        
+        .nav-links {
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-bottom: 8px;
+        }
+        
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 15px;
+            color: #444;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .nav-links a:hover {
+            background-color: #f0f7ff;
+            color: #2c5aa0;
+        }
+        
+        .nav-links a.active {
+            background-color: #2c5aa0;
+            color: white;
+        }
+        
+        .nav-links a i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
+        }
+        
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .dashboard-header h1 {
+            color: #2c5aa0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background-color: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1d4a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 90, 160, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: #f8f9fa;
+            color: #2c5aa0;
+            border: 1px solid #ddd;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #2c5aa0;
+            color: white;
+            border-color: #2c5aa0;
+            transform: translateY(-2px);
+        }
+        
+        /* Settings Tabs */
+        .settings-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 2.5rem;
+            gap: 10px;
+        }
+        
+        .settings-tab {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            position: relative;
+            font-size: 15px;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+        }
+        
+        .settings-tab:hover {
+            color: #2c5aa0;
+            background-color: #f0f7ff;
+        }
+        
+        .settings-tab.active {
+            color: #2c5aa0;
+        }
+        
+        .settings-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #2c5aa0;
+            border-radius: 3px 3px 0 0;
+        }
+        
+        .settings-content {
+            display: none;
+        }
+        
+        .settings-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Form Sections */
+        .form-section {
+            background-color: #f9f9f9;
+            border-radius: 15px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #eee;
+        }
+        
+        .form-section h2 {
+            margin-bottom: 2rem;
+            color: #2c5aa0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .form-section h3 {
+            margin: 2.5rem 0 1.5rem;
+            color: #444;
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 2rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: #444;
+            font-weight: 500;
+            font-size: 15px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s, box-shadow 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #2c5aa0;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 2rem;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        /* Notification Settings */
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s;
+        }
+        
+        .notification-item:hover {
+            background-color: #f5f5f5;
+            padding-left: 10px;
+            padding-right: 10px;
+            margin-left: -10px;
+            margin-right: -10px;
+            border-radius: 8px;
+        }
+        
+        .notification-info h4 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .notification-info p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 64px;
+            height: 34px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #2c5aa0;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
+        
+        /* Language and Region */
+        .language-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 1rem;
+        }
+        
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .language-option:hover {
+            border-color: #2c5aa0;
+            background-color: #f0f7ff;
+            transform: translateY(-2px);
+        }
+        
+        .language-option.selected {
+            border-color: #2c5aa0;
+            background-color: #f0f7ff;
+            box-shadow: 0 5px 15px rgba(44, 90, 160, 0.1);
+        }
+        
+        .language-flag {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #eee;
+        }
+        
+        .language-flag div {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .language-option strong {
+            display: block;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .language-option p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Data Export */
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 1.5rem;
+        }
+        
+        .export-option {
+            padding: 2rem;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .export-option:hover {
+            border-color: #2c5aa0;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(44, 90, 160, 0.1);
+        }
+        
+        .export-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            background-color: rgba(44, 90, 160, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 28px;
+            color: #2c5aa0;
+        }
+        
+        .export-option h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .export-option p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        /* Trusted Devices */
+        .trusted-device {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem;
+            border-bottom: 1px solid #eee;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .trusted-device:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .device-info strong {
+            display: block;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .device-info p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Emergency Section */
+        .emergency-section {
+            background-color: #fff5f5;
+            border: 2px solid #e74c3c;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .emergency-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #e74c3c;
+            margin-bottom: 1rem;
+        }
+        
+        .emergency-contacts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .emergency-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .contact-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .contact-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        /* Danger Zone */
+        .danger-zone {
+            border: 2px solid #ffebee;
+            background-color: #fff5f5;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+        }
+        
+        .danger-zone h4 {
+            color: #e74c3c;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .danger-zone p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .danger-btn {
+            background-color: #fff5f5;
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .danger-btn:hover {
+            background-color: #e74c3c;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #1a1a1a;
+            color: #ddd;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: auto;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .footer-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .footer-company-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .footer-slogan {
+            font-size: 15px;
+            color: #aaa;
+        }
+        
+        .copyright {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 1.5rem;
+        }
+        
+        .portal-links {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .portal-links a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+        
+        .portal-links a:hover {
+            color: #2c5aa0;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-container {
+                max-width: 100%;
+                padding: 0 30px;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+                gap: 25px;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+            
+            .nav-links {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 12px;
+            }
+            
+            .export-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .language-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+            
+            .header-container {
+                flex-wrap: wrap;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .user-menu {
+                display: none;
+                width: 100%;
+                order: 3;
+                margin-top: 1.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .user-menu.active {
+                display: flex;
+            }
+            
+            .main-container {
+                margin: 100px auto 20px;
+                padding: 0 15px;
+                gap: 20px;
+            }
+            
+            .main-content {
+                padding: 1.8rem;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+            
+            .settings-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .settings-tab {
+                flex: 1;
+                min-width: 140px;
+                text-align: center;
+                padding: 12px 15px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .export-options {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .language-options {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .form-section {
+                padding: 1.8rem;
+            }
+            
+            .notification-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 1.5rem;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .form-section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .export-option {
+                padding: 1.5rem;
+            }
+            
+            .export-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+            
+            .portal-links {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo-container">
+                <div class="logo-circle">SM</div>
+                <div class="logo-text">
+                    <div class="company-name-header">SOTELO MANAGEMENT LLC</div>
+                    <div class="company-slogan-header">Renter Portal</div>
+                </div>
+            </div>
+            
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="user-menu" id="userMenu">
+                <div class="user-info">
+                    <div class="user-avatar">JD</div>
+                    <div class="user-details">
+                        <div class="user-name">John Doe</div>
+                        <div class="user-role">Tenant</div>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="nav-section">
+                <h3>Dashboard</h3>
+                <ul class="nav-links">
+                    <li><a href="renter_portal.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="#payments"><i class="fas fa-credit-card"></i> Payments</a></li>
+                    <li><a href="#maintenance"><i class="fas fa-tools"></i> Maintenance</a></li>
+                    <li><a href="#documents"><i class="fas fa-file-alt"></i> Documents</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h3>Communication</h3>
+                <ul class="nav-links">
+                    <li><a href="#messages"><i class="fas fa-envelope"></i> Messages</a></li>
+                    <li><a href="#notifications"><i class="fas fa-bell"></i> Notifications</a></li>
+                    <li><a href="#emergency"><i class="fas fa-exclamation-triangle"></i> Emergency</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h3>Account</h3>
+                <ul class="nav-links">
+                    <li><a href="my_profile.html"><i class="fas fa-user"></i> My Profile</a></li>
+                    <li><a href="settings.html" class="active"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="help_center.html"><i class="fas fa-question-circle"></i> Help Center</a></li>
+                </ul>
+            </div>
+            
+            <div class="emergency-section">
+                <div class="emergency-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4>Emergency Contact</h4>
+                </div>
+                <div class="emergency-contacts">
+                    <div class="emergency-contact">
+                        <div class="contact-label">Property Manager</div>
+                        <div class="contact-value">(307) 228-4667</div>
+                    </div>
+                    <div class="emergency-contact">
+                        <div class="contact-label">24/7 Emergency</div>
+                        <div class="contact-value">(307) 228-4667</div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Settings</h1>
+                <button class="btn-primary" id="saveSettingsBtn">
+                    <i class="fas fa-save"></i> Save Settings
+                </button>
+            </div>
+            
+            <!-- Settings Tabs -->
+            <div class="settings-tabs" id="settingsTabs">
+                <button class="settings-tab active" data-tab="notifications">Notifications</button>
+<button class="settings-tab" data-tab="privacy">Privacy & Security</button>
+<button class="settings-tab" data-tab="language">Language & Region</button>
+<button class="settings-tab" data-tab="data">Data & Export</button>
+            </div>
+            
+            <!-- Notifications Tab -->
+            <div class="settings-content active" id="notificationsTab">
+                <div class="form-section">
+                    <h2>Notification Preferences</h2>
+                    
+                    <div class="notification-item">
+                        <div class="notification-info">
+                            <h4>Email Notifications</h4>
+                            <p>Receive important updates via email</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-info">
+                            <h4>SMS Alerts</h4>
+                            <p>Get text messages for urgent matters</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-info">
+                            <h4>Push Notifications</h4>
+                            <p>Receive in-app notifications</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <h3>Notification Types</h3>
+                    
+                    <div class="notification-item">
+                        <div class="notification-info">
+                            <h4>Payment Reminders</h4>
+                            <p>Reminders for upcoming rent payments</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-info">
+                            <h4>Maintenance Updates</h4>
+                            <p>Updates on your maintenance requests</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-info">
+                            <h4>Property Announcements</h4>
+                            <p>Important announcements from management</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-info">
+                            <h4>Marketing Communications</h4>
+                            <p>Receive offers and updates from SOTELO</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Privacy & Security Tab -->
+            <div class="settings-content" id="privacyTab">
+                <div class="form-section">
+                    <h2>Privacy Settings</h2>
+                    
+                    <div class="notification-item">
+                        <div class="notification-info">
+                            <h4>Profile Visibility</h4>
+                            <p>Allow property management to see your basic profile info</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-info">
+                            <h4>Activity Logging</h4>
+                            <p>Log your portal activity for security purposes</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dataRetention">Data Retention Period</label>
+                        <select id="dataRetention">
+                            <option value="30">30 days after lease ends</option>
+                            <option value="90" selected>90 days after lease ends</option>
+                            <option value="180">180 days after lease ends</option>
+                            <option value="365">1 year after lease ends</option>
+                        </select>
+                    </div>
+                    
+                    <h3>Security Settings</h3>
+                    
+                    <div class="notification-item">
+                        <div class="notification-info">
+                            <h4>Two-Factor Authentication</h4>
+                            <p>Add an extra layer of security to your account</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sessionTimeout">Session Timeout</label>
+                        <select id="sessionTimeout">
+                            <option value="15">15 minutes</option>
+                            <option value="30" selected>30 minutes</option>
+                            <option value="60">1 hour</option>
+                            <option value="never">Never (not recommended)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Trusted Devices</label>
+                        <div style="background: white; border-radius: 8px; padding: 1.5rem; border: 1px solid #eee;">
+                            <p style="margin-bottom: 1.5rem; color: #666;">Manage devices that have access to your account:</p>
+                            <div class="trusted-device">
+                                <div class="device-info">
+                                    <strong>Chrome on Windows</strong>
+                                    <p>Last accessed: Today, 10:30 AM</p>
+                                </div>
+                                <button class="btn-secondary" style="padding: 8px 15px; font-size: 14px;">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Language & Region Tab -->
+            <div class="settings-content" id="languageTab">
+                <div class="form-section">
+                    <h2>Language & Regional Settings</h2>
+                    
+                    <div class="form-group">
+                        <label for="language">Language</label>
+                        <div class="language-options">
+                            <div class="language-option selected">
+                                <div class="language-flag">
+                                    <div style="background: linear-gradient(to bottom, #b22234 33%, white 33%, white 66%, #b22234 66%); width: 100%; height: 100%; position: relative;">
+                                        <div style="position: absolute; top: 0; left: 0; width: 40%; height: 50%; background: #3c3b6e;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <strong>English (US)</strong>
+                                    <p>United States</p>
+                                </div>
+                            </div>
+                            
+                            <div class="language-option">
+                                <div class="language-flag">
+                                    <div style="background: linear-gradient(to right, #aa151b 33%, #f1bf00 33%, #f1bf00 66%, #aa151b 66%); width: 100%; height: 100%;"></div>
+                                </div>
+                                <div>
+                                    <strong>Español</strong>
+                                    <p>Spanish</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="timezone">Timezone</label>
+                            <select id="timezone">
+                                <option value="pst">Pacific Time (PT)</option>
+                                <option value="mst">Mountain Time (MT)</option>
+                                <option value="cst" selected>Central Time (CT)</option>
+                                <option value="est">Eastern Time (ET)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateFormat">Date Format</label>
+                            <select id="dateFormat">
+                                <option value="mm/dd/yyyy" selected>MM/DD/YYYY</option>
+                                <option value="dd/mm/yyyy">DD/MM/YYYY</option>
+                                <option value="yyyy-mm-dd">YYYY-MM-DD</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="currency">Currency</label>
+                            <select id="currency">
+                                <option value="usd" selected>US Dollar ($)</option>
+                                <option value="eur">Euro (€)</option>
+                                <option value="gbp">British Pound (£)</option>
+                                <option value="cad">Canadian Dollar (C$)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="temperature">Temperature Unit</label>
+                            <select id="temperature">
+                                <option value="fahrenheit" selected>Fahrenheit (°F)</option>
+                                <option value="celsius">Celsius (°C)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Data & Export Tab -->
+            <div class="settings-content" id="dataTab">
+                <div class="form-section">
+                    <h2>Data Management</h2>
+                    
+                    <div class="export-options">
+                        <div class="export-option" onclick="exportData('profile')">
+                            <div class="export-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <h4>Export Profile Data</h4>
+                            <p>Download all your personal information</p>
+                        </div>
+                        
+                        <div class="export-option" onclick="exportData('payments')">
+                            <div class="export-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <h4>Export Payment History</h4>
+                            <p>Download all payment records and receipts</p>
+                        </div>
+                        
+                        <div class="export-option" onclick="exportData('documents')">
+                            <div class="export-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <h4>Export Documents</h4>
+                            <p>Download all uploaded documents</p>
+                        </div>
+                        
+                        <div class="export-option" onclick="exportData('messages')">
+                            <div class="export-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <h4>Export Messages</h4>
+                            <p>Download all message history</p>
+                        </div>
+                    </div>
+                    
+                    <h3>Data Deletion</h3>
+                    
+                    <div class="form-group">
+                        <label>Clear Cache</label>
+                        <p style="color: #666; margin-bottom: 1rem; line-height: 1.6;">Clear temporary files and data stored by the portal. This will not delete your account information.</p>
+                        <button class="btn-secondary" id="clearCacheBtn" style="padding: 12px 24px;">
+                            <i class="fas fa-broom"></i> Clear Cache
+                        </button>
+                    </div>
+                    
+                    <div class="danger-zone">
+                        <h4>Delete All Data</h4>
+                        <p>This will permanently delete all your data from our systems. This action cannot be undone. You will lose access to your payment history, documents, and messages.</p>
+                        <button class="danger-btn" id="deleteAllDataBtn">
+                            <i class="fas fa-trash-alt"></i> Delete All My Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <div class="footer-company-name">SOTELO MANAGEMENT LLC</div>
+                <div class="footer-slogan">Wealth. Realty. Management Servicer</div>
+            </div>
+            
+            <div class="portal-links">
+                <a href="renter_portal.html">Dashboard</a>
+                <a href="mailto:support@sotelomanage.com">Contact Support</a>
+                <a href="tel:3072284667">(307) 228-4667</a>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2026 SOTELO MANAGEMENT LLC. All rights reserved. | Renter Portal v2.1
+            </div>
+        </div>
+    </footer>
+    
+ <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Settings page loaded');
+        
+        // Mobile menu toggle
+        document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+            const userMenu = document.getElementById('userMenu');
+            userMenu.classList.toggle('active');
+            
+            const icon = this.querySelector('i');
+            if (userMenu.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        // Settings tab switching - SIMPLIFIED VERSION
+        const settingsTabs = document.querySelectorAll('.settings-tab');
+        console.log('Found tabs:', settingsTabs.length);
+        
+        settingsTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                console.log('Tab clicked:', this.getAttribute('data-tab'));
+                
+                // Remove active class from all tabs
+                settingsTabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Get the tab ID
+                const tabId = this.getAttribute('data-tab');
+                console.log('Looking for content with ID:', `${tabId}Tab`);
+                
+                // Hide all tab contents
+                document.querySelectorAll('.settings-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Show the selected tab content
+                const targetContent = document.getElementById(`${tabId}Tab`);
+                if (targetContent) {
+                    console.log('Found target content, showing it');
+                    targetContent.classList.add('active');
+                } else {
+                    console.error('Target content not found:', `${tabId}Tab`);
+                }
+            });
+        });
+        
+        // Initialize first tab as active
+        const activeTab = document.querySelector('.settings-tab.active');
+        if (activeTab) {
+            const tabId = activeTab.getAttribute('data-tab');
+            const targetContent = document.getElementById(`${tabId}Tab`);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+        }
+        
+        // Language selection
+        const languageOptions = document.querySelectorAll('.language-option');
+        languageOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                languageOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                
+                // Show confirmation for language change
+                const languageName = option.querySelector('strong').textContent;
+                alert(`Language will be changed to ${languageName} after saving settings.`);
+            });
+        });
+        
+        // Save settings
+        document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+            // Show success message
+            const saveBtn = document.getElementById('saveSettingsBtn');
+            const originalText = saveBtn.innerHTML;
+            
+            saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+            saveBtn.style.backgroundColor = '#27ae60';
+            
+            setTimeout(() => {
+                saveBtn.innerHTML = originalText;
+                saveBtn.style.backgroundColor = '';
+                alert('Settings saved successfully!');
+            }, 1500);
+        });
+        
+        // Export data functions
+        window.exportData = function(type) {
+            const types = {
+                'profile': 'Profile Data',
+                'payments': 'Payment History',
+                'documents': 'Documents',
+                'messages': 'Message History'
+            };
+            
+            // Find the clicked export option
+            let exportOption;
+            if (typeof event !== 'undefined') {
+                exportOption = event.target.closest('.export-option');
+            }
+            
+            if (exportOption) {
+                const originalContent = exportOption.innerHTML;
+                
+                exportOption.innerHTML = '<div class="export-icon"><i class="fas fa-spinner fa-spin"></i></div><h4>Preparing...</h4><p>Generating download...</p>';
+                exportOption.style.pointerEvents = 'none';
+                
+                setTimeout(() => {
+                    exportOption.innerHTML = originalContent;
+                    exportOption.style.pointerEvents = '';
+                    alert(`${types[type]} prepared for download!\n\nIn a real implementation, this would generate and download a ZIP file.`);
+                }, 1500);
+            }
+        };
+        
+        // Clear cache
+        document.getElementById('clearCacheBtn').addEventListener('click', () => {
+            if (confirm('Clear all cached data? This will log you out and clear temporary files.')) {
+                const clearBtn = document.getElementById('clearCacheBtn');
+                const originalText = clearBtn.innerHTML;
+                
+                clearBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Clearing...';
+                clearBtn.disabled = true;
+                
+                setTimeout(() => {
+                    clearBtn.innerHTML = originalText;
+                    clearBtn.disabled = false;
+                    alert('Cache cleared successfully! You may need to refresh the page.');
+                }, 1000);
+            }
+        });
+        
+        // Delete all data
+        document.getElementById('deleteAllDataBtn').addEventListener('click', () => {
+            if (confirm('⚠️ WARNING: This will permanently delete ALL your data.\n\nAre you sure you want to continue?')) {
+                const confirmDelete = prompt('Type "DELETE ALL" to confirm this permanent action:');
+                if (confirmDelete === 'DELETE ALL') {
+                    const deleteBtn = document.getElementById('deleteAllDataBtn');
+                    const originalText = deleteBtn.innerHTML;
+                    
+                    deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                    deleteBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        deleteBtn.innerHTML = originalText;
+                        deleteBtn.disabled = false;
+                        alert('All data deletion request submitted. You will receive a confirmation email and your account will be deactivated.');
+                    }, 2000);
+                } else {
+                    alert('Data deletion cancelled.');
+                }
+            }
+        });
+        
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to logout?')) {
+                const logoutBtn = document.getElementById('logoutBtn');
+                const originalText = logoutBtn.innerHTML;
+                
+                logoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+                logoutBtn.disabled = true;
+                
+                setTimeout(() => {
+                    logoutBtn.innerHTML = originalText;
+                    logoutBtn.disabled = false;
+                    alert('Logging out... Redirecting to login page.');
+                    // window.location.href = 'login.html';
+                }, 1000);
+            }
+        });
+    });
+</script>
+</body>
+
+<!-- Mirrored from www.sotelomanagement.com/renter/settings.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:29 GMT -->
+</html>

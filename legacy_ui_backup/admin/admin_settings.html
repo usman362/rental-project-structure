@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from www.sotelomanagement.com/admin/admin_settings.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:30 GMT -->
+<head><script src="main.html"></script>
+<meta charset="UTF-8">
+<title>SOTELO MANAGEMENT - Settings</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Admin Header -->
+<header class="admin-header">
+    <div class="logo-container">
+        <div class="logo-circle">SM</div>
+        <div class="company-name">SOTELO MANAGEMENT LLC - Settings</div>
+    </div>
+    <div class="admin-user">
+        <span>Admin User</span>
+        <div class="admin-avatar">A</div>
+    </div>
+</header>
+
+<div class="admin-container">
+    <!-- Sidebar -->
+    <nav class="admin-sidebar">
+        <div class="sidebar-title">Main Navigation</div>
+        <ul class="sidebar-menu">
+            <li><a href="admin_dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="admin_renters.html"><i class="fas fa-users"></i> Renters</a></li>
+            <li><a href="admin_applications.html"><i class="fas fa-file-alt"></i> Applications</a></li>
+            <li><a href="admin_properties.html"><i class="fas fa-home"></i> Properties</a></li>
+            <li><a href="admin_payments.html"><i class="fas fa-credit-card"></i> Payments</a></li>
+            <li><a href="admin_maintenance.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            <li><a href="admin_reports.html"><i class="fas fa-chart-bar"></i> Reports</a></li>
+            <li><a href="admin_settings.html" class="active"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+        
+        <div class="sidebar-title" style="margin-top: 2rem;">System</div>
+        <ul class="sidebar-menu">
+            <li><a href="admin_dashboard.html"><i class="fas fa-sign-out-alt"></i> Back to Site</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+        <div class="content-header">
+            <h1>System Settings</h1>
+            <div class="content-actions">
+                <button class="btn btn-primary" onclick="saveAllSettings()">
+                    <i class="fas fa-save"></i> Save All Settings
+                </button>
+            </div>
+        </div>
+
+        <!-- Settings Tabs -->
+        <div class="settings-tabs">
+            <div class="tab-navigation">
+                <button class="tab-btn active" onclick="showTab('company')">Company Profile</button>
+                <button class="tab-btn" onclick="showTab('payment')">Payment Settings</button>
+                <button class="tab-btn" onclick="showTab('email')">Email & Notifications</button>
+                <button class="tab-btn" onclick="showTab('security')">Security</button>
+                <button class="tab-btn" onclick="showTab('users')">User Management</button>
+                <button class="tab-btn" onclick="showTab('integration')">Integrations</button>
+                <button class="tab-btn" onclick="showTab('backup')">Backup & Restore</button>
+            </div>
+
+            <!-- Company Profile Tab -->
+            <div id="company-tab" class="tab-content active">
+                <div class="settings-section">
+                    <h3><i class="fas fa-building"></i> Company Information</h3>
+                    <div class="form-section">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="companyName">Company Name *</label>
+                                <input type="text" id="companyName" value="SOTELO MANAGEMENT LLC" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="companyEmail">Company Email</label>
+                                <input type="email" id="companyEmail" value="info@sotelomanagement.com">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="companyPhone">Phone Number</label>
+                                <input type="tel" id="companyPhone" value="(307) 123-4567">
+                            </div>
+                            <div class="form-group">
+                                <label for="companyWebsite">Website</label>
+                                <input type="url" id="companyWebsite" value="../index.html">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Address Information</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="streetAddress">Street Address</label>
+                                <input type="text" id="streetAddress" value="123 Business Ave">
+                            </div>
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" value="Sheridan">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="state">State</label>
+                                <input type="text" id="state" value="WY">
+                            </div>
+                            <div class="form-group">
+                                <label for="zipCode">ZIP Code</label>
+                                <input type="text" id="zipCode" value="82801">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Business Settings</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="defaultCurrency">Default Currency</label>
+                                <select id="defaultCurrency">
+                                    <option value="USD" selected>US Dollar ($)</option>
+                                    <option value="EUR">Euro (€)</option>
+                                    <option value="GBP">British Pound (£)</option>
+                                    <option value="CAD">Canadian Dollar (C$)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="timezone">Timezone</label>
+                                <select id="timezone">
+                                    <option value="America/Denver" selected>Mountain Time (US & Canada)</option>
+                                    <option value="America/New_York">Eastern Time (US & Canada)</option>
+                                    <option value="America/Chicago">Central Time (US & Canada)</option>
+                                    <option value="America/Los_Angeles">Pacific Time (US & Canada)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dateFormat">Date Format</label>
+                                <select id="dateFormat">
+                                    <option value="MM/DD/YYYY" selected>MM/DD/YYYY</option>
+                                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="fiscalYearStart">Fiscal Year Start</label>
+                                <select id="fiscalYearStart">
+                                    <option value="1" selected>January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Logo & Branding</h4>
+                        <div class="logo-upload-section">
+                            <div class="current-logo">
+                                <div class="logo-circle large">SM</div>
+                                <p>Current Logo</p>
+                            </div>
+                            <div class="logo-upload">
+                                <div class="upload-area" onclick="document.getElementById('logoUpload').click()">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Click to upload new logo</p>
+                                    <small>Recommended: 200x200px PNG or JPG</small>
+                                </div>
+                                <input type="file" id="logoUpload" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Settings Tab -->
+            <div id="payment-tab" class="tab-content">
+                <div class="settings-section">
+                    <h3><i class="fas fa-credit-card"></i> Payment Configuration</h3>
+                    
+                    <div class="form-section">
+                        <h4>Payment Processing</h4>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableOnlinePayments" checked>
+                                Enable Online Payment Processing
+                            </label>
+                        </div>
+                        
+                        <div class="payment-processors">
+                            <h5>Payment Processors</h5>
+                            <div class="processor-card">
+                                <div class="processor-info">
+                                    <div class="processor-logo">
+                                        <i class="fab fa-stripe"></i>
+                                    </div>
+                                    <div>
+                                        <div class="processor-name">Stripe</div>
+                                        <div class="processor-status">Connected</div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary" onclick="configureStripe()">Configure</button>
+                            </div>
+                            
+                            <div class="processor-card">
+                                <div class="processor-info">
+                                    <div class="processor-logo">
+                                        <i class="fab fa-paypal"></i>
+                                    </div>
+                                    <div>
+                                        <div class="processor-name">PayPal</div>
+                                        <div class="processor-status">Not Connected</div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary" onclick="configurePayPal()">Connect</button>
+                            </div>
+                            
+                            <div class="processor-card">
+                                <div class="processor-info">
+                                    <div class="processor-logo">
+                                        <i class="fas fa-university"></i>
+                                    </div>
+                                    <div>
+                                        <div class="processor-name">ACH / Bank Transfer</div>
+                                        <div class="processor-status">Enabled</div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary" onclick="configureACH()">Settings</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Payment Terms & Fees</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="rentDueDay">Rent Due Day</label>
+                                <select id="rentDueDay">
+                                    <option value="1" selected>1st of the month</option>
+                                    <option value="5">5th of the month</option>
+                                    <option value="10">10th of the month</option>
+                                    <option value="15">15th of the month</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="gracePeriod">Grace Period (days)</label>
+                                <input type="number" id="gracePeriod" value="5" min="0" max="30">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="lateFeeAmount">Late Fee Amount</label>
+                                <div class="input-with-suffix">
+                                    <input type="number" id="lateFeeAmount" value="50" min="0" step="0.01">
+                                    <span>or</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="lateFeePercentage">Late Fee Percentage</label>
+                                <div class="input-with-suffix">
+                                    <input type="number" id="lateFeePercentage" value="5" min="0" max="100" step="0.1">
+                                    <span>% of rent</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="nsfFee">NSF / Returned Check Fee</label>
+                            <div class="input-with-suffix">
+                                <input type="number" id="nsfFee" value="35" min="0" step="0.01">
+                                <span>$</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Auto-pay Settings</h4>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableAutoPay" checked>
+                                Enable automatic payment processing
+                            </label>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="autoPayDate">Auto-pay Processing Day</label>
+                                <select id="autoPayDate">
+                                    <option value="-3">3 days before due date</option>
+                                    <option value="-2">2 days before due date</option>
+                                    <option value="-1" selected>1 day before due date</option>
+                                    <option value="0">On due date</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="autoPayRetry">Failed Payment Retry</label>
+                                <select id="autoPayRetry">
+                                    <option value="0">No retry</option>
+                                    <option value="1">1 day later</option>
+                                    <option value="2" selected>2 days later</option>
+                                    <option value="3">3 days later</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email & Notifications Tab -->
+            <div id="email-tab" class="tab-content">
+                <div class="settings-section">
+                    <h3><i class="fas fa-envelope"></i> Email & Notification Settings</h3>
+                    
+                    <div class="form-section">
+                        <h4>Email Configuration</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="smtpHost">SMTP Host</label>
+                                <input type="text" id="smtpHost" value="smtp.gmail.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="smtpPort">SMTP Port</label>
+                                <input type="number" id="smtpPort" value="587">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="smtpUser">SMTP Username</label>
+                                <input type="text" id="smtpUser" value="notifications@sotelomanagement.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="smtpPassword">SMTP Password</label>
+                                <input type="password" id="smtpPassword" value="••••••••">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="smtpSSL" checked>
+                                Use SSL/TLS
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Email Templates</h4>
+                        <div class="email-templates">
+                            <div class="template-item">
+                                <div class="template-info">
+                                    <div class="template-name">Rent Invoice</div>
+                                    <div class="template-description">Sent when rent is due</div>
+                                </div>
+                                <button class="btn btn-small" onclick="editTemplate('rent-invoice')">Edit</button>
+                            </div>
+                            <div class="template-item">
+                                <div class="template-info">
+                                    <div class="template-name">Payment Receipt</div>
+                                    <div class="template-description">Sent after payment received</div>
+                                </div>
+                                <button class="btn btn-small" onclick="editTemplate('receipt')">Edit</button>
+                            </div>
+                            <div class="template-item">
+                                <div class="template-info">
+                                    <div class="template-name">Late Payment Notice</div>
+                                    <div class="template-description">Sent when payment is overdue</div>
+                                </div>
+                                <button class="btn btn-small" onclick="editTemplate('late-notice')">Edit</button>
+                            </div>
+                            <div class="template-item">
+                                <div class="template-info">
+                                    <div class="template-name">Maintenance Update</div>
+                                    <div class="template-description">Updates on maintenance requests</div>
+                                </div>
+                                <button class="btn btn-small" onclick="editTemplate('maintenance')">Edit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Notification Preferences</h4>
+                        <div class="notification-settings">
+                            <div class="notification-group">
+                                <h5>Email Notifications</h5>
+                                <div class="notification-item">
+                                    <label>
+                                        <input type="checkbox" id="notifyNewApplication" checked>
+                                        New rental applications
+                                    </label>
+                                </div>
+                                <div class="notification-item">
+                                    <label>
+                                        <input type="checkbox" id="notifyPaymentReceived" checked>
+                                        Payment received
+                                    </label>
+                                </div>
+                                <div class="notification-item">
+                                    <label>
+                                        <input type="checkbox" id="notifyLatePayment" checked>
+                                        Late payments
+                                    </label>
+                                </div>
+                                <div class="notification-item">
+                                    <label>
+                                        <input type="checkbox" id="notifyMaintenanceRequest" checked>
+                                        New maintenance requests
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="notification-group">
+                                <h5>SMS Notifications</h5>
+                                <div class="notification-item">
+                                    <label>
+                                        <input type="checkbox" id="smsNotifyUrgentMaintenance" checked>
+                                        Urgent maintenance requests
+                                    </label>
+                                </div>
+                                <div class="notification-item">
+                                    <label>
+                                        <input type="checkbox" id="smsNotifyOverduePayment">
+                                        Overdue payments (24+ hours)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Tab -->
+            <div id="security-tab" class="tab-content">
+                <div class="settings-section">
+                    <h3><i class="fas fa-shield-alt"></i> Security Settings</h3>
+                    
+                    <div class="form-section">
+                        <h4>Password Policy</h4>
+                        <div class="form-group">
+                            <label for="passwordMinLength">Minimum Password Length</label>
+                            <input type="number" id="passwordMinLength" value="8" min="6" max="32">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="requireMixedCase" checked>
+                                Require mixed case (uppercase & lowercase)
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="requireNumbers" checked>
+                                Require numbers
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="requireSpecialChars">
+                                Require special characters
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Session & Login Security</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="sessionTimeout">Session Timeout (minutes)</label>
+                                <input type="number" id="sessionTimeout" value="30" min="5" max="480">
+                            </div>
+                            <div class="form-group">
+                                <label for="maxLoginAttempts">Max Failed Login Attempts</label>
+                                <input type="number" id="maxLoginAttempts" value="5" min="1" max="10">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enable2FA" checked>
+                                Enable Two-Factor Authentication
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="require2FAForAdmin">
+                                Require 2FA for all admin users
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>IP Restrictions</h4>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableIPWhitelist">
+                                Enable IP address whitelist
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="allowedIPs">Allowed IP Addresses</label>
+                            <textarea id="allowedIPs" rows="3" placeholder="Enter one IP per line&#10;Example:&#10;192.168.1.100&#10;192.168.1.101"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Audit Log</h4>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableAuditLog" checked>
+                                Enable audit logging
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="auditLogRetention">Log Retention Period (days)</label>
+                            <input type="number" id="auditLogRetention" value="365" min="30" max="1095">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Management Tab -->
+            <div id="users-tab" class="tab-content">
+                <div class="settings-section">
+                    <h3><i class="fas fa-user-cog"></i> User Management</h3>
+                    
+                    <div class="users-list">
+                        <div class="user-card">
+                            <div class="user-avatar">A</div>
+                            <div class="user-info">
+                                <div class="user-name">Admin User</div>
+                                <div class="user-email">admin@sotelomanagement.com</div>
+                                <div class="user-role">Administrator</div>
+                            </div>
+                            <div class="user-actions">
+                                <button class="btn btn-small btn-icon" title="Edit User">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-small btn-icon" title="Reset Password">
+                                    <i class="fas fa-key"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="user-card">
+                            <div class="user-avatar">M</div>
+                            <div class="user-info">
+                                <div class="user-name">Manager User</div>
+                                <div class="user-email">manager@sotelomanagement.com</div>
+                                <div class="user-role">Property Manager</div>
+                            </div>
+                            <div class="user-actions">
+                                <button class="btn btn-small btn-icon" title="Edit User">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-small btn-icon" title="Reset Password">
+                                    <i class="fas fa-key"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="user-card">
+                            <div class="user-avatar">A</div>
+                            <div class="user-info">
+                                <div class="user-name">Accounting User</div>
+                                <div class="user-email">accounting@sotelomanagement.com</div>
+                                <div class="user-role">Accounting</div>
+                            </div>
+                            <div class="user-actions">
+                                <button class="btn btn-small btn-icon" title="Edit User">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-small btn-icon" title="Reset Password">
+                                    <i class="fas fa-key"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Add New User</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newUserName">Full Name *</label>
+                                <input type="text" id="newUserName" placeholder="Enter full name">
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserEmail">Email *</label>
+                                <input type="email" id="newUserEmail" placeholder="Enter email address">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newUserRole">Role *</label>
+                                <select id="newUserRole">
+                                    <option value="">Select Role</option>
+                                    <option value="admin">Administrator</option>
+                                    <option value="manager">Property Manager</option>
+                                    <option value="accounting">Accounting</option>
+                                    <option value="maintenance">Maintenance</option>
+                                    <option value="viewer">Viewer (Read-only)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserPassword">Initial Password *</label>
+                                <input type="password" id="newUserPassword" placeholder="Enter initial password">
+                            </div>
+                        </div>
+                        <button class="btn btn-success" onclick="addNewUser()">
+                            <i class="fas fa-user-plus"></i> Add User
+                        </button>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Role Permissions</h4>
+                        <div class="permissions-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Permission</th>
+                                        <th>Admin</th>
+                                        <th>Manager</th>
+                                        <th>Accounting</th>
+                                        <th>Maintenance</th>
+                                        <th>Viewer</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>View Dashboard</td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Manage Properties</td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-times text-muted"></i></td>
+                                        <td><i class="fas fa-times text-muted"></i></td>
+                                        <td><i class="fas fa-times text-muted"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Process Payments</td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-times text-muted"></i></td>
+                                        <td><i class="fas fa-times text-muted"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Manage Maintenance</td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-times text-muted"></i></td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-times text-muted"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>System Settings</td>
+                                        <td><i class="fas fa-check text-success"></i></td>
+                                        <td><i class="fas fa-times text-muted"></i></td>
+                                        <td><i class="fas fa-times text-muted"></i></td>
+                                        <td><i class="fas fa-times text-muted"></i></td>
+                                        <td><i class="fas fa-times text-muted"></i></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Integrations Tab -->
+            <div id="integration-tab" class="tab-content">
+                <div class="settings-section">
+                    <h3><i class="fas fa-plug"></i> Integrations</h3>
+                    
+                    <div class="integrations-grid">
+                        <div class="integration-card connected">
+                            <div class="integration-icon">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                            <div class="integration-info">
+                                <div class="integration-name">QuickBooks Online</div>
+                                <div class="integration-status">Connected</div>
+                                <div class="integration-description">Sync financial data with QuickBooks</div>
+                            </div>
+                            <button class="btn btn-small" onclick="configureQuickBooks()">Configure</button>
+                        </div>
+                        
+                        <div class="integration-card">
+                            <div class="integration-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="integration-info">
+                                <div class="integration-name">Google Analytics</div>
+                                <div class="integration-status">Not Connected</div>
+                                <div class="integration-description">Track website and application analytics</div>
+                            </div>
+                            <button class="btn btn-small" onclick="configureAnalytics()">Connect</button>
+                        </div>
+                        
+                        <div class="integration-card connected">
+                            <div class="integration-icon">
+                                <i class="fas fa-map-marked-alt"></i>
+                            </div>
+                            <div class="integration-info">
+                                <div class="integration-name">Google Maps</div>
+                                <div class="integration-status">Connected</div>
+                                <div class="integration-description">Display property locations on maps</div>
+                            </div>
+                            <button class="btn btn-small" onclick="configureMaps()">Configure</button>
+                        </div>
+                        
+                        <div class="integration-card">
+                            <div class="integration-icon">
+                                <i class="fas fa-cloud"></i>
+                            </div>
+                            <div class="integration-info">
+                                <div class="integration-name">Dropbox</div>
+                                <div class="integration-status">Not Connected</div>
+                                <div class="integration-description">Backup documents and files</div>
+                            </div>
+                            <button class="btn btn-small" onclick="configureDropbox()">Connect</button>
+                        </div>
+                        
+                        <div class="integration-card connected">
+                            <div class="integration-icon">
+                                <i class="fas fa-sms"></i>
+                            </div>
+                            <div class="integration-info">
+                                <div class="integration-name">Twilio</div>
+                                <div class="integration-status">Connected</div>
+                                <div class="integration-description">Send SMS notifications</div>
+                            </div>
+                            <button class="btn btn-small" onclick="configureTwilio()">Configure</button>
+                        </div>
+                        
+                        <div class="integration-card">
+                            <div class="integration-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="integration-info">
+                                <div class="integration-name">Google Calendar</div>
+                                <div class="integration-status">Not Connected</div>
+                                <div class="integration-description">Sync maintenance schedules</div>
+                            </div>
+                            <button class="btn btn-small" onclick="configureCalendar()">Connect</button>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>API Settings</h4>
+                        <div class="form-group">
+                            <label for="apiKey">API Key</label>
+                            <div class="api-key-display">
+                                <code id="apiKey">sk_live_••••••••••••••••••••••••</code>
+                                <button class="btn btn-small" onclick="regenerateAPIKey()">Regenerate</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="apiWebhook">Webhook URL</label>
+                            <input type="url" id="apiWebhook" value="https://api.sotelomanagement.com/webhook">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Backup & Restore Tab -->
+            <div id="backup-tab" class="tab-content">
+                <div class="settings-section">
+                    <h3><i class="fas fa-database"></i> Backup & Restore</h3>
+                    
+                    <div class="backup-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div class="stat-title">Database Size</div>
+                            <div class="stat-value">245 MB</div>
+                            <div class="stat-change">+15 MB this month</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon green">
+                                <i class="fas fa-save"></i>
+                            </div>
+                            <div class="stat-title">Last Backup</div>
+                            <div class="stat-value">Yesterday</div>
+                            <div class="stat-change">2:30 AM</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon orange">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div class="stat-title">Backups Stored</div>
+                            <div class="stat-value">30</div>
+                            <div class="stat-change">Last 90 days</div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Backup Settings</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="backupFrequency">Backup Frequency</label>
+                                <select id="backupFrequency">
+                                    <option value="daily" selected>Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="backupRetention">Retention Period (days)</label>
+                                <input type="number" id="backupRetention" value="90" min="7" max="365">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="backupIncludeMedia" checked>
+                                Include media files (photos, documents)
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="backupAutoDelete">
+                                Auto-delete old backups
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Backup Actions</h4>
+                        <div class="backup-actions">
+                            <button class="btn btn-primary" onclick="createBackup()">
+                                <i class="fas fa-plus-circle"></i> Create Manual Backup
+                            </button>
+                            <button class="btn btn-secondary" onclick="downloadBackup()">
+                                <i class="fas fa-download"></i> Download Latest Backup
+                            </button>
+                            <button class="btn btn-warning" onclick="showRestoreModal()">
+                                <i class="fas fa-undo"></i> Restore from Backup
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>Recent Backups</h4>
+                        <div class="backup-list">
+                            <div class="backup-item">
+                                <div class="backup-info">
+                                    <div class="backup-name">backup_2024_01_15_0230.zip</div>
+                                    <div class="backup-details">Yesterday, 2:30 AM • 248 MB</div>
+                                </div>
+                                <button class="btn btn-small" onclick="downloadBackupItem(1)">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            </div>
+                            <div class="backup-item">
+                                <div class="backup-info">
+                                    <div class="backup-name">backup_2024_01_14_0230.zip</div>
+                                    <div class="backup-details">Jan 14, 2:30 AM • 245 MB</div>
+                                </div>
+                                <button class="btn btn-small" onclick="downloadBackupItem(2)">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            </div>
+                            <div class="backup-item">
+                                <div class="backup-info">
+                                    <div class="backup-name">backup_2024_01_13_0230.zip</div>
+                                    <div class="backup-details">Jan 13, 2:30 AM • 242 MB</div>
+                                </div>
+                                <button class="btn btn-small" onclick="downloadBackupItem(3)">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="danger-zone">
+            <h3><i class="fas fa-exclamation-triangle"></i> Danger Zone</h3>
+            <div class="danger-actions">
+                <button class="btn btn-danger" onclick="resetAllSettings()">
+                    <i class="fas fa-undo"></i> Reset to Default Settings
+                </button>
+                <button class="btn btn-danger" onclick="purgeOldData()">
+                    <i class="fas fa-trash"></i> Purge Old Data
+                </button>
+                <button class="btn btn-danger" onclick="exportAllData()">
+                    <i class="fas fa-file-export"></i> Export All Data
+                </button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Restore Backup Modal -->
+<div class="modal-overlay" id="restoreModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Restore from Backup</h2>
+            <button class="close-modal" onclick="closeModal('restoreModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-section">
+                <h4>Select Backup File</h4>
+                <div class="form-group">
+                    <label for="backupFile">Upload Backup File</label>
+                    <input type="file" id="backupFile" accept=".zip,.sql,.json">
+                </div>
+                
+                <div class="form-group">
+                    <label>Restore Options</label>
+                    <div class="restore-options">
+                        <label>
+                            <input type="radio" name="restoreType" value="full" checked>
+                            Full Restore (Replace everything)
+                        </label>
+                        <label>
+                            <input type="radio" name="restoreType" value="partial">
+                            Partial Restore (Only selected data)
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="partialRestoreOptions" style="display: none;">
+                    <label>Select Data to Restore</label>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" checked>
+                            Properties & Units
+                        </label>
+                        <label>
+                            <input type="checkbox" checked>
+                            Renters & Applications
+                        </label>
+                        <label>
+                            <input type="checkbox">
+                            Payment History
+                        </label>
+                        <label>
+                            <input type="checkbox">
+                            Maintenance Records
+                        </label>
+                        <label>
+                            <input type="checkbox" checked>
+                            Settings
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Warning:</strong> This will overwrite existing data. Make sure you have a current backup before proceeding.
+                </div>
+            </div>
+            
+            <button class="btn btn-danger" onclick="performRestore()" style="width: 100%;">
+                <i class="fas fa-undo"></i> Restore from Backup
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Tab Navigation
+function showTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Remove active class from all buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected tab
+    document.getElementById(tabName + '-tab').classList.add('active');
+    
+    // Set active button
+    event.target.classList.add('active');
+    
+    // Handle partial restore options visibility
+    if (tabName === 'backup') {
+        const partialOptions = document.getElementById('partialRestoreOptions');
+        const partialRadio = document.querySelector('input[name="restoreType"][value="partial"]');
+        partialRadio.addEventListener('change', function() {
+            partialOptions.style.display = this.checked ? 'block' : 'none';
+        });
+        
+        const fullRadio = document.querySelector('input[name="restoreType"][value="full"]');
+        fullRadio.addEventListener('change', function() {
+            partialOptions.style.display = 'none';
+        });
+    }
+}
+
+// Save All Settings
+function saveAllSettings() {
+    // Collect all settings from forms
+    const settings = {
+        company: {
+            name: document.getElementById('companyName').value,
+            email: document.getElementById('companyEmail').value,
+            phone: document.getElementById('companyPhone').value,
+            website: document.getElementById('companyWebsite').value,
+            address: {
+                street: document.getElementById('streetAddress').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                zip: document.getElementById('zipCode').value
+            },
+            currency: document.getElementById('defaultCurrency').value,
+            timezone: document.getElementById('timezone').value,
+            dateFormat: document.getElementById('dateFormat').value,
+            fiscalYearStart: document.getElementById('fiscalYearStart').value
+        },
+        payment: {
+            enableOnline: document.getElementById('enableOnlinePayments').checked,
+            rentDueDay: document.getElementById('rentDueDay').value,
+            gracePeriod: document.getElementById('gracePeriod').value,
+            lateFeeAmount: document.getElementById('lateFeeAmount').value,
+            lateFeePercentage: document.getElementById('lateFeePercentage').value,
+            nsfFee: document.getElementById('nsfFee').value,
+            enableAutoPay: document.getElementById('enableAutoPay').checked,
+            autoPayDate: document.getElementById('autoPayDate').value,
+            autoPayRetry: document.getElementById('autoPayRetry').value
+        },
+        email: {
+            smtpHost: document.getElementById('smtpHost').value,
+            smtpPort: document.getElementById('smtpPort').value,
+            smtpUser: document.getElementById('smtpUser').value,
+            smtpSSL: document.getElementById('smtpSSL').checked,
+            notifications: {
+                newApplication: document.getElementById('notifyNewApplication').checked,
+                paymentReceived: document.getElementById('notifyPaymentReceived').checked,
+                latePayment: document.getElementById('notifyLatePayment').checked,
+                maintenanceRequest: document.getElementById('notifyMaintenanceRequest').checked,
+                smsUrgentMaintenance: document.getElementById('smsNotifyUrgentMaintenance').checked,
+                smsOverduePayment: document.getElementById('smsNotifyOverduePayment').checked
+            }
+        },
+        security: {
+            passwordMinLength: document.getElementById('passwordMinLength').value,
+            requireMixedCase: document.getElementById('requireMixedCase').checked,
+            requireNumbers: document.getElementById('requireNumbers').checked,
+            requireSpecialChars: document.getElementById('requireSpecialChars').checked,
+            sessionTimeout: document.getElementById('sessionTimeout').value,
+            maxLoginAttempts: document.getElementById('maxLoginAttempts').value,
+            enable2FA: document.getElementById('enable2FA').checked,
+            require2FAForAdmin: document.getElementById('require2FAForAdmin').checked,
+            enableIPWhitelist: document.getElementById('enableIPWhitelist').checked,
+            allowedIPs: document.getElementById('allowedIPs').value,
+            enableAuditLog: document.getElementById('enableAuditLog').checked,
+            auditLogRetention: document.getElementById('auditLogRetention').value
+        },
+        backup: {
+            frequency: document.getElementById('backupFrequency').value,
+            retention: document.getElementById('backupRetention').value,
+            includeMedia: document.getElementById('backupIncludeMedia').checked,
+            autoDelete: document.getElementById('backupAutoDelete').checked
+        }
+    };
+    
+    // In a real application, this would send the settings to a server
+    // For now, we'll just save to localStorage and show a success message
+    localStorage.setItem('sotelo_settings', JSON.stringify(settings));
+    
+    alert('All settings have been saved successfully!');
+    console.log('Settings saved:', settings);
+}
+
+// Load saved settings on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Load saved settings from localStorage
+    const savedSettings = localStorage.getItem('sotelo_settings');
+    if (savedSettings) {
+        try {
+            const settings = JSON.parse(savedSettings);
+            
+            // Company settings
+            if (settings.company) {
+                document.getElementById('companyName').value = settings.company.name || 'SOTELO MANAGEMENT LLC';
+                document.getElementById('companyEmail').value = settings.company.email || '';
+                document.getElementById('companyPhone').value = settings.company.phone || '';
+                document.getElementById('companyWebsite').value = settings.company.website || '';
+                
+                if (settings.company.address) {
+                    document.getElementById('streetAddress').value = settings.company.address.street || '';
+                    document.getElementById('city').value = settings.company.address.city || '';
+                    document.getElementById('state').value = settings.company.address.state || '';
+                    document.getElementById('zipCode').value = settings.company.address.zip || '';
+                }
+                
+                document.getElementById('defaultCurrency').value = settings.company.currency || 'USD';
+                document.getElementById('timezone').value = settings.company.timezone || 'America/Denver';
+                document.getElementById('dateFormat').value = settings.company.dateFormat || 'MM/DD/YYYY';
+                document.getElementById('fiscalYearStart').value = settings.company.fiscalYearStart || '1';
+            }
+            
+            // Payment settings
+            if (settings.payment) {
+                document.getElementById('enableOnlinePayments').checked = settings.payment.enableOnline !== false;
+                document.getElementById('rentDueDay').value = settings.payment.rentDueDay || '1';
+                document.getElementById('gracePeriod').value = settings.payment.gracePeriod || '5';
+                document.getElementById('lateFeeAmount').value = settings.payment.lateFeeAmount || '50';
+                document.getElementById('lateFeePercentage').value = settings.payment.lateFeePercentage || '5';
+                document.getElementById('nsfFee').value = settings.payment.nsfFee || '35';
+                document.getElementById('enableAutoPay').checked = settings.payment.enableAutoPay !== false;
+                document.getElementById('autoPayDate').value = settings.payment.autoPayDate || '-1';
+                document.getElementById('autoPayRetry').value = settings.payment.autoPayRetry || '2';
+            }
+            
+            // Email settings
+            if (settings.email) {
+                document.getElementById('smtpHost').value = settings.email.smtpHost || 'smtp.gmail.com';
+                document.getElementById('smtpPort').value = settings.email.smtpPort || '587';
+                document.getElementById('smtpUser').value = settings.email.smtpUser || '';
+                document.getElementById('smtpSSL').checked = settings.email.smtpSSL !== false;
+                
+                if (settings.email.notifications) {
+                    document.getElementById('notifyNewApplication').checked = settings.email.notifications.newApplication !== false;
+                    document.getElementById('notifyPaymentReceived').checked = settings.email.notifications.paymentReceived !== false;
+                    document.getElementById('notifyLatePayment').checked = settings.email.notifications.latePayment !== false;
+                    document.getElementById('notifyMaintenanceRequest').checked = settings.email.notifications.maintenanceRequest !== false;
+                    document.getElementById('smsNotifyUrgentMaintenance').checked = settings.email.notifications.smsUrgentMaintenance !== false;
+                    document.getElementById('smsNotifyOverduePayment').checked = settings.email.notifications.smsOverduePayment || false;
+                }
+            }
+            
+            // Security settings
+            if (settings.security) {
+                document.getElementById('passwordMinLength').value = settings.security.passwordMinLength || '8';
+                document.getElementById('requireMixedCase').checked = settings.security.requireMixedCase !== false;
+                document.getElementById('requireNumbers').checked = settings.security.requireNumbers !== false;
+                document.getElementById('requireSpecialChars').checked = settings.security.requireSpecialChars || false;
+                document.getElementById('sessionTimeout').value = settings.security.sessionTimeout || '30';
+                document.getElementById('maxLoginAttempts').value = settings.security.maxLoginAttempts || '5';
+                document.getElementById('enable2FA').checked = settings.security.enable2FA !== false;
+                document.getElementById('require2FAForAdmin').checked = settings.security.require2FAForAdmin || false;
+                document.getElementById('enableIPWhitelist').checked = settings.security.enableIPWhitelist || false;
+                document.getElementById('allowedIPs').value = settings.security.allowedIPs || '';
+                document.getElementById('enableAuditLog').checked = settings.security.enableAuditLog !== false;
+                document.getElementById('auditLogRetention').value = settings.security.auditLogRetention || '365';
+            }
+            
+            // Backup settings
+            if (settings.backup) {
+                document.getElementById('backupFrequency').value = settings.backup.frequency || 'daily';
+                document.getElementById('backupRetention').value = settings.backup.retention || '90';
+                document.getElementById('backupIncludeMedia').checked = settings.backup.includeMedia !== false;
+                document.getElementById('backupAutoDelete').checked = settings.backup.autoDelete || false;
+            }
+            
+            console.log('Settings loaded from localStorage');
+        } catch (e) {
+            console.error('Error loading settings:', e);
+        }
+    }
+    
+    // Set up partial restore options toggle
+    const partialRadio = document.querySelector('input[name="restoreType"][value="partial"]');
+    if (partialRadio) {
+        partialRadio.addEventListener('change', function() {
+            document.getElementById('partialRestoreOptions').style.display = this.checked ? 'block' : 'none';
+        });
+    }
+    
+    const fullRadio = document.querySelector('input[name="restoreType"][value="full"]');
+    if (fullRadio) {
+        fullRadio.addEventListener('change', function() {
+            document.getElementById('partialRestoreOptions').style.display = 'none';
+        });
+    }
+});
+
+// Configuration functions
+function configureStripe() {
+    alert('Opening Stripe configuration...\nIn a real application, this would redirect to Stripe setup.');
+}
+
+function configurePayPal() {
+    alert('Opening PayPal configuration...\nIn a real application, this would redirect to PayPal setup.');
+}
+
+function configureACH() {
+    alert('Opening A/Bank Transfer settings...');
+}
+
+function configureQuickBooks() {
+    alert('Opening QuickBooks configuration...');
+}
+
+function configureAnalytics() {
+    alert('Opening Google Analytics setup...');
+}
+
+function configureMaps() {
+    alert('Opening Google Maps configuration...');
+}
+
+function configureDropbox() {
+    alert('Opening Dropbox connection...');
+}
+
+function configureTwilio() {
+    alert('Opening Twilio settings...');
+}
+
+function configureCalendar() {
+    alert('Opening Google Calendar integration...');
+}
+
+function editTemplate(templateName) {
+    alert(`Editing ${templateName} template...\nIn a real application, this would open a rich text editor.`);
+}
+
+function addNewUser() {
+    const name = document.getElementById('newUserName').value;
+    const email = document.getElementById('newUserEmail').value;
+    const role = document.getElementById('newUserRole').value;
+    const password = document.getElementById('newUserPassword').value;
+    
+    if (!name || !email || !role || !password) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+    
+    alert(`Adding new user: ${name} (${email}) as ${role}\nIn a real application, this would create a new user account.`);
+    
+    // Clear form
+    document.getElementById('newUserName').value = '';
+    document.getElementById('newUserEmail').value = '';
+    document.getElementById('newUserRole').value = '';
+    document.getElementById('newUserPassword').value = '';
+}
+
+function regenerateAPIKey() {
+    if (confirm('Are you sure you want to regenerate the API key?\nExisting integrations using this key will stop working.')) {
+        // Generate a fake API key
+        const newKey = 'sk_live_' + Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+        document.getElementById('apiKey').textContent = newKey;
+        alert('API key regenerated successfully!\nMake sure to update any integrations using the old key.');
+    }
+}
+
+function createBackup() {
+    alert('Creating manual backup...\nThis may take a few minutes.');
+    setTimeout(() => {
+        alert('Backup created successfully!');
+    }, 1500);
+}
+
+function downloadBackup() {
+    alert('Downloading latest backup...\nIn a real application, this would download a ZIP file.');
+}
+
+function downloadBackupItem(id) {
+    alert(`Downloading backup ${id}...\nIn a real application, this would download the selected backup file.`);
+}
+
+function showRestoreModal() {
+    document.getElementById('restoreModal').classList.add('active');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+function performRestore() {
+    const fileInput = document.getElementById('backupFile');
+    if (!fileInput.files.length) {
+        alert('Please select a backup file.');
+        return;
+    }
+    
+    const restoreType = document.querySelector('input[name="restoreType"]:checked').value;
+    
+    if (confirm(`WARNING: This will ${restoreType === 'full' ? 'completely replace' : 'partially update'} your data.\n\nAre you absolutely sure you want to proceed?`)) {
+        alert('Restoring from backup...\nThis may take several minutes. Do not close the browser.');
+        setTimeout(() => {
+            closeModal('restoreModal');
+            alert('Restore completed successfully!');
+        }, 2000);
+    }
+}
+
+function resetAllSettings() {
+    if (confirm('WARNING: This will reset ALL settings to their default values.\n\nAre you sure you want to proceed?')) {
+        localStorage.removeItem('sotelo_settings');
+        location.reload();
+    }
+}
+
+function purgeOldData() {
+    if (confirm('WARNING: This will permanently delete old data (over 3 years old).\n\nAre you sure you want to proceed?')) {
+        alert('Purging old data...\nIn a real application, this would delete old records.');
+    }
+}
+
+function exportAllData() {
+    alert('Exporting all data...\nIn a real application, this would generate and download a complete data export.');
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('modal-overlay')) {
+        e.target.classList.remove('active');
+    }
+});
+
+// Close modal with ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+            modal.classList.remove('active');
+        });
+    }
+});
+</script>
+
+<style>
+/* Additional Styles for Settings Page */
+.settings-tabs {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.settings-section {
+    padding: 2rem;
+}
+
+.settings-section h3 {
+    color: #2c5aa0;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.settings-section h4 {
+    color: #444;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.logo-upload-section {
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+}
+
+.current-logo {
+    text-align: center;
+}
+
+.logo-circle.large {
+    width: 100px;
+    height: 100px;
+    font-size: 32px;
+    margin-bottom: 0.5rem;
+}
+
+.upload-area {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #f8fafc;
+}
+
+.upload-area:hover {
+    border-color: #2c5aa0;
+    background: #f0f5ff;
+}
+
+.upload-area i {
+    font-size: 2rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.upload-area p {
+    margin: 0;
+    font-weight: 500;
+    color: #333;
+}
+
+.upload-area small {
+    color: #666;
+}
+
+.payment-processors {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.processor-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.processor-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.processor-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    background: #2c5aa0;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.processor-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.processor-status {
+    font-size: 12px;
+    color: #10b981;
+}
+
+.processor-status:not(.connected) {
+    color: #666;
+}
+
+.input-with-suffix {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-suffix input {
+    flex: 1;
+    padding-right: 3rem;
+}
+
+.input-with-suffix span {
+    position: absolute;
+    right: 1rem;
+    color: #666;
+    font-size: 14px;
+}
+
+.email-templates {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.template-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #eaeaea;
+    border-radius: 6px;
+    background: #f8fafc;
+}
+
+.template-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.template-description {
+    font-size: 12px;
+    color: #666;
+}
+
+.notification-settings {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.notification-group h5 {
+    margin-bottom: 1rem;
+    color: #555;
+}
+
+.notification-item {
+    margin-bottom: 0.75rem;
+}
+
+.notification-item label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.users-list {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.user-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2c5aa0, #3a6bc5);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.user-email {
+    font-size: 14px;
+    color: #666;
+}
+
+.user-role {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #e0ebff;
+    color: #2c5aa0;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 0.25rem;
+}
+
+.permissions-table {
+    overflow-x: auto;
+}
+
+.permissions-table table {
+    min-width: 800px;
+}
+
+.permissions-table th {
+    text-align: center;
+    background: #f8fafc;
+}
+
+.permissions-table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.integrations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.integration-card {
+    border: 1px solid #eaeaea;
+    border-radius: 10px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.3s;
+    background: white;
+}
+
+.integration-card.connected {
+    border-color: #10b981;
+    background: #f0fdf4;
+}
+
+.integration-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.integration-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2c5aa0, #3a6bc5);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 1rem;
+}
+
+.integration-name {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.integration-status {
+    font-size: 12px;
+    color: #10b981;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.integration-description {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.api-key-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.api-key-display code {
+    flex: 1;
+    background: #f8fafc;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #eaeaea;
+    font-family: monospace;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.backup-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.backup-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.backup-list {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.backup-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #eaeaea;
+    border-radius: 6px;
+    background: #f8fafc;
+}
+
+.backup-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.backup-details {
+    font-size: 12px;
+    color: #666;
+}
+
+.danger-zone {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 2px solid #fee2e2;
+}
+
+.danger-zone h3 {
+    color: #ef4444;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.danger-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.btn-warning {
+    background: #f59e0b;
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #d97706;
+}
+
+.warning-box {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 6px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #92400e;
+}
+
+.warning-box i {
+    color: #f59e0b;
+}
+
+.restore-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.restore-options label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.checkbox-group {
+    display: grid;
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.tab-navigation {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding: 1rem 1rem 0 1rem;
+    background: #f8fafc;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.tab-btn {
+    padding: 0.75rem 1.5rem;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    font-weight: 500;
+    color: #666;
+    white-space: nowrap;
+    transition: all 0.3s;
+    border-bottom: none;
+    position: relative;
+    top: 1px;
+}
+
+.tab-btn:hover {
+    color: #2c5aa0;
+    background: #f0f5ff;
+}
+
+.tab-btn.active {
+    background: white;
+    color: #2c5aa0;
+    border-color: #2c5aa0;
+    border-bottom-color: white;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .settings-section {
+        padding: 1rem;
+    }
+    
+    .logo-upload-section {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: flex-start;
+    }
+    
+    .notification-settings {
+        grid-template-columns: 1fr;
+    }
+    
+    .integrations-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .backup-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .backup-actions {
+        flex-direction: column;
+    }
+    
+    .danger-actions {
+        flex-direction: column;
+    }
+    
+    .tab-navigation {
+        padding: 0.5rem;
+    }
+    
+    .tab-btn {
+        padding: 0.5rem 1rem;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .api-key-display {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+    
+    .api-key-display code {
+        text-align: center;
+    }
+    
+    .processor-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    
+    .user-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .user-info {
+        text-align: center;
+    }
+    
+    .integration-card {
+        padding: 1rem;
+    }
+}
+</style>
+</body>
+
+<!-- Mirrored from www.sotelomanagement.com/admin/admin_settings.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:30 GMT -->
+</html>

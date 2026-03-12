@@ -1,0 +1,1894 @@
+<!doctype html>
+<html lang="en">
+  <!-- Mirrored from www.sotelomanagement.com/app.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:15 GMT -->
+  <head>
+    <!-- <script src="main.js"></script> -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SOTELO MANAGEMENT LLC - Rental Application</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* Base styles matching index.html */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      body {
+        background-color: #f8f9fa;
+        color: #333333;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Header matching index.html */
+      header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 1rem 2rem;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2c5aa0 0%, #1d3a6e 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        box-shadow: 0 4px 12px rgba(44, 90, 160, 0.2);
+      }
+
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .company-name-header {
+        font-size: 22px;
+        font-weight: 700;
+        color: #1a1a1a;
+        letter-spacing: 0.5px;
+      }
+
+      .company-slogan-header {
+        font-size: 13px;
+        color: #666;
+        margin-top: 2px;
+        letter-spacing: 0.3px;
+      }
+
+      /* Navigation matching index.html */
+      nav {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 2rem;
+        margin: 0;
+        padding: 0;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: #444;
+        font-weight: 500;
+        font-size: 15px;
+        transition: color 0.3s;
+        position: relative;
+      }
+
+      .nav-links a:hover {
+        color: #2c5aa0;
+      }
+
+      .nav-links a.active {
+        color: #2c5aa0;
+        font-weight: 600;
+      }
+
+      .nav-links a.active::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: #2c5aa0;
+        border-radius: 2px;
+      }
+
+      /* Client Portal Button matching index.html */
+      .client-portal-btn {
+        background-color: #2c5aa0;
+        color: white;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        transition:
+          background-color 0.3s,
+          transform 0.2s;
+        box-shadow: 0 4px 12px rgba(44, 90, 160, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .client-portal-btn:hover {
+        background-color: #1d4a8a;
+        transform: translateY(-2px);
+      }
+
+      .client-portal-btn i {
+        font-size: 16px;
+      }
+
+      /* Main content container */
+      .container {
+        max-width: 1200px;
+        margin: 120px auto 60px;
+        padding: 0 20px;
+        width: 100%;
+      }
+
+      /* Property Input Section */
+      .property-input-section {
+        background-color: white;
+        border-radius: 12px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .property-input-section h1 {
+        color: #2c5aa0;
+        margin-bottom: 1rem;
+        font-size: 1.8rem;
+        font-weight: 600;
+      }
+
+      .property-input-section p {
+        color: #666;
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .input-row {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .form-group {
+        flex: 1;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #444;
+        font-weight: 500;
+        font-size: 14px;
+        text-align: left;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 16px;
+        transition:
+          border 0.3s,
+          box-shadow 0.3s;
+      }
+
+      .form-group input:focus {
+        border-color: #2c5aa0;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+      }
+
+      .submit-property-btn {
+        background-color: #2c5aa0;
+        color: white;
+        border: none;
+        padding: 14px 30px;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 1rem;
+      }
+
+      .submit-property-btn:hover {
+        background-color: #1d4a8a;
+      }
+
+      /* Property Info Display */
+      .property-info-section {
+        background-color: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+        display: none;
+      }
+
+      .property-info-section.active {
+        display: block;
+      }
+
+      .property-header {
+        background: linear-gradient(135deg, #2c5aa0 0%, #1d3a6e 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+      }
+
+      .property-header h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .property-details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .details-card {
+        padding: 1.5rem;
+        border-radius: 8px;
+        border-left: 4px solid #2c5aa0;
+        background-color: #f9f9f9;
+      }
+
+      .details-card h3 {
+        color: #2c5aa0;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+      }
+
+      .details-card ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .details-card li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .details-card li:last-child {
+        border-bottom: none;
+      }
+
+      /* Application Button */
+      .application-btn-container {
+        text-align: center;
+        margin: 2rem 0;
+      }
+
+      .open-application-btn {
+        background-color: #2c5aa0;
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 6px;
+        cursor: pointer;
+        transition:
+          background-color 0.3s,
+          transform 0.2s;
+        box-shadow: 0 4px 12px rgba(44, 90, 160, 0.2);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .open-application-btn:hover {
+        background-color: #1d4a8a;
+        transform: translateY(-2px);
+      }
+
+      /* Application Modal */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        padding: 20px;
+      }
+
+      .modal-overlay.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background-color: white;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        animation: modalSlideIn 0.3s ease-out;
+      }
+
+      @keyframes modalSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-header {
+        background-color: #2c5aa0;
+        color: white;
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+
+      .modal-header h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 28px;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background-color 0.3s;
+      }
+
+      .close-modal:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .modal-body {
+        padding: 2rem;
+      }
+
+      /* Application Form Styles */
+      .application-form {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .form-section {
+        background-color: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border-left: 4px solid #2c5aa0;
+      }
+
+      .form-section h3 {
+        color: #2c5aa0;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+      }
+
+      .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .form-group-full {
+        flex: 1;
+        min-width: 250px;
+      }
+
+      .form-group-full label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #444;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .form-group-full label.required::after {
+        content: " *";
+        color: #e74c3c;
+      }
+
+      .form-group-full input,
+      .form-group-full select,
+      .form-group-full textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 16px;
+        transition:
+          border 0.3s,
+          box-shadow 0.3s;
+      }
+
+      .form-group-full input:focus,
+      .form-group-full select:focus,
+      .form-group-full textarea:focus {
+        border-color: #2c5aa0;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+      }
+
+      .form-group-full small {
+        display: block;
+        margin-top: 5px;
+        color: #666;
+        font-size: 0.85rem;
+      }
+
+      /* Occupants section */
+      .occupants-section {
+        background-color: #f0f7ff;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+      }
+
+      .add-occupant-btn {
+        background-color: #2c5aa0;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+
+      .add-occupant-btn:hover {
+        background-color: #1d4a8a;
+      }
+
+      .remove-occupant-btn {
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+
+      .remove-occupant-btn:hover {
+        background-color: #c0392b;
+      }
+
+      /* Disclosures */
+      .disclosure-section {
+        background-color: #f0f7ff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border-left: 4px solid #2c5aa0;
+      }
+
+      .disclosure-content {
+        max-height: 200px;
+        overflow-y: auto;
+        padding: 1rem;
+        background-color: white;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .terms-agreement {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .terms-agreement input {
+        margin-top: 5px;
+      }
+
+      /* Submit button */
+      .submit-application-btn {
+        background-color: #2c5aa0;
+        color: white;
+        border: none;
+        padding: 16px 40px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 6px;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.3s;
+        margin-top: 20px;
+      }
+
+      .submit-application-btn:hover {
+        background-color: #1d4a8a;
+      }
+
+      /* Portal Login Modal Specific Styles */
+      #portalLoginModal .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      #portalLoginModal .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #444;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      #portalLoginModal .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 16px;
+        transition:
+          border 0.3s,
+          box-shadow 0.3s;
+      }
+
+      #portalLoginModal .form-group input:focus {
+        border-color: #2c5aa0;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+      }
+
+      .modal-btn {
+        width: 100%;
+        background-color: #2c5aa0;
+        color: white;
+        border: none;
+        padding: 14px;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 10px;
+      }
+
+      .modal-btn:hover {
+        background-color: #1d4a8a;
+      }
+
+      /* Footer matching index.html */
+      footer {
+        background-color: #1a1a1a;
+        color: #ddd;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        margin-top: auto;
+      }
+
+      .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .footer-logo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .footer-company-name {
+        font-size: 22px;
+        font-weight: 700;
+        color: white;
+      }
+
+      .footer-slogan {
+        font-size: 14px;
+        color: #aaa;
+      }
+
+      .copyright {
+        font-size: 14px;
+        color: #aaa;
+        margin-top: 1rem;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 1rem;
+      }
+
+      .social-links a {
+        color: #aaa;
+        font-size: 20px;
+        transition: color 0.3s;
+      }
+
+      .social-links a:hover {
+        color: #2c5aa0;
+      }
+
+      /* Mobile menu toggle */
+      .mobile-menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #444;
+        cursor: pointer;
+        padding: 8px;
+      }
+
+      /* Mobile responsiveness */
+      @media (max-width: 768px) {
+        header {
+          padding: 1rem;
+        }
+
+        .header-container {
+          flex-wrap: wrap;
+        }
+
+        .mobile-menu-toggle {
+          display: block;
+        }
+
+        nav {
+          width: 100%;
+          order: 3;
+          margin-top: 1rem;
+          display: none;
+        }
+
+        nav.active {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+
+        .nav-links {
+          flex-direction: column;
+          gap: 1rem;
+          width: 100%;
+        }
+
+        .client-portal-btn {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .container {
+          margin: 100px auto 40px;
+          padding: 0 15px;
+        }
+
+        .property-input-section {
+          padding: 1.5rem;
+        }
+
+        .input-row {
+          flex-direction: column;
+        }
+
+        .property-details-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .modal-body {
+          padding: 1.5rem;
+        }
+      }
+
+      /* Modal Results */
+      .result-modal {
+        max-width: 500px;
+      }
+
+      .modal-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+      }
+
+      .approved .modal-icon {
+        color: #2ecc71;
+      }
+
+      .denied .modal-icon {
+        color: #e74c3c;
+      }
+
+      .next-steps {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        text-align: left;
+      }
+
+      .next-steps h5 {
+        color: #2c5aa0;
+        margin-bottom: 10px;
+      }
+
+      .next-steps ul {
+        padding-left: 20px;
+        margin-bottom: 0;
+      }
+
+      .next-steps li {
+        margin-bottom: 8px;
+      }
+
+      /* Property database (simulated) */
+      .property-database {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="header-container">
+        <div class="logo-container">
+          <div class="logo-circle">SM</div>
+          <div class="logo-text">
+            <div class="company-name-header">SOTELO MANAGEMENT LLC</div>
+            <div class="company-slogan-header">
+              Wealth. Realty. Management Servicer
+            </div>
+          </div>
+        </div>
+
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+          <i class="fas fa-bars"></i>
+        </button>
+
+        <nav id="mainNav">
+          <ul class="nav-links">
+            <li><a href="index-2.html" class="active">HOME</a></li>
+            <li>
+              <a href="#" id="rentalApplicationLink">RENTAL APPLICATION</a>
+            </li>
+          </ul>
+          <button class="client-portal-btn" id="openPortalModal">
+            <i class="fas fa-user-circle"></i>
+            Client Portal
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+      <!-- Property Input Section -->
+      <div class="property-input-section">
+        <h1><i class="fas fa-home"></i> Rental Application</h1>
+        <p>
+          Enter the property address or listing number to begin your rental
+          application
+        </p>
+
+        <form id="propertyInputForm">
+          <div class="input-group">
+            <div class="input-row">
+              <div class="form-group">
+                <label for="propertyAddress">Property Address</label>
+                <input
+                  type="text"
+                  id="propertyAddress"
+                  placeholder="e.g., 1234 Main Street, City, State"
+                />
+              </div>
+            </div>
+
+            <div class="input-row">
+              <div class="form-group">
+                <label for="listingNumber">Listing Number (Optional)</label>
+                <input
+                  type="text"
+                  id="listingNumber"
+                  placeholder="e.g., SMP-2024-001"
+                />
+              </div>
+            </div>
+
+            <button type="submit" class="submit-property-btn">
+              <i class="fas fa-search"></i> Find Property & Start Application
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Property Info Display -->
+      <div class="property-info-section" id="propertyInfoSection">
+        <div class="property-header">
+          <h2 id="propertyAddressDisplay">1234 Main Street, California</h2>
+          <p id="propertyRentDisplay">$3,450/month • Minimum 12-month lease</p>
+        </div>
+
+        <div class="property-details-grid">
+          <div class="details-card">
+            <h3><i class="fas fa-check-circle"></i> Included in Rent</h3>
+            <ul>
+              <li><i class="fas fa-leaf"></i> Bi-weekly gardening service</li>
+              <li><i class="fas fa-trash"></i> Trash service (3 cans)</li>
+              <li>- General Trash</li>
+              <li>- Green Waste</li>
+              <li>- Recyclables</li>
+            </ul>
+          </div>
+
+          <div class="details-card">
+            <h3><i class="fas fa-dollar-sign"></i> Move-in Costs</h3>
+            <ul>
+              <li>First Month's Rent: <strong>$3,450</strong></li>
+              <li>Last Month's Rent: <strong>$3,450</strong></li>
+              <li>Security Deposit: <strong>$2,450</strong></li>
+              <li
+                style="
+                  background-color: #e8f4fc;
+                  padding: 10px;
+                  border-radius: 5px;
+                  margin-top: 10px;
+                "
+              >
+                Total Due (without pet): <strong>$9,350</strong>
+              </li>
+              <li>
+                Pet Deposit (if applicable): Additional (TBD upon approval)
+              </li>
+            </ul>
+          </div>
+
+          <div class="details-card">
+            <h3><i class="fas fa-clipboard-list"></i> Policies</h3>
+            <ul>
+              <li><i class="fas fa-clock"></i> Minimum lease: 12 months</li>
+              <li>
+                <i class="fas fa-shower"></i> Tenant pays: Water, Electricity,
+                Gas, Cable/Internet
+              </li>
+              <li>
+                <i class="fas fa-paw"></i> Pets considered with additional pet
+                deposit
+              </li>
+              <li>
+                <i class="fas fa-smoking-ban"></i> No smoking inside the home
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="application-btn-container">
+          <button class="open-application-btn" id="openApplicationBtn">
+            <i class="fas fa-file-alt"></i> Start Rental Application
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Portal Login Modal -->
+    <div class="modal-overlay" id="portalLoginModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Client Portal Login</h2>
+          <button class="close-modal" id="closePortalModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="loginForm">
+            <div class="form-group">
+              <label for="portalUsername">Username or Email</label>
+              <input
+                type="text"
+                id="portalUsername"
+                placeholder="Enter your username or email"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="portalPassword">Password</label>
+              <input
+                type="password"
+                id="portalPassword"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+            <button type="submit" class="modal-btn">Login to Portal</button>
+          </form>
+          <div class="modal-footer">
+            <p>
+              Need help accessing your account? Contact
+              <a href="mailto:support@sotelomanage.com"
+                >support@sotelomanage.com</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rental Application Modal -->
+    <div class="modal-overlay" id="applicationModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="applicationModalTitle">Rental Application</h2>
+          <button class="close-modal" id="closeApplicationModal">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="rentalApplicationForm">
+            <div class="form-section">
+              <h3><i class="fas fa-user"></i> Primary Applicant Information</h3>
+              <div class="form-row">
+                <div class="form-group-full">
+                  <label for="firstName" class="required">First Name</label>
+                  <input type="text" id="firstName" name="firstName" required />
+                </div>
+                <div class="form-group-full">
+                  <label for="lastName" class="required">Last Name</label>
+                  <input type="text" id="lastName" name="lastName" required />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group-full">
+                  <label for="email" class="required">Email Address</label>
+                  <input type="email" id="email" name="email" required />
+                </div>
+                <div class="form-group-full">
+                  <label for="phone" class="required">Phone Number</label>
+                  <input type="tel" id="phone" name="phone" required />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group-full">
+                  <label for="ssn" class="required"
+                    >Social Security Number (Last 4 digits)</label
+                  >
+                  <input
+                    type="text"
+                    id="ssn"
+                    name="ssn"
+                    pattern="\d{4}"
+                    maxlength="4"
+                    required
+                  />
+                  <small
+                    >Required for credit check. We only need the last 4
+                    digits.</small
+                  >
+                </div>
+                <div class="form-group-full">
+                  <label for="dob" class="required">Date of Birth</label>
+                  <input type="date" id="dob" name="dob" required />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>
+                <i class="fas fa-briefcase"></i> Employment & Income Information
+              </h3>
+              <div class="form-row">
+                <div class="form-group-full">
+                  <label for="employer" class="required"
+                    >Current Employer</label
+                  >
+                  <input type="text" id="employer" name="employer" required />
+                </div>
+                <div class="form-group-full">
+                  <label for="jobTitle" class="required"
+                    >Job Title/Position</label
+                  >
+                  <input type="text" id="jobTitle" name="jobTitle" required />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group-full">
+                  <label for="employmentMonths" class="required"
+                    >Length of Employment (months)</label
+                  >
+                  <input
+                    type="number"
+                    id="employmentMonths"
+                    name="employmentMonths"
+                    min="0"
+                    required
+                  />
+                </div>
+                <div class="form-group-full">
+                  <label for="monthlyIncome" class="required"
+                    >Gross Monthly Income ($)</label
+                  >
+                  <input
+                    type="number"
+                    id="monthlyIncome"
+                    name="monthlyIncome"
+                    min="0"
+                    step="100"
+                    required
+                  />
+                  <small
+                    >Must be at least 2.5 times monthly rent to qualify</small
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3><i class="fas fa-history"></i> Rental History</h3>
+              <div class="form-row">
+                <div class="form-group-full">
+                  <label for="currentAddress" class="required"
+                    >Current Address</label
+                  >
+                  <input
+                    type="text"
+                    id="currentAddress"
+                    name="currentAddress"
+                    required
+                  />
+                </div>
+                <div class="form-group-full">
+                  <label for="currentLandlord" class="required"
+                    >Current Landlord/Property Manager</label
+                  >
+                  <input
+                    type="text"
+                    id="currentLandlord"
+                    name="currentLandlord"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group-full">
+                  <label for="landlordPhone" class="required"
+                    >Landlord Phone Number</label
+                  >
+                  <input
+                    type="tel"
+                    id="landlordPhone"
+                    name="landlordPhone"
+                    required
+                  />
+                </div>
+                <div class="form-group-full">
+                  <label for="monthsAtAddress" class="required"
+                    >Months at Current Address</label
+                  >
+                  <input
+                    type="number"
+                    id="monthsAtAddress"
+                    name="monthsAtAddress"
+                    min="0"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3><i class="fas fa-users"></i> Occupants Information</h3>
+              <div class="form-row">
+                <div class="form-group-full">
+                  <label for="totalOccupants" class="required"
+                    >Total Number of Occupants (including yourself)</label
+                  >
+                  <input
+                    type="number"
+                    id="totalOccupants"
+                    name="totalOccupants"
+                    min="1"
+                    max="10"
+                    required
+                  />
+                  <small>California maximum: 2 persons per bedroom + 1</small>
+                </div>
+              </div>
+
+              <div id="occupantsContainer" class="occupants-section">
+                <h4 style="margin-bottom: 15px">
+                  Occupant Details (excluding primary applicant)
+                </h4>
+                <div class="form-row occupant-row">
+                  <div class="form-group-full">
+                    <label>Full Name</label>
+                    <input
+                      type="text"
+                      name="occupantName[]"
+                      placeholder="Occupant name"
+                    />
+                  </div>
+                  <div class="form-group-full">
+                    <label>Relationship</label>
+                    <input
+                      type="text"
+                      name="occupantRelationship[]"
+                      placeholder="Spouse, child, etc."
+                    />
+                  </div>
+                  <div class="form-group-full">
+                    <label>Age</label>
+                    <input
+                      type="number"
+                      name="occupantAge[]"
+                      min="0"
+                      max="120"
+                      placeholder="Age"
+                    />
+                  </div>
+                  <div
+                    style="
+                      min-width: 50px;
+                      display: flex;
+                      align-items: flex-end;
+                    "
+                  >
+                    <button type="button" class="remove-occupant-btn" disabled>
+                      ×
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                class="add-occupant-btn"
+                id="addOccupantBtn"
+              >
+                <i class="fas fa-plus"></i> Add Another Occupant
+              </button>
+            </div>
+
+            <div class="form-section">
+              <h3><i class="fas fa-paw"></i> Pet Information</h3>
+              <div class="form-row">
+                <div class="form-group-full">
+                  <label for="pets">Do you have any pets?</label>
+                  <select id="pets" name="pets" required>
+                    <option value="">Select</option>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="petDetailsSection" style="display: none">
+                <div class="form-row">
+                  <div class="form-group-full">
+                    <label for="petType">Type of Pet</label>
+                    <input
+                      type="text"
+                      id="petType"
+                      name="petType"
+                      placeholder="Dog, cat, etc."
+                    />
+                  </div>
+                  <div class="form-group-full">
+                    <label for="petBreed">Breed</label>
+                    <input type="text" id="petBreed" name="petBreed" />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group-full">
+                    <label for="petWeight">Weight (lbs)</label>
+                    <input
+                      type="number"
+                      id="petWeight"
+                      name="petWeight"
+                      min="0"
+                    />
+                  </div>
+                  <div class="form-group-full">
+                    <label for="petAge">Age</label>
+                    <input type="number" id="petAge" name="petAge" min="0" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="disclosure-section">
+              <h3>
+                <i class="fas fa-file-contract"></i> Required California
+                Disclosures
+              </h3>
+              <div class="disclosure-content">
+                <p>
+                  <strong>Megan's Law Disclosure:</strong> Pursuant to Section
+                  290.46 of the California Penal Code, information about
+                  specified registered sex offenders is available to the public
+                  via an Internet Web site maintained by the Department of
+                  Justice at www.meganslaw.ca.gov.
+                </p>
+
+                <p>
+                  <strong>Credit Check Authorization:</strong> By submitting
+                  this application, you authorize us to obtain your credit
+                  report and verify the information provided. Application fee:
+                  $52.46 (California maximum).
+                </p>
+
+                <p>
+                  <strong>Fair Housing:</strong> We comply with all federal,
+                  state, and local fair housing laws. We do not discriminate
+                  based on race, color, religion, sex, national origin, familial
+                  status, disability, sexual orientation, gender identity,
+                  source of income, or any other protected class.
+                </p>
+              </div>
+
+              <div class="terms-agreement">
+                <input
+                  type="checkbox"
+                  id="agreeTerms"
+                  name="agreeTerms"
+                  required
+                />
+                <label for="agreeTerms" class="required"
+                  >I have read and understand all disclosures above. I certify
+                  that all information provided in this application is true and
+                  complete. I authorize verification of all information
+                  provided, including credit, criminal, employment, and rental
+                  history checks.</label
+                >
+              </div>
+
+              <div class="terms-agreement">
+                <input type="checkbox" id="agreeFee" name="agreeFee" required />
+                <label for="agreeFee" class="required"
+                  >I understand there is a non-refundable application fee of
+                  $52.46 (California maximum) that will be required if my
+                  application proceeds to the screening stage.</label
+                >
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="submit-application-btn"
+              id="submitApplicationBtn"
+            >
+              <i class="fas fa-paper-plane"></i> Submit Rental Application
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Approval Modal -->
+    <div class="modal-overlay" id="approvalModal">
+      <div class="modal-content result-modal">
+        <div class="modal-header">
+          <h3>Application Status</h3>
+        </div>
+        <div class="modal-body approved">
+          <div class="modal-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h4>Preliminary Approval</h4>
+          <p>
+            Based on the information provided, you appear to meet our
+            preliminary qualifications.
+          </p>
+          <div class="next-steps">
+            <h5>
+              Your application has been forwarded to the property manager.
+            </h5>
+            <ul>
+              <li>
+                You will receive an email with instructions to pay the $52.46
+                application fee
+              </li>
+              <li>
+                After payment, we will conduct credit and background checks
+              </li>
+              <li>We will contact your current landlord for reference</li>
+              <li>
+                If approved, you'll receive lease documents within 3 business
+                days
+              </li>
+            </ul>
+          </div>
+          <button
+            class="submit-application-btn"
+            id="closeApprovalBtn"
+            style="margin-top: 20px"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Denial Modal -->
+    <div class="modal-overlay" id="denialModal">
+      <div class="modal-content result-modal">
+        <div class="modal-header">
+          <h3>Application Status</h3>
+        </div>
+        <div class="modal-body denied">
+          <div class="modal-icon">
+            <i class="fas fa-times-circle"></i>
+          </div>
+          <h4>Not Qualified</h4>
+          <p>
+            Based on the information provided, you do not meet our minimum
+            qualifications at this time.
+          </p>
+          <div class="next-steps">
+            <h5 id="denialReason">Income does not meet minimum requirement</h5>
+            <p style="margin-top: 10px">
+              If you believe this decision was made in error, please contact us
+              at <strong>support@sotelomanage.com</strong>.
+            </p>
+          </div>
+          <button
+            class="submit-application-btn"
+            id="closeDenialBtn"
+            style="margin-top: 20px"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-container">
+        <div class="footer-logo">
+          <div class="footer-company-name">SOTELO MANAGEMENT LLC</div>
+          <div class="footer-slogan">Wealth. Realty. Management Servicer</div>
+        </div>
+
+        <div class="copyright">
+          &copy; 2026 SOTELO MANAGEMENT LLC. All rights reserved.
+        </div>
+
+        <div class="social-links">
+          <a href="#" aria-label="Facebook"
+            ><i class="fab fa-facebook-f"></i
+          ></a>
+          <a href="#" aria-label="Instagram"
+            ><i class="fab fa-instagram"></i
+          ></a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Hidden property database -->
+    <div class="property-database">
+      <!-- This simulates a property database lookup -->
+      <div
+        data-address="1234 main street, california"
+        data-listing="SMP-2024-001"
+      >
+        <div class="property-address">1234 Main Street, California</div>
+        <div class="property-rent">$3,450/month • Minimum 12-month lease</div>
+      </div>
+      <div
+        data-address="5678 oak avenue, los angeles, ca"
+        data-listing="SMP-2024-002"
+      >
+        <div class="property-address">5678 Oak Avenue, Los Angeles, CA</div>
+        <div class="property-rent">$2,850/month • Minimum 12-month lease</div>
+      </div>
+      <div
+        data-address="9101 pine road, san francisco"
+        data-listing="SMP-2024-003"
+      >
+        <div class="property-address">9101 Pine Road, San Francisco</div>
+        <div class="property-rent">$4,200/month • Minimum 12-month lease</div>
+      </div>
+    </div>
+
+    <script>
+      // DOM Elements
+      const propertyInputForm = document.getElementById("propertyInputForm");
+      const propertyInfoSection = document.getElementById(
+        "propertyInfoSection",
+      );
+      const propertyAddressDisplay = document.getElementById(
+        "propertyAddressDisplay",
+      );
+      const propertyRentDisplay = document.getElementById(
+        "propertyRentDisplay",
+      );
+      const openApplicationBtn = document.getElementById("openApplicationBtn");
+      const applicationModal = document.getElementById("applicationModal");
+      const closeApplicationModal = document.getElementById(
+        "closeApplicationModal",
+      );
+      const applicationModalTitle = document.getElementById(
+        "applicationModalTitle",
+      );
+      const rentalApplicationForm = document.getElementById(
+        "rentalApplicationForm",
+      );
+      const submitApplicationBtn = document.getElementById(
+        "submitApplicationBtn",
+      );
+      const approvalModal = document.getElementById("approvalModal");
+      const denialModal = document.getElementById("denialModal");
+      const closeApprovalBtn = document.getElementById("closeApprovalBtn");
+      const closeDenialBtn = document.getElementById("closeDenialBtn");
+      const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+      const mainNav = document.getElementById("mainNav");
+      const portalLoginModal = document.getElementById("portalLoginModal");
+      const openPortalModal = document.getElementById("openPortalModal");
+      const closePortalModal = document.getElementById("closePortalModal");
+      const loginForm = document.getElementById("loginForm");
+      const rentalApplicationLink = document.getElementById(
+        "rentalApplicationLink",
+      );
+
+      // Property database simulation
+      const propertyDatabase = [
+        {
+          address: "1234 main street, california",
+          listing: "SMP-2024-001",
+          displayAddress: "1234 Main Street, California",
+          rent: "$3,450/month • Minimum 12-month lease",
+        },
+        {
+          address: "5678 oak avenue, los angeles, ca",
+          listing: "SMP-2024-002",
+          displayAddress: "5678 Oak Avenue, Los Angeles, CA",
+          rent: "$2,850/month • Minimum 12-month lease",
+        },
+        {
+          address: "9101 pine road, san francisco",
+          listing: "SMP-2024-003",
+          displayAddress: "9101 Pine Road, San Francisco",
+          rent: "$4,200/month • Minimum 12-month lease",
+        },
+      ];
+
+      // Current property data
+      let currentProperty = null;
+
+      // Property input form submission
+      propertyInputForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const addressInput = document
+          .getElementById("propertyAddress")
+          .value.trim()
+          .toLowerCase();
+        const listingInput = document
+          .getElementById("listingNumber")
+          .value.trim()
+          .toUpperCase();
+
+        if (!addressInput && !listingInput) {
+          alert("Please enter either a property address or listing number.");
+          return;
+        }
+
+        // Find property in database
+        let foundProperty = null;
+
+        if (listingInput) {
+          foundProperty = propertyDatabase.find(
+            (prop) => prop.listing === listingInput,
+          );
+        }
+
+        if (!foundProperty && addressInput) {
+          foundProperty = propertyDatabase.find(
+            (prop) =>
+              prop.address.includes(addressInput) ||
+              addressInput.includes(prop.address),
+          );
+        }
+
+        if (foundProperty) {
+          currentProperty = foundProperty;
+          propertyAddressDisplay.textContent = foundProperty.displayAddress;
+          propertyRentDisplay.textContent = foundProperty.rent;
+          propertyInfoSection.classList.add("active");
+
+          // Update modal title
+          applicationModalTitle.textContent = `Rental Application - ${foundProperty.displayAddress}`;
+
+          // Scroll to property info
+          propertyInfoSection.scrollIntoView({ behavior: "smooth" });
+        } else {
+          // Show generic property info if not found
+          currentProperty = {
+            displayAddress: addressInput || "Property",
+            rent: "Contact for pricing",
+          };
+
+          propertyAddressDisplay.textContent = addressInput || "Property";
+          propertyRentDisplay.textContent = "Contact for pricing";
+          propertyInfoSection.classList.add("active");
+          applicationModalTitle.textContent = `Rental Application - ${addressInput || "Property"}`;
+          propertyInfoSection.scrollIntoView({ behavior: "smooth" });
+        }
+      });
+
+      // Open application modal
+      openApplicationBtn.addEventListener("click", function () {
+        if (!currentProperty) {
+          alert("Please first enter a property address or listing number.");
+          return;
+        }
+
+        applicationModal.classList.add("active");
+        document.body.style.overflow = "hidden";
+      });
+
+      // Close application modal
+      closeApplicationModal.addEventListener("click", function () {
+        applicationModal.classList.remove("active");
+        document.body.style.overflow = "auto";
+      });
+
+      // Application form functionality
+      // (Note: I've removed the vehicle information section as requested)
+
+      // Occupant management
+      const addOccupantBtn = document.getElementById("addOccupantBtn");
+      const occupantsContainer = document.getElementById("occupantsContainer");
+      const totalOccupantsInput = document.getElementById("totalOccupants");
+
+      addOccupantBtn.addEventListener("click", function () {
+        const occupantCount = document.querySelectorAll(".occupant-row").length;
+        if (occupantCount >= 9) {
+          alert("Maximum of 9 additional occupants allowed.");
+          return;
+        }
+
+        const newRow = document.createElement("div");
+        newRow.className = "form-row occupant-row";
+        newRow.innerHTML = `
+                <div class="form-group-full">
+                    <label>Full Name</label>
+                    <input type="text" name="occupantName[]" placeholder="Occupant name">
+                </div>
+                <div class="form-group-full">
+                    <label>Relationship</label>
+                    <input type="text" name="occupantRelationship[]" placeholder="Spouse, child, etc.">
+                </div>
+                <div class="form-group-full">
+                    <label>Age</label>
+                    <input type="number" name="occupantAge[]" min="0" max="120" placeholder="Age">
+                </div>
+                <div style="min-width: 50px; display: flex; align-items: flex-end;">
+                    <button type="button" class="remove-occupant-btn">×</button>
+                </div>
+            `;
+
+        occupantsContainer.appendChild(newRow);
+
+        // Enable remove button if there are multiple rows
+        const removeButtons = document.querySelectorAll(".remove-occupant-btn");
+        if (removeButtons.length > 1) {
+          removeButtons.forEach((btn) => (btn.disabled = false));
+        }
+      });
+
+      // Remove occupant row
+      occupantsContainer.addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-occupant-btn")) {
+          const rows = document.querySelectorAll(".occupant-row");
+          if (rows.length > 1) {
+            e.target.closest(".occupant-row").remove();
+
+            // Disable remove button if only one row left
+            const remainingButtons = document.querySelectorAll(
+              ".remove-occupant-btn",
+            );
+            if (remainingButtons.length === 1) {
+              remainingButtons[0].disabled = true;
+            }
+          }
+        }
+      });
+
+      // Pet details toggle
+      const petsSelect = document.getElementById("pets");
+      const petDetailsSection = document.getElementById("petDetailsSection");
+
+      petsSelect.addEventListener("change", function () {
+        if (this.value === "yes") {
+          petDetailsSection.style.display = "block";
+        } else {
+          petDetailsSection.style.display = "none";
+        }
+      });
+
+      // Application form submission
+      rentalApplicationForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        // Disable submit button
+        submitApplicationBtn.disabled = true;
+        submitApplicationBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+        // Collect form data
+        const formData = new FormData(this);
+        const applicationData = Object.fromEntries(formData);
+
+        // Calculate total income
+        const monthlyIncome = parseFloat(applicationData.monthlyIncome) || 0;
+        const requiredIncome = 3450 * 2.5; // $8,625 for example property
+
+        // Check qualifications (simplified)
+        const isQualified = monthlyIncome >= requiredIncome;
+
+        // Simulate processing delay
+        setTimeout(() => {
+          if (isQualified) {
+            approvalModal.classList.add("active");
+            applicationModal.classList.remove("active");
+          } else {
+            document.getElementById("denialReason").textContent =
+              `Income ($${monthlyIncome.toLocaleString()}) does not meet minimum requirement of $${requiredIncome.toLocaleString()}/month (2.5x rent)`;
+            denialModal.classList.add("active");
+            applicationModal.classList.remove("active");
+          }
+
+          // Reset form button
+          submitApplicationBtn.disabled = false;
+          submitApplicationBtn.innerHTML =
+            '<i class="fas fa-paper-plane"></i> Submit Rental Application';
+        }, 1500);
+      });
+
+      // Close modals
+      closeApprovalBtn.addEventListener("click", function () {
+        approvalModal.classList.remove("active");
+        document.body.style.overflow = "auto";
+        rentalApplicationForm.reset();
+      });
+
+      closeDenialBtn.addEventListener("click", function () {
+        denialModal.classList.remove("active");
+        document.body.style.overflow = "auto";
+      });
+
+      // Mobile menu toggle
+      mobileMenuToggle.addEventListener("click", function () {
+        mainNav.classList.toggle("active");
+
+        // Change icon
+        const icon = this.querySelector("i");
+        if (mainNav.classList.contains("active")) {
+          icon.classList.remove("fa-bars");
+          icon.classList.add("fa-times");
+        } else {
+          icon.classList.remove("fa-times");
+          icon.classList.add("fa-bars");
+        }
+      });
+
+      // Portal modal functionality
+      openPortalModal.addEventListener("click", function () {
+        portalLoginModal.classList.add("active");
+        document.body.style.overflow = "hidden";
+      });
+
+      closePortalModal.addEventListener("click", function () {
+        portalLoginModal.classList.remove("active");
+        document.body.style.overflow = "auto";
+      });
+
+      // Login form submission
+      loginForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const username = document.getElementById("portalUsername").value.trim();
+        const password = document.getElementById("portalPassword").value;
+
+        // User credentials (same as index.html)
+        const testUsername = "test";
+        const adminUsername = "admin";
+        const userPassword = "password";
+
+        // Check if credentials match
+        if (
+          (username === testUsername || username === adminUsername) &&
+          password === userPassword
+        ) {
+          // Success: Show welcome message
+          let redirectUrl = "renter/renter_portal.html";
+          let userType = "renter";
+
+          // Admin gets different redirect
+          if (username === adminUsername) {
+            redirectUrl = "admin/admin_dashboard.html";
+            userType = "admin";
+          }
+
+          alert(`Welcome, ${username} (${userType})! Redirecting to portal...`);
+          loginForm.reset();
+          portalLoginModal.classList.remove("active");
+          document.body.style.overflow = "auto";
+
+          // Redirect to appropriate portal after a brief delay
+          setTimeout(function () {
+            window.location.href = redirectUrl;
+          }, 500);
+        } else {
+          // Invalid credentials
+          alert(
+            "Invalid username or password. Please try again.\n\nFor demo purposes, use:\nUsername: test or admin\nPassword: password",
+          );
+
+          // Clear password field for security
+          document.getElementById("portalPassword").value = "";
+
+          // Focus back on username field
+          document.getElementById("portalUsername").focus();
+        }
+      });
+
+      // Close modals when clicking outside
+      document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("modal-overlay")) {
+          document
+            .querySelectorAll(".modal-overlay.active")
+            .forEach((modal) => {
+              modal.classList.remove("active");
+            });
+          document.body.style.overflow = "auto";
+        }
+      });
+
+      // Close modals with Escape key
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          document
+            .querySelectorAll(".modal-overlay.active")
+            .forEach((modal) => {
+              modal.classList.remove("active");
+            });
+          document.body.style.overflow = "auto";
+        }
+      });
+
+      // Rental application link click
+      rentalApplicationLink.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        // If already on application page, scroll to top
+        if (window.location.pathname.includes("app.html")) {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          // Otherwise, redirect to application page
+          window.location.href = "app.html";
+        }
+      });
+
+      // Set minimum date for DOB (18 years old)
+      const today = new Date();
+      const minDate = new Date(
+        today.getFullYear() - 18,
+        today.getMonth(),
+        today.getDate(),
+      );
+      document.getElementById("dob").max = minDate.toISOString().split("T")[0];
+
+      // Initialize the page with URL parameters
+      function initializeFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const address = urlParams.get("address");
+        const listing = urlParams.get("listing");
+
+        if (address || listing) {
+          document.getElementById("propertyAddress").value = address || "";
+          document.getElementById("listingNumber").value = listing || "";
+
+          // Trigger form submission
+          const submitEvent = new Event("submit", { cancelable: true });
+          propertyInputForm.dispatchEvent(submitEvent);
+        }
+      }
+
+      // Initialize page
+      initializeFromURL();
+    </script>
+  </body>
+
+  <!-- Mirrored from www.sotelomanagement.com/app.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:16 GMT -->
+</html>

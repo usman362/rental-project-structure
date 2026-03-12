@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from www.sotelomanagement.com/admin/admin_payments.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:30 GMT -->
+<head><script src="main.html"></script>
+<meta charset="UTF-8">
+<title>SOTELO MANAGEMENT - Payments</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Add these links in the <head><script src="main.js"></script> section -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+
+<!-- Admin Header -->
+<header class="admin-header">
+    <div class="logo-container">
+        <div class="logo-circle">SM</div>
+        <div class="company-name">SOTELO MANAGEMENT LLC - Payments</div>
+    </div>
+    <div class="admin-user">
+        <span>Admin User</span>
+        <div class="admin-avatar">A</div>
+    </div>
+</header>
+
+<div class="admin-container">
+    <!-- Sidebar -->
+    <nav class="admin-sidebar">
+        <div class="sidebar-title">Main Navigation</div>
+        <ul class="sidebar-menu">
+            <li><a href="admin_dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="admin_renters.html"><i class="fas fa-users"></i> Renters</a></li>
+            <li><a href="admin_applications.html"><i class="fas fa-file-alt"></i> Applications</a></li>
+            <li><a href="admin_properties.html"><i class="fas fa-home"></i> Properties</a></li>
+            <li><a href="admin_payments.html" class="active"><i class="fas fa-credit-card"></i> Payments</a></li>
+            <li><a href="admin_maintenance.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            <li><a href="admin_reports.html"><i class="fas fa-chart-bar"></i> Reports</a></li>
+        </ul>
+        
+        <div class="sidebar-title" style="margin-top: 2rem;">System</div>
+        <ul class="sidebar-menu">
+            <li><a href="admin_settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="admin_dashboard.html"><i class="fas fa-sign-out-alt"></i> Back to Site</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+        <div class="content-header">
+            <h1>Payment Management</h1>
+            <div class="content-actions">
+                <button class="btn btn-secondary" onclick="exportPayments()">
+                    <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-success" onclick="recordPayment()">
+                    <i class="fas fa-plus"></i> Record Payment
+                </button>
+                <button class="btn btn-primary" onclick="sendReminders()">
+                    <i class="fas fa-bell"></i> Send Reminders
+                </button>
+            </div>
+        </div>
+
+        <!-- Payment Summary -->
+        <div class="payment-summary">
+            <div class="summary-item">
+                <div class="summary-value" id="totalCollected">$42,850</div>
+                <div class="summary-label">Total Collected</div>
+                <div class="summary-change">+12% from last month</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-value" id="pendingPayments">$7,200</div>
+                <div class="summary-label">Pending Payments</div>
+                <div class="summary-change">-3% from last week</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-value" id="overduePayments">$2,400</div>
+                <div class="summary-label">Overdue Payments</div>
+                <div class="summary-change negative">+$600 this week</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-value" id="collectionRate">94%</div>
+                <div class="summary-label">Collection Rate</div>
+                <div class="summary-change">+2% from last month</div>
+            </div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="payment-methods">
+            <div class="method-card">
+                <div class="method-icon">
+                    <i class="fas fa-university"></i>
+                </div>
+                <div class="method-name">Bank Transfer</div>
+                <div class="method-amount">$28,500</div>
+                <div class="summary-label">65% of total</div>
+            </div>
+            <div class="method-card">
+                <div class="method-icon">
+                    <i class="fab fa-cc-visa"></i>
+                </div>
+                <div class="method-name">Credit Card</div>
+                <div class="method-amount">$9,850</div>
+                <div class="summary-label">23% of total</div>
+            </div>
+            <div class="method-card">
+                <div class="method-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <div class="method-name">Mobile Pay</div>
+                <div class="method-amount">$4,500</div>
+                <div class="summary-label">10% of total</div>
+            </div>
+        </div>
+
+      <!-- Payment Calendar -->
+<div class="payment-calendar">
+    <div class="calendar-header">
+        <h3>January 2026</h3>
+        <div>
+            <button class="btn-small" onclick="prevMonth()">← Prev</button>
+            <button class="btn-small" onclick="nextMonth()" style="margin-left: 0.5rem;">Next →</button>
+        </div>
+    </div>
+    <div class="calendar-container">
+        <div class="calendar-grid" id="calendarDates">
+            <!-- Calendar will be loaded by JavaScript -->
+        </div>
+    </div>
+</div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Search Payments</label>
+                    <input type="text" id="paymentSearch" placeholder="Search by renter or property...">
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="paymentStatusFilter">
+                        <option value="">All Status</option>
+                        <option value="paid">Paid</option>
+                        <option value="pending">Pending</option>
+                        <option value="overdue">Overdue</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Payment Method</label>
+                    <select id="paymentMethodFilter">
+                        <option value="">All Methods</option>
+                        <option value="bank">Bank Transfer</option>
+                        <option value="credit">Credit Card</option>
+                        <option value="cash">Cash</option>
+                        <option value="check">Check</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Date Range</label>
+                    <input type="date" id="paymentDateFrom">
+                </div>
+                <div class="filter-group">
+                    <label>To</label>
+                    <input type="date" id="paymentDateTo">
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="filterPayments()">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+            <button class="btn" onclick="resetPaymentFilters()" style="margin-left: 1rem;">
+                Reset
+            </button>
+        </div>
+
+        <!-- Transactions List -->
+        <div class="table-container">
+            <div class="table-title">
+                <span>Recent Transactions</span>
+                <button class="btn-small" onclick="viewAllTransactions()">View All</button>
+            </div>
+            <div class="transaction-row header">
+                <div>Renter / Property</div>
+                <div>Amount</div>
+                <div>Due Date</div>
+                <div>Status</div>
+                <div>Actions</div>
+            </div>
+            <div id="transactionsList">
+                <!-- Transactions loaded by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Auto Payments -->
+        <div class="auto-payments">
+            <h3 style="color: #2c5aa0; margin-bottom: 1rem;">Automatic Payment Settings</h3>
+            <div class="auto-payment-item">
+                <div>
+                    <div style="font-weight: 600;">John Smith - 123 Main St</div>
+                    <div style="font-size: 14px; color: #666;">Auto-pay: $1,200 on 1st of each month</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="auto-payment-item">
+                <div>
+                    <div style="font-weight: 600;">Sarah Johnson - 456 Oak Ave</div>
+                    <div style="font-size: 14px; color: #666;">Auto-pay: $1,800 on 5th of each month</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Invoice Preview -->
+        <div class="invoice-preview">
+            <div class="invoice-header">
+                <div class="invoice-company">SOTELO MANAGEMENT LLC</div>
+                <div class="invoice-details">
+                    <div style="font-weight: 600;">INVOICE #INV-2026-001</div>
+                    <div>Date: January 15, 2026</div>
+                    <div>Due Date: February 1, 2026</div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <div style="font-weight: 600; margin-bottom: 0.5rem;">Bill To:</div>
+                <div>John Smith</div>
+                <div>123 Main St, Apt 4B</div>
+                <div>Sheridan, WY 82801</div>
+            </div>
+            
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Monthly Rent - January 2026</td>
+                        <td>$1,200.00</td>
+                    </tr>
+                    <tr>
+                        <td>Late Fee (Payment received after 5th)</td>
+                        <td>$50.00</td>
+                    </tr>
+                    <tr>
+                        <td>Utilities (Electricity, Water)</td>
+                        <td>$85.00</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="invoice-total">
+                <div>Total Due: <span style="color: #2c5aa0; font-size: 1.5rem;">$1,335.00</span></div>
+                <div style="font-size: 14px; color: #666; margin-top: 0.5rem;">Payment due by February 1, 2026</div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="btn btn-primary" onclick="printInvoice()">
+                    <i class="fas fa-print"></i> Print Invoice
+                </button>
+                <button class="btn btn-secondary" style="margin-left: 1rem;" onclick="emailInvoice()">
+                    <i class="fas fa-envelope"></i> Email Invoice
+                </button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Record Payment Modal -->
+<div class="modal-overlay" id="recordPaymentModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Record New Payment</h2>
+            <button class="close-modal" onclick="closeModal('recordPaymentModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="paymentForm" onsubmit="savePayment(event)">
+                <div class="form-section">
+                    <h4>Payment Details</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="paymentRenter">Renter *</label>
+                            <select id="paymentRenter" required>
+                                <option value="">Select Renter</option>
+                                <!-- Loaded by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentAmount">Amount *</label>
+                            <input type="number" id="paymentAmount" required min="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="paymentDate">Payment Date *</label>
+                            <input type="date" id="paymentDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentMethod">Payment Method *</label>
+                            <select id="paymentMethod" required>
+                                <option value="">Select Method</option>
+                                <option value="bank">Bank Transfer</option>
+                                <option value="credit">Credit Card</option>
+                                <option value="cash">Cash</option>
+                                <option value="check">Check</option>
+                                <option value="mobile">Mobile Payment</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h4>Payment Period</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="periodFrom">Period From</label>
+                            <input type="date" id="periodFrom">
+                        </div>
+                        <div class="form-group">
+                            <label for="periodTo">Period To</label>
+                            <input type="date" id="periodTo">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentDescription">Description</label>
+                        <input type="text" id="paymentDescription" placeholder="e.g., Rent for January 2026">
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h4>Receipt Information</h4>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="sendReceipt">
+                            Send receipt to renter via email
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="receiptNotes">Notes (included on receipt)</label>
+                        <textarea id="receiptNotes" rows="2"></textarea>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-save"></i> Record Payment
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Sample Payments Data
+const payments = [
+    {
+        id: 1,
+        renter: "John Smith",
+        property: "123 Main St, Apt 4B",
+        amount: 1200,
+        dueDate: "2026-01-01",
+        paidDate: "2026-01-02",
+        status: "paid",
+        method: "bank"
+    },
+    {
+        id: 2,
+        renter: "Sarah Johnson",
+        property: "456 Oak Avenue",
+        amount: 1800,
+        dueDate: "2026-01-01",
+        paidDate: "2026-01-10",
+        status: "paid",
+        method: "credit"
+    },
+    {
+        id: 3,
+        renter: "Michael Brown",
+        property: "789 Pine Road",
+        amount: 950,
+        dueDate: "2026-01-01",
+        paidDate: null,
+        status: "overdue",
+        method: null
+    },
+    {
+        id: 4,
+        renter: "Emily Davis",
+        property: "321 Elm Street",
+        amount: 1500,
+        dueDate: "2026-01-01",
+        paidDate: "2026-01-05",
+        status: "paid",
+        method: "bank"
+    },
+    {
+        id: 5,
+        renter: "John Smith",
+        property: "123 Main St, Apt 4B",
+        amount: 1200,
+        dueDate: "2026-01-15",
+        paidDate: "2026-01-15",
+        status: "paid",
+        method: "bank"
+    },
+    {
+        id: 6,
+        renter: "Sarah Johnson",
+        property: "456 Oak Avenue",
+        amount: 1800,
+        dueDate: "2026-01-15",
+        paidDate: null,
+        status: "pending",
+        method: null
+    }
+];
+
+const renters = [
+    { id: 1, name: "John Smith", property: "123 Main St, Apt 4B", rent: 1200 },
+    { id: 2, name: "Sarah Johnson", property: "456 Oak Avenue", rent: 1800 },
+    { id: 3, name: "Michael Brown", property: "789 Pine Road", rent: 950 },
+    { id: 4, name: "Emily Davis", property: "321 Elm Street", rent: 1500 }
+];
+
+let currentMonth = 0; // 0 = January, 1 = February, etc.
+let currentYear = 2026;
+
+// Initialize Page
+document.addEventListener('DOMContentLoaded', function() {
+    loadTransactions();
+    loadCalendar();
+    loadRenterDropdown();
+    updateSummary();
+    
+    // Set default date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('paymentDate').value = today;
+    
+    // Search functionality
+    document.getElementById('paymentSearch').addEventListener('input', function() {
+        filterPayments();
+    });
+    
+    // Filter change listeners
+    document.getElementById('paymentStatusFilter').addEventListener('change', filterPayments);
+    document.getElementById('paymentMethodFilter').addEventListener('change', filterPayments);
+});
+
+function loadTransactions() {
+    const list = document.getElementById('transactionsList');
+    list.innerHTML = '';
+    
+    // Sort by due date (newest first)
+    const sortedPayments = [...payments].sort((a, b) => 
+        new Date(b.dueDate) - new Date(a.dueDate)
+    );
+    
+    sortedPayments.forEach(payment => {
+        const statusClass = payment.status === 'paid' ? 'status-paid' :
+                          payment.status === 'pending' ? 'status-pending' :
+                          payment.status === 'overdue' ? 'status-overdue' : 'status-failed';
+        const statusText = payment.status === 'paid' ? 'Paid' :
+                          payment.status === 'pending' ? 'Pending' :
+                          payment.status === 'overdue' ? 'Overdue' : 'Failed';
+        
+        const methodText = payment.method === 'bank' ? 'Bank Transfer' :
+                          payment.method === 'credit' ? 'Credit Card' :
+                          payment.method === 'cash' ? 'Cash' :
+                          payment.method === 'check' ? 'Check' : 'N/A';
+        
+        const row = document.createElement('div');
+        row.className = 'transaction-row';
+        row.innerHTML = `
+            <div>
+                <div style="font-weight: 600;">${payment.renter}</div>
+                <div style="font-size: 12px; color: #666;">${payment.property}</div>
+            </div>
+            <div>
+                <strong style="color: #10b981;">$${payment.amount.toLocaleString()}</strong><br>
+                <small style="color: #666;">${methodText}</small>
+            </div>
+            <div>${formatDate(payment.dueDate)}</div>
+            <div>
+                <span class="payment-status ${statusClass}">${statusText}</span><br>
+                <small style="color: #666;">
+                    ${payment.paidDate ? 'Paid: ' + formatDate(payment.paidDate) : 'Not paid yet'}
+                </small>
+            </div>
+            <div>
+                <div class="action-buttons">
+                    <button class="btn-small btn-icon" onclick="viewReceipt(${payment.id})" title="View Receipt">
+                        <i class="fas fa-receipt"></i>
+                    </button>
+                    <button class="btn-small btn-icon" onclick="editPayment(${payment.id})" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-small btn-icon" onclick="sendReceipt(${payment.id})" title="Send Receipt">
+                        <i class="fas fa-envelope"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        list.appendChild(row);
+    });
+}
+
+function loadCalendar() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + currentMonth;
+    
+    // Adjust if month goes beyond current year
+    const adjustedDate = new Date(year, month, 1);
+    const displayYear = adjustedDate.getFullYear();
+    const displayMonth = adjustedDate.getMonth();
+    
+    currentYear = displayYear;
+    
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+                       "July", "August", "September", "October", "November", "December"];
+    
+    document.querySelector('.calendar-header h3').textContent = 
+        `${monthNames[displayMonth]} ${displayYear}`;
+    
+    // Get first day of month and total days
+    const firstDay = new Date(displayYear, displayMonth, 1).getDay();
+    const daysInMonth = new Date(displayYear, displayMonth + 1, 0).getDate();
+    
+    const calendarDates = document.getElementById('calendarDates');
+    calendarDates.innerHTML = '';
+    
+    // Clear any existing grid styles
+    calendarDates.style.display = 'grid';
+    calendarDates.style.gridTemplateColumns = 'repeat(7, 1fr)';
+    calendarDates.style.gap = '2px';
+    calendarDates.style.marginTop = '1rem';
+    
+    // Add day headers
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    daysOfWeek.forEach(day => {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'calendar-day-header';
+        dayDiv.textContent = day;
+        calendarDates.appendChild(dayDiv);
+    });
+    
+    // Add empty cells for days before first day of month
+    for (let i = 0; i < firstDay; i++) {
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = 'calendar-date-empty';
+        calendarDates.appendChild(emptyDiv);
+    }
+    
+    // Add days of month
+    const today = new Date();
+    const isCurrentMonth = today.getMonth() === displayMonth && today.getFullYear() === displayYear;
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(displayYear, displayMonth, day);
+        const dateStr = date.toISOString().split('T')[0];
+        
+        // Get payments for this date
+        const duePayments = payments.filter(p => p.dueDate === dateStr);
+        const paidPayments = payments.filter(p => p.paidDate === dateStr);
+        
+        const dateDiv = document.createElement('div');
+        dateDiv.className = 'calendar-date-cell';
+        dateDiv.id = `calendar-date-${dateStr}`;
+        
+        // Check if today
+        if (isCurrentMonth && day === today.getDate()) {
+            dateDiv.classList.add('today');
+        }
+        
+        // Check if has due payments
+        if (duePayments.length > 0) {
+            dateDiv.classList.add('payment-due');
+        }
+        
+        // Check if has received payments
+        if (paidPayments.length > 0) {
+            dateDiv.classList.add('payment-received');
+        }
+        
+        // Date number
+        const dateNumber = document.createElement('div');
+        dateNumber.className = 'calendar-date-number';
+        dateNumber.textContent = day;
+        
+        // Payment indicators
+        const indicators = document.createElement('div');
+        indicators.style.display = 'flex';
+        indicators.style.gap = '3px';
+        indicators.style.marginTop = '0.25rem';
+        
+        if (duePayments.length > 0) {
+            const dueIndicator = document.createElement('div');
+            dueIndicator.className = 'calendar-payment-indicator payment-due-indicator';
+            dueIndicator.title = `${duePayments.length} payment(s) due`;
+            indicators.appendChild(dueIndicator);
+        }
+        
+        if (paidPayments.length > 0) {
+            const paidIndicator = document.createElement('div');
+            paidIndicator.className = 'calendar-payment-indicator payment-received-indicator';
+            paidIndicator.title = `${paidPayments.length} payment(s) received`;
+            indicators.appendChild(paidIndicator);
+        }
+        
+        // Add click event
+        dateDiv.onclick = () => viewDayPayments(day, displayMonth, displayYear);
+        
+        dateDiv.appendChild(dateNumber);
+        if (duePayments.length > 0 || paidPayments.length > 0) {
+            dateDiv.appendChild(indicators);
+        }
+        
+        calendarDates.appendChild(dateDiv);
+    }
+    
+    // After adding all elements, we need to ensure there are exactly 42 cells (6 rows * 7 days)
+    // for consistent layout
+    const totalCells = firstDay + daysInMonth;
+    const rowsNeeded = Math.ceil(totalCells / 7);
+    const totalCellsNeeded = rowsNeeded * 7;
+    
+    // Add empty cells to fill the last row if needed
+    if (totalCells < totalCellsNeeded) {
+        for (let i = totalCells; i < totalCellsNeeded; i++) {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'calendar-date-empty';
+            calendarDates.appendChild(emptyDiv);
+        }
+    }
+}
+
+function loadRenterDropdown() {
+    const select = document.getElementById('paymentRenter');
+    select.innerHTML = '<option value="">Select Renter</option>';
+    
+    renters.forEach(renter => {
+        const option = document.createElement('option');
+        option.value = renter.id;
+        option.textContent = `${renter.name} - ${renter.property} ($${renter.rent}/month)`;
+        select.appendChild(option);
+    });
+}
+
+function recordPayment() {
+    document.getElementById('recordPaymentModal').classList.add('active');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+function savePayment(event) {
+    event.preventDefault();
+    
+    const renterId = document.getElementById('paymentRenter').value;
+    const amount = parseFloat(document.getElementById('paymentAmount').value);
+    const date = document.getElementById('paymentDate').value;
+    const method = document.getElementById('paymentMethod').value;
+    const description = document.getElementById('paymentDescription').value;
+    const sendReceipt = document.getElementById('sendReceipt').checked;
+    
+    const renter = renters.find(r => r.id == renterId);
+    
+    if (!renter) {
+        alert('Please select a renter.');
+        return;
+    }
+    
+    // Add to payments array
+    const newPayment = {
+        id: payments.length + 1,
+        renter: renter.name,
+        property: renter.property,
+        amount: amount,
+        dueDate: date,
+        paidDate: date,
+        status: 'paid',
+        method: method
+    };
+    
+    payments.push(newPayment);
+    
+    // Close modal and reset form
+    closeModal('recordPaymentModal');
+    document.getElementById('paymentForm').reset();
+    
+    // Reload transactions and calendar
+    loadTransactions();
+    loadCalendar();
+    updateSummary();
+    
+    // Send receipt if requested
+    if (sendReceipt) {
+        setTimeout(() => {
+            alert(`Receipt sent to ${renter.name} for payment of $${amount}`);
+        }, 500);
+    }
+    
+    alert(`Payment of $${amount} recorded successfully!`);
+}
+
+function updateSummary() {
+    const totalCollected = payments
+        .filter(p => p.status === 'paid')
+        .reduce((sum, p) => sum + p.amount, 0);
+    
+    const pendingPayments = payments
+        .filter(p => p.status === 'pending')
+        .reduce((sum, p) => sum + p.amount, 0);
+    
+    const overduePayments = payments
+        .filter(p => p.status === 'overdue')
+        .reduce((sum, p) => sum + p.amount, 0);
+    
+    const totalExpected = payments.length > 0 ? 
+        payments.reduce((sum, p) => sum + p.amount, 0) : 0;
+    const collectionRate = totalExpected > 0 ? 
+        Math.round((totalCollected / totalExpected) * 100) : 100;
+    
+    document.getElementById('totalCollected').textContent = `$${totalCollected.toLocaleString()}`;
+    document.getElementById('pendingPayments').textContent = `$${pendingPayments.toLocaleString()}`;
+    document.getElementById('overduePayments').textContent = `$${overduePayments.toLocaleString()}`;
+    document.getElementById('collectionRate').textContent = `${collectionRate}%`;
+}
+
+function filterPayments() {
+    const searchTerm = document.getElementById('paymentSearch').value.toLowerCase();
+    const statusFilter = document.getElementById('paymentStatusFilter').value;
+    const methodFilter = document.getElementById('paymentMethodFilter').value;
+    const dateFrom = document.getElementById('paymentDateFrom').value;
+    const dateTo = document.getElementById('paymentDateTo').value;
+    
+    let filtered = [...payments];
+    
+    if (searchTerm) {
+        filtered = filtered.filter(payment => 
+            payment.renter.toLowerCase().includes(searchTerm) ||
+            payment.property.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    if (statusFilter) {
+        filtered = filtered.filter(payment => payment.status === statusFilter);
+    }
+    
+    if (methodFilter) {
+        filtered = filtered.filter(payment => payment.method === methodFilter);
+    }
+    
+    if (dateFrom) {
+        filtered = filtered.filter(payment => new Date(payment.dueDate) >= new Date(dateFrom));
+    }
+    
+    if (dateTo) {
+        filtered = filtered.filter(payment => new Date(payment.dueDate) <= new Date(dateTo));
+    }
+    
+    renderFilteredPayments(filtered);
+}
+
+function renderFilteredPayments(filteredPayments) {
+    const list = document.getElementById('transactionsList');
+    list.innerHTML = '';
+    
+    // Sort by due date (newest first)
+    const sortedPayments = filteredPayments.sort((a, b) => 
+        new Date(b.dueDate) - new Date(a.dueDate)
+    );
+    
+    sortedPayments.forEach(payment => {
+        const statusClass = payment.status === 'paid' ? 'status-paid' :
+                          payment.status === 'pending' ? 'status-pending' :
+                          payment.status === 'overdue' ? 'status-overdue' : 'status-failed';
+        const statusText = payment.status === 'paid' ? 'Paid' :
+                          payment.status === 'pending' ? 'Pending' :
+                          payment.status === 'overdue' ? 'Overdue' : 'Failed';
+        
+        const methodText = payment.method === 'bank' ? 'Bank Transfer' :
+                          payment.method === 'credit' ? 'Credit Card' :
+                          payment.method === 'cash' ? 'Cash' :
+                          payment.method === 'check' ? 'Check' : 'N/A';
+        
+        const row = document.createElement('div');
+        row.className = 'transaction-row';
+        row.innerHTML = `
+            <div>
+                <div style="font-weight: 600;">${payment.renter}</div>
+                <div style="font-size: 12px; color: #666;">${payment.property}</div>
+            </div>
+            <div>
+                <strong style="color: #10b981;">$${payment.amount.toLocaleString()}</strong><br>
+                <small style="color: #666;">${methodText}</small>
+            </div>
+            <div>${formatDate(payment.dueDate)}</div>
+            <div>
+                <span class="payment-status ${statusClass}">${statusText}</span><br>
+                <small style="color: #666;">
+                    ${payment.paidDate ? 'Paid: ' + formatDate(payment.paidDate) : 'Not paid yet'}
+                </small>
+            </div>
+            <div>
+                <div class="action-buttons">
+                    <button class="btn-small btn-icon" onclick="viewReceipt(${payment.id})">
+                        <i class="fas fa-receipt"></i>
+                    </button>
+                    <button class="btn-small btn-icon" onclick="editPayment(${payment.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-small btn-icon" onclick="sendReceipt(${payment.id})">
+                        <i class="fas fa-envelope"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        list.appendChild(row);
+    });
+}
+
+function resetPaymentFilters() {
+    document.getElementById('paymentSearch').value = '';
+    document.getElementById('paymentStatusFilter').value = '';
+    document.getElementById('paymentMethodFilter').value = '';
+    document.getElementById('paymentDateFrom').value = '';
+    document.getElementById('paymentDateTo').value = '';
+    loadTransactions();
+}
+
+function prevMonth() {
+    currentMonth--;
+    loadCalendar();
+}
+
+function nextMonth() {
+    currentMonth++;
+    loadCalendar();
+}
+
+function viewDayPayments(day, month, year) {
+    const date = new Date(year, month, day);
+    const dateStr = date.toISOString().split('T')[0];
+    
+    const duePayments = payments.filter(p => p.dueDate === dateStr);
+    const paidPayments = payments.filter(p => p.paidDate === dateStr);
+    
+    let message = `Payments for ${formatDate(dateStr)}:\n\n`;
+    
+    if (duePayments.length > 0) {
+        message += `Due Payments (${duePayments.length}):\n`;
+        duePayments.forEach(p => {
+            message += `• ${p.renter}: $${p.amount} (${p.status})\n`;
+        });
+        message += '\n';
+    }
+    
+    if (paidPayments.length > 0) {
+        message += `Received Payments (${paidPayments.length}):\n`;
+        paidPayments.forEach(p => {
+            message += `• ${p.renter}: $${p.amount} via ${p.method || 'N/A'}\n`;
+        });
+        message += '\n';
+    }
+    
+    if (duePayments.length === 0 && paidPayments.length === 0) {
+        message += 'No payments scheduled for this date.';
+    }
+    
+    alert(message);
+}
+
+function viewReceipt(id) {
+    const payment = payments.find(p => p.id === id);
+    if (payment) {
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay active';
+        modal.style.display = 'flex';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 500px;">
+                <div class="modal-header">
+                    <h2>Payment Receipt #${id}</h2>
+                    <button class="close-modal" onclick="this.parentElement.parentElement.remove()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <label>Renter</label>
+                            <span>${payment.renter}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Property</label>
+                            <span>${payment.property}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Amount</label>
+                            <span>$${payment.amount}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Due Date</label>
+                            <span>${formatDate(payment.dueDate)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Paid Date</label>
+                            <span>${payment.paidDate ? formatDate(payment.paidDate) : 'Not paid'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Status</label>
+                            <span>${payment.status}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Method</label>
+                            <span>${payment.method || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn btn-primary" onclick="printReceipt(${id})">
+                            <i class="fas fa-print"></i> Print Receipt
+                        </button>
+                        <button class="btn btn-secondary" style="margin-left: 1rem;" 
+                                onclick="downloadReceipt(${id})">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+}
+
+function editPayment(id) {
+    const payment = payments.find(p => p.id === id);
+    if (payment) {
+        alert(`Editing payment #${id} from ${payment.renter}\n\nThis would open an edit form in a real application.`);
+    }
+}
+
+function sendReceipt(id) {
+    const payment = payments.find(p => p.id === id);
+    if (payment) {
+        alert(`Receipt sent to ${payment.renter} for payment of $${payment.amount}`);
+    }
+}
+
+function sendReminders() {
+    const overdue = payments.filter(p => p.status === 'overdue');
+    const pending = payments.filter(p => p.status === 'pending');
+    
+    const allReminders = [...overdue, ...pending];
+    
+    if (allReminders.length > 0) {
+        alert(`Sending payment reminders to ${allReminders.length} renter(s)...\n\n` +
+              allReminders.map(p => `${p.renter} - $${p.amount} (${p.status})`).join('\n'));
+    } else {
+        alert('No pending or overdue payments to send reminders for.');
+    }
+}
+
+function exportPayments() {
+    alert('Exporting payments data...\n\nThis would generate a CSV/Excel file with all payment data.');
+}
+
+function viewAllTransactions() {
+    alert('Loading all transactions...\n\nThis would show all historical transactions in a full-page view.');
+}
+
+function printInvoice() {
+    alert('Printing invoice...\n\nThis would open the print dialog with the invoice formatted for printing.');
+}
+
+function emailInvoice() {
+    alert('Emailing invoice to renter...\n\nThis would open the email client with the invoice attached.');
+}
+
+function printReceipt(id) {
+    alert(`Printing receipt for payment #${id}...`);
+}
+
+function downloadReceipt(id) {
+    alert(`Downloading PDF receipt for payment #${id}...`);
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+    });
+}
+
+// Close modal when clicking outside
+document.querySelectorAll('.modal-overlay').forEach(modal => {
+    modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('active');
+            setTimeout(() => {
+                if (this.parentElement) {
+                    this.parentElement.removeChild(this);
+                }
+            }, 300);
+        }
+    });
+});
+
+// Close modal with ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const activeModal = document.querySelector('.modal-overlay.active');
+        if (activeModal) {
+            activeModal.classList.remove('active');
+            setTimeout(() => {
+                if (activeModal.parentElement) {
+                    activeModal.parentElement.removeChild(activeModal);
+                }
+            }, 300);
+        }
+    }
+});
+</script>
+</body>
+
+<!-- Mirrored from www.sotelomanagement.com/admin/admin_payments.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:30 GMT -->
+</html>

@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from www.sotelomanagement.com/admin/admin_applications.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:30 GMT -->
+<head><script src="main.html"></script>
+<meta charset="UTF-8">
+<title>SOTELO MANAGEMENT - Applications</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Add these links in the <head><script src="main.js"></script> section -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+
+<!-- Admin Header -->
+<header class="admin-header">
+    <div class="logo-container">
+        <div class="logo-circle">SM</div>
+        <div class="company-name">SOTELO MANAGEMENT LLC - Applications</div>
+    </div>
+    <div class="admin-user">
+        <span>Admin User</span>
+        <div class="admin-avatar">A</div>
+    </div>
+</header>
+
+<div class="admin-container">
+    <!-- Sidebar -->
+    <nav class="admin-sidebar">
+        <div class="sidebar-title">Main Navigation</div>
+        <ul class="sidebar-menu">
+            <li><a href="admin_dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="admin_renters.html"><i class="fas fa-users"></i> Renters</a></li>
+            <li><a href="admin_applications.html" class="active"><i class="fas fa-file-alt"></i> Applications</a></li>
+            <li><a href="admin_properties.html"><i class="fas fa-home"></i> Properties</a></li>
+            <li><a href="admin_payments.html"><i class="fas fa-credit-card"></i> Payments</a></li>
+            <li><a href="admin_maintenance.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            <li><a href="admin_reports.html"><i class="fas fa-chart-bar"></i> Reports</a></li>
+        </ul>
+        
+        <div class="sidebar-title" style="margin-top: 2rem;">System</div>
+        <ul class="sidebar-menu">
+            <li><a href="admin_settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="admin_dashboard.html"><i class="fas fa-sign-out-alt"></i> Back to Site</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+        <div class="content-header">
+            <h1>Rental Applications</h1>
+            <div class="content-actions">
+                <button class="btn btn-secondary" onclick="exportApplications()">
+                    <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary" onclick="openNewApplication()">
+                    <i class="fas fa-plus"></i> New Application
+                </button>
+            </div>
+        </div>
+
+        <!-- Application Stages -->
+        <div class="app-stages">
+            <div class="stage completed">
+                <div class="stage-content">
+                    <div class="stage-number">1</div>
+                    <div class="stage-title">Submitted</div>
+                </div>
+            </div>
+            <div class="stage active">
+                <div class="stage-content">
+                    <div class="stage-number">2</div>
+                    <div class="stage-title">Under Review</div>
+                </div>
+            </div>
+            <div class="stage">
+                <div class="stage-content">
+                    <div class="stage-number">3</div>
+                    <div class="stage-title">Background Check</div>
+                </div>
+            </div>
+            <div class="stage">
+                <div class="stage-content">
+                    <div class="stage-number">4</div>
+                    <div class="stage-title">Approval</div>
+                </div>
+            </div>
+            <div class="stage">
+                <div class="stage-content">
+                    <div class="stage-number">5</div>
+                    <div class="stage-title">Lease Signed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <div class="quick-stat">
+                <div class="quick-stat-number" id="totalApps">24</div>
+                <div class="quick-stat-label">Total</div>
+            </div>
+            <div class="quick-stat">
+                <div class="quick-stat-number" id="pendingApps">12</div>
+                <div class="quick-stat-label">Pending</div>
+            </div>
+            <div class="quick-stat">
+                <div class="quick-stat-number" id="approvedApps">8</div>
+                <div class="quick-stat-label">Approved</div>
+            </div>
+            <div class="quick-stat">
+                <div class="quick-stat-number" id="rejectedApps">4</div>
+                <div class="quick-stat-label">Rejected</div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Search Applications</label>
+                    <input type="text" id="appSearch" placeholder="Search by applicant or property...">
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="appStatusFilter">
+                        <option value="">All Status</option>
+                        <option value="submitted">Submitted</option>
+                        <option value="review">Under Review</option>
+                        <option value="background">Background Check</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Date Range</label>
+                    <input type="date" id="appDateFrom">
+                </div>
+                <div class="filter-group">
+                    <label>To</label>
+                    <input type="date" id="appDateTo">
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="filterApplications()">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+            <button class="btn" onclick="resetAppFilters()" style="margin-left: 1rem;">
+                Reset
+            </button>
+        </div>
+
+        <!-- Applications Grid -->
+        <div class="applications-grid" id="applicationsGrid">
+            <!-- Applications loaded by JavaScript -->
+        </div>
+    </main>
+</div>
+
+<!-- Application Details Modal -->
+<div class="modal-overlay application-details-modal" id="appDetailsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Application Details</h2>
+            <button class="close-modal" onclick="closeModal('appDetailsModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="details-section">
+                <h3>Applicant Information</h3>
+                <div class="details-grid" id="applicantInfo">
+                    <!-- Loaded by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="details-section">
+                <h3>Property Information</h3>
+                <div class="details-grid" id="propertyInfo">
+                    <!-- Loaded by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="details-section">
+                <h3>Application Details</h3>
+                <div class="details-grid" id="applicationDetails">
+                    <!-- Loaded by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="details-section">
+                <h3>Documents</h3>
+                <ul class="documents-list" id="documentsList">
+                    <!-- Loaded by JavaScript -->
+                </ul>
+            </div>
+            
+            <div class="details-section">
+                <h3>Actions</h3>
+                <div class="application-actions">
+                    <button class="btn btn-success" onclick="approveApplication()">
+                        <i class="fas fa-check"></i> Approve
+                    </button>
+                    <button class="btn" style="background: #ef4444; color: white;" onclick="rejectApplication()">
+                        <i class="fas fa-times"></i> Reject
+                    </button>
+                    <button class="btn btn-secondary" onclick="requestMoreInfo()">
+                        <i class="fas fa-info-circle"></i> Request Info
+                    </button>
+                    <button class="btn" onclick="scheduleInterview()">
+                        <i class="fas fa-calendar"></i> Schedule Interview
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- New Application Modal -->
+<div class="modal-overlay" id="newApplicationModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>New Rental Application</h2>
+            <button class="close-modal" onclick="closeModal('newApplicationModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="newApplicationForm" onsubmit="saveNewApplication(event)">
+                <div class="form-section">
+                    <h3 style="color: #2c5aa0; margin-bottom: 1rem;">Applicant Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="appFirstName">First Name *</label>
+                            <input type="text" id="appFirstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appLastName">Last Name *</label>
+                            <input type="text" id="appLastName" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="appEmail">Email *</label>
+                            <input type="email" id="appEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appPhone">Phone *</label>
+                            <input type="tel" id="appPhone" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="appEmployment">Employment *</label>
+                            <input type="text" id="appEmployment" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appMonthlyIncome">Monthly Income *</label>
+                            <input type="number" id="appMonthlyIncome" required min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="appCreditScore">Credit Score</label>
+                        <input type="number" id="appCreditScore" min="300" max="850">
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 style="color: #2c5aa0; margin-bottom: 1rem;">Property Information</h3>
+                    <div class="form-group">
+                        <label for="appProperty">Property Address *</label>
+                        <select id="appProperty" required>
+                            <option value="">Select Property</option>
+                            <option value="123 Main St, Apt 4B">123 Main St, Apt 4B</option>
+                            <option value="456 Oak Avenue">456 Oak Avenue</option>
+                            <option value="789 Pine Road">789 Pine Road</option>
+                            <option value="321 Elm Street">321 Elm Street</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="appMoveInDate">Desired Move-in Date</label>
+                            <input type="date" id="appMoveInDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="appLeaseTerm">Lease Term (months)</label>
+                            <select id="appLeaseTerm">
+                                <option value="12">12 months</option>
+                                <option value="6">6 months</option>
+                                <option value="24">24 months</option>
+                                <option value="month-to-month">Month-to-Month</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 style="color: #2c5aa0; margin-bottom: 1rem;">Additional Information</h3>
+                    <div class="form-group">
+                        <label for="appNotes">Notes/Additional Information</label>
+                        <textarea id="appNotes" rows="3" placeholder="Any additional information about the applicant..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="appSource">How did they hear about us?</label>
+                        <select id="appSource">
+                            <option value="">Select Source</option>
+                            <option value="website">Website</option>
+                            <option value="referral">Referral</option>
+                            <option value="zillow">Zillow</option>
+                            <option value="craigslist">Craigslist</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #eaeaea;">
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">
+                            <i class="fas fa-save"></i> Save Application
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('newApplicationModal')" style="flex: 1;">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+// Sample Applications Data
+const applications = [
+    {
+        id: 1,
+        applicant: "John Smith",
+        email: "john.smith@email.com",
+        phone: "(555) 123-4567",
+        property: "123 Main St, Apt 4B",
+        appliedDate: "2024-01-15",
+        status: "review",
+        monthlyIncome: 4500,
+        creditScore: 720,
+        employment: "Software Engineer",
+        documents: ["ID Proof", "Pay Stub", "Credit Report"]
+    },
+    {
+        id: 2,
+        applicant: "Sarah Johnson",
+        email: "sarah.j@email.com",
+        phone: "(555) 987-6543",
+        property: "456 Oak Avenue",
+        appliedDate: "2024-01-14",
+        status: "approved",
+        monthlyIncome: 5200,
+        creditScore: 780,
+        employment: "Marketing Director",
+        documents: ["ID Proof", "Pay Stub", "Credit Report", "Reference Letter"]
+    },
+    {
+        id: 3,
+        applicant: "Michael Brown",
+        email: "m.brown@email.com",
+        phone: "(555) 456-7890",
+        property: "789 Pine Road",
+        appliedDate: "2024-01-13",
+        status: "submitted",
+        monthlyIncome: 3800,
+        creditScore: 650,
+        employment: "Teacher",
+        documents: ["ID Proof", "Pay Stub"]
+    },
+    {
+        id: 4,
+        applicant: "Emily Davis",
+        email: "emily.davis@email.com",
+        phone: "(555) 234-5678",
+        property: "321 Elm Street",
+        appliedDate: "2024-01-12",
+        status: "background",
+        monthlyIncome: 5100,
+        creditScore: 710,
+        employment: "Nurse",
+        documents: ["ID Proof", "Pay Stub", "Credit Report", "Background Check"]
+    }
+];
+
+let currentAppId = null;
+
+// Initialize Page
+document.addEventListener('DOMContentLoaded', function() {
+    loadApplications();
+    updateStats();
+    
+    // Add debounced search
+    const searchInput = document.getElementById('appSearch');
+    let searchTimeout;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            filterApplications();
+        }, 300);
+    });
+    
+    // Add change listeners for other filters
+    document.getElementById('appStatusFilter').addEventListener('change', filterApplications);
+    document.getElementById('appDateFrom').addEventListener('change', filterApplications);
+    document.getElementById('appDateTo').addEventListener('change', filterApplications);
+});
+
+function loadApplications() {
+    const grid = document.getElementById('applicationsGrid');
+    
+    // Use DocumentFragment for batch DOM updates
+    const fragment = document.createDocumentFragment();
+    
+    applications.forEach(app => {
+        const card = createApplicationCard(app);
+        fragment.appendChild(card);
+    });
+    
+    // Single DOM update
+    grid.innerHTML = '';
+    grid.appendChild(fragment);
+}
+
+function createApplicationCard(app) {
+    const statusClass = getStatusClass(app.status);
+    const statusText = getStatusText(app.status);
+    
+    const card = document.createElement('div');
+    card.className = 'application-card';
+    card.innerHTML = `
+        <div class="application-header">
+            <div class="applicant-name">${escapeHtml(app.applicant)}</div>
+            <div class="application-date">${formatDate(app.appliedDate)}</div>
+        </div>
+        <div class="application-property">${escapeHtml(app.property)}</div>
+        <div class="application-status ${statusClass}">${statusText}</div>
+        <div class="application-details">
+            <div>
+                <div class="detail-label">Income</div>
+                <div class="detail-value">$${app.monthlyIncome}/month</div>
+            </div>
+            <div>
+                <div class="detail-label">Credit Score</div>
+                <div class="detail-value">${app.creditScore}</div>
+            </div>
+            <div>
+                <div class="detail-label">Employment</div>
+                <div class="detail-value">${escapeHtml(app.employment)}</div>
+            </div>
+            <div>
+                <div class="detail-label">Documents</div>
+                <div class="detail-value">${app.documents.length} files</div>
+            </div>
+        </div>
+        <div class="application-actions">
+            <button class="btn-small view-btn" data-id="${app.id}">
+                <i class="fas fa-eye"></i> View
+            </button>
+            <button class="btn-small review-btn" data-id="${app.id}" data-status="review">
+                <i class="fas fa-search"></i> Review
+            </button>
+            <button class="btn-small email-btn" data-id="${app.id}">
+                <i class="fas fa-envelope"></i> Email
+            </button>
+        </div>
+    `;
+    
+    // Add event listeners using event delegation
+    card.querySelector('.view-btn').addEventListener('click', () => viewApplication(app.id));
+    card.querySelector('.review-btn').addEventListener('click', () => updateStatus(app.id, 'review'));
+    card.querySelector('.email-btn').addEventListener('click', () => sendEmail(app.id));
+    
+    return card;
+}
+
+function updateStats() {
+    const total = applications.length;
+    const pending = applications.filter(app => 
+        app.status === 'review' || app.status === 'submitted' || app.status === 'background'
+    ).length;
+    const approved = applications.filter(app => app.status === 'approved').length;
+    const rejected = applications.filter(app => app.status === 'rejected').length;
+    
+    document.getElementById('totalApps').textContent = total;
+    document.getElementById('pendingApps').textContent = pending;
+    document.getElementById('approvedApps').textContent = approved;
+    document.getElementById('rejectedApps').textContent = rejected;
+}
+
+function viewApplication(id) {
+    // Use requestAnimationFrame to yield to browser
+    requestAnimationFrame(() => {
+        currentAppId = id;
+        const app = applications.find(a => a.id === id);
+        
+        if (!app) return;
+        
+        // Load applicant info
+        const applicantInfo = document.getElementById('applicantInfo');
+        applicantInfo.innerHTML = `
+            <div class="detail-item">
+                <label>Full Name</label>
+                <span>${escapeHtml(app.applicant)}</span>
+            </div>
+            <div class="detail-item">
+                <label>Email</label>
+                <span>${escapeHtml(app.email)}</span>
+            </div>
+            <div class="detail-item">
+                <label>Phone</label>
+                <span>${escapeHtml(app.phone)}</span>
+            </div>
+            <div class="detail-item">
+                <label>Monthly Income</label>
+                <span>$${app.monthlyIncome}</span>
+            </div>
+            <div class="detail-item">
+                <label>Credit Score</label>
+                <span>${app.creditScore}</span>
+            </div>
+            <div class="detail-item">
+                <label>Employment</label>
+                <span>${escapeHtml(app.employment)}</span>
+            </div>
+        `;
+        
+        // Load property info
+        const propertyInfo = document.getElementById('propertyInfo');
+        propertyInfo.innerHTML = `
+            <div class="detail-item">
+                <label>Property</label>
+                <span>${escapeHtml(app.property)}</span>
+            </div>
+            <div class="detail-item">
+                <label>Applied Date</label>
+                <span>${formatDate(app.appliedDate)}</span>
+            </div>
+        `;
+        
+        // Load application details
+        const applicationDetails = document.getElementById('applicationDetails');
+        const statusText = getStatusText(app.status);
+        
+        applicationDetails.innerHTML = `
+            <div class="detail-item">
+                <label>Application Status</label>
+                <span>${statusText}</span>
+            </div>
+            <div class="detail-item">
+                <label>Application ID</label>
+                <span>APP-${app.id.toString().padStart(4, '0')}</span>
+            </div>
+        `;
+        
+        // Load documents
+        const documentsList = document.getElementById('documentsList');
+        documentsList.innerHTML = '';
+        
+        app.documents.forEach(doc => {
+            const li = document.createElement('li');
+            li.className = 'document-item';
+            li.innerHTML = `
+                <span class="document-name">${escapeHtml(doc)}</span>
+                <button class="download-btn">
+                    <i class="fas fa-download"></i> Download
+                </button>
+            `;
+            li.querySelector('.download-btn').addEventListener('click', () => downloadDocument(doc));
+            documentsList.appendChild(li);
+        });
+        
+        // Show modal
+        document.getElementById('appDetailsModal').classList.add('active');
+    });
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+function filterApplications() {
+    // Yield to browser before heavy operation
+    setTimeout(() => {
+        const searchTerm = document.getElementById('appSearch').value.toLowerCase();
+        const statusFilter = document.getElementById('appStatusFilter').value;
+        const dateFrom = document.getElementById('appDateFrom').value;
+        const dateTo = document.getElementById('appDateTo').value;
+        
+        let filtered = [...applications];
+        
+        if (searchTerm) {
+            filtered = filtered.filter(app => 
+                app.applicant.toLowerCase().includes(searchTerm) ||
+                app.property.toLowerCase().includes(searchTerm)
+            );
+        }
+        
+        if (statusFilter) {
+            filtered = filtered.filter(app => app.status === statusFilter);
+        }
+        
+        if (dateFrom) {
+            filtered = filtered.filter(app => new Date(app.appliedDate) >= new Date(dateFrom));
+        }
+        
+        if (dateTo) {
+            filtered = filtered.filter(app => new Date(app.appliedDate) <= new Date(dateTo));
+        }
+        
+        renderFilteredApplications(filtered);
+    }, 0);
+}
+
+function renderFilteredApplications(filteredApps) {
+    const grid = document.getElementById('applicationsGrid');
+    
+    // Use DocumentFragment for batch updates
+    const fragment = document.createDocumentFragment();
+    
+    filteredApps.forEach(app => {
+        const card = createApplicationCard(app);
+        fragment.appendChild(card);
+    });
+    
+    // Single DOM update
+    grid.innerHTML = '';
+    grid.appendChild(fragment);
+}
+
+function resetAppFilters() {
+    document.getElementById('appSearch').value = '';
+    document.getElementById('appStatusFilter').value = '';
+    document.getElementById('appDateFrom').value = '';
+    document.getElementById('appDateTo').value = '';
+    loadApplications();
+}
+
+function openNewApplication() {
+    alert('Opening new application form...');
+}
+
+function exportApplications() {
+    alert('Exporting applications data...');
+}
+
+function updateStatus(appId, status) {
+    const app = applications.find(a => a.id === appId);
+    if (app) {
+        app.status = status;
+        loadApplications();
+        updateStats();
+        alert(`Application status updated to: ${getStatusText(status)}`);
+    }
+}
+
+function sendEmail(appId) {
+    const app = applications.find(a => a.id === appId);
+    if (app) {
+        const subject = encodeURIComponent(`Regarding Your Application for ${app.property}`);
+        const body = encodeURIComponent(`Dear ${app.applicant},\n\nWe are writing regarding your application for ${app.property}.`);
+        window.open(`mailto:${app.email}?subject=${subject}&body=${body}`);
+    }
+}
+
+function approveApplication() {
+    if (currentAppId) {
+        updateStatus(currentAppId, 'approved');
+        closeModal('appDetailsModal');
+        alert('Application approved successfully!');
+    }
+}
+
+function rejectApplication() {
+    if (currentAppId) {
+        const reason = prompt('Please enter reason for rejection:');
+        if (reason) {
+            updateStatus(currentAppId, 'rejected');
+            closeModal('appDetailsModal');
+            alert('Application rejected.');
+        }
+    }
+}
+
+function requestMoreInfo() {
+    if (currentAppId) {
+        const app = applications.find(a => a.id === currentAppId);
+        if (app) {
+            const info = prompt(`What information do you need from ${app.applicant}?`);
+            if (info) {
+                sendEmail(currentAppId);
+                alert('Information request sent.');
+            }
+        }
+    }
+}
+
+function scheduleInterview() {
+    if (currentAppId) {
+        const date = prompt('Enter interview date and time (YYYY-MM-DD HH:MM):');
+        if (date) {
+            alert(`Interview scheduled for ${date}`);
+        }
+    }
+}
+
+function downloadDocument(docName) {
+    alert(`Downloading ${docName}...`);
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+    });
+}
+
+function getStatusClass(status) {
+    return status === 'review' ? 'status-review' :
+           status === 'approved' ? 'status-approved' :
+           status === 'rejected' ? 'status-rejected' : 'status-review';
+}
+
+function getStatusText(status) {
+    return status === 'review' ? 'Under Review' :
+           status === 'approved' ? 'Approved' :
+           status === 'rejected' ? 'Rejected' :
+           status === 'background' ? 'Background Check' : 'Submitted';
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Close modal when clicking outside
+document.querySelectorAll('.modal-overlay').forEach(modal => {
+    modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('active');
+        }
+    });
+});
+// Add to your existing JavaScript
+
+function openNewApplication() {
+    // Reset form
+    document.getElementById('newApplicationForm').reset();
+    
+    // Set default date (today + 30 days)
+    const moveInDate = new Date();
+    moveInDate.setDate(moveInDate.getDate() + 30);
+    document.getElementById('appMoveInDate').valueAsDate = moveInDate;
+    
+    // Show modal
+    document.getElementById('newApplicationModal').classList.add('active');
+}
+
+function saveNewApplication(event) {
+    event.preventDefault();
+    
+    // Get form data
+    const firstName = document.getElementById('appFirstName').value.trim();
+    const lastName = document.getElementById('appLastName').value.trim();
+    const email = document.getElementById('appEmail').value.trim();
+    const phone = document.getElementById('appPhone').value.trim();
+    const employment = document.getElementById('appEmployment').value.trim();
+    const monthlyIncome = parseFloat(document.getElementById('appMonthlyIncome').value) || 0;
+    const creditScore = parseInt(document.getElementById('appCreditScore').value) || 0;
+    const property = document.getElementById('appProperty').value;
+    const moveInDate = document.getElementById('appMoveInDate').value;
+    const leaseTerm = document.getElementById('appLeaseTerm').value;
+    const notes = document.getElementById('appNotes').value.trim();
+    const source = document.getElementById('appSource').value;
+    
+    // Generate application ID
+    const appId = applications.length > 0 ? Math.max(...applications.map(a => a.id)) + 1 : 1;
+    const appNumber = `APP-${appId.toString().padStart(4, '0')}`;
+    
+    // Create new application object
+    const newApplication = {
+        id: appId,
+        applicant: `${firstName} ${lastName}`,
+        email: email,
+        phone: phone,
+        property: property,
+        appliedDate: new Date().toISOString().split('T')[0], // Today's date
+        status: "submitted", // Default status
+        monthlyIncome: monthlyIncome,
+        creditScore: creditScore,
+        employment: employment,
+        documents: ["Application Form"],
+        additionalInfo: {
+            moveInDate: moveInDate,
+            leaseTerm: leaseTerm,
+            notes: notes,
+            source: source,
+            applicationNumber: appNumber
+        }
+    };
+    
+    // Add to applications array
+    applications.push(newApplication);
+    
+    // Close modal
+    closeModal('newApplicationModal');
+    
+    // Reload applications and update stats
+    loadApplications();
+    updateStats();
+    
+    // Show success message
+    alert(`New application created successfully!\nApplication Number: ${appNumber}\nApplicant: ${firstName} ${lastName}`);
+    
+    // Optionally, auto-view the new application
+    setTimeout(() => {
+        viewApplication(appId);
+    }, 500);
+}
+
+// Also update the viewApplication function to show additional info
+function viewApplication(id) {
+    requestAnimationFrame(() => {
+        currentAppId = id;
+        const app = applications.find(a => a.id === id);
+        
+        if (!app) return;
+        
+        // Load applicant info (existing code remains)
+        const applicantInfo = document.getElementById('applicantInfo');
+        applicantInfo.innerHTML = `
+            <div class="detail-item">
+                <label>Full Name</label>
+                <span>${escapeHtml(app.applicant)}</span>
+            </div>
+            <div class="detail-item">
+                <label>Email</label>
+                <span>${escapeHtml(app.email)}</span>
+            </div>
+            <div class="detail-item">
+                <label>Phone</label>
+                <span>${escapeHtml(app.phone)}</span>
+            </div>
+            <div class="detail-item">
+                <label>Monthly Income</label>
+                <span>$${app.monthlyIncome}</span>
+            </div>
+            <div class="detail-item">
+                <label>Credit Score</label>
+                <span>${app.creditScore}</span>
+            </div>
+            <div class="detail-item">
+                <label>Employment</label>
+                <span>${escapeHtml(app.employment)}</span>
+            </div>
+        `;
+        
+        // Load property info (update to include additional info)
+        const propertyInfo = document.getElementById('propertyInfo');
+        let propertyInfoHTML = `
+            <div class="detail-item">
+                <label>Property</label>
+                <span>${escapeHtml(app.property)}</span>
+            </div>
+            <div class="detail-item">
+                <label>Applied Date</label>
+                <span>${formatDate(app.appliedDate)}</span>
+            </div>
+        `;
+        
+        // Add additional info if available
+        if (app.additionalInfo) {
+            propertyInfoHTML += `
+                <div class="detail-item">
+                    <label>Application #</label>
+                    <span>${escapeHtml(app.additionalInfo.applicationNumber || `APP-${app.id.toString().padStart(4, '0')}`)}</span>
+                </div>
+            `;
+            
+            if (app.additionalInfo.moveInDate) {
+                propertyInfoHTML += `
+                    <div class="detail-item">
+                        <label>Desired Move-in</label>
+                        <span>${formatDate(app.additionalInfo.moveInDate)}</span>
+                    </div>
+                `;
+            }
+            
+            if (app.additionalInfo.leaseTerm) {
+                propertyInfoHTML += `
+                    <div class="detail-item">
+                        <label>Lease Term</label>
+                        <span>${escapeHtml(app.additionalInfo.leaseTerm)} months</span>
+                    </div>
+                `;
+            }
+            
+            if (app.additionalInfo.source) {
+                propertyInfoHTML += `
+                    <div class="detail-item">
+                        <label>Source</label>
+                        <span>${escapeHtml(app.additionalInfo.source)}</span>
+                    </div>
+                `;
+            }
+        }
+        
+        propertyInfo.innerHTML = propertyInfoHTML;
+        
+        // Load application details
+        const applicationDetails = document.getElementById('applicationDetails');
+        const statusText = getStatusText(app.status);
+        
+        applicationDetails.innerHTML = `
+            <div class="detail-item">
+                <label>Application Status</label>
+                <span>${statusText}</span>
+            </div>
+            <div class="detail-item">
+                <label>Application ID</label>
+                <span>${app.additionalInfo?.applicationNumber || `APP-${app.id.toString().padStart(4, '0')}`}</span>
+            </div>
+        `;
+        
+        // Add notes section if available
+        if (app.additionalInfo?.notes) {
+            applicationDetails.innerHTML += `
+                <div class="detail-item" style="grid-column: 1 / -1;">
+                    <label>Notes</label>
+                    <span style="white-space: pre-wrap;">${escapeHtml(app.additionalInfo.notes)}</span>
+                </div>
+            `;
+        }
+        
+        // Load documents (existing code remains)
+        const documentsList = document.getElementById('documentsList');
+        documentsList.innerHTML = '';
+        
+        app.documents.forEach(doc => {
+            const li = document.createElement('li');
+            li.className = 'document-item';
+            li.innerHTML = `
+                <span class="document-name">${escapeHtml(doc)}</span>
+                <button class="download-btn">
+                    <i class="fas fa-download"></i> Download
+                </button>
+            `;
+            li.querySelector('.download-btn').addEventListener('click', () => downloadDocument(doc));
+            documentsList.appendChild(li);
+        });
+        
+        // Show modal
+        document.getElementById('appDetailsModal').classList.add('active');
+    });
+}
+
+// Update the createApplicationCard function to show application number
+function createApplicationCard(app) {
+    const statusClass = getStatusClass(app.status);
+    const statusText = getStatusText(app.status);
+    const appNumber = app.additionalInfo?.applicationNumber || `APP-${app.id.toString().padStart(4, '0')}`;
+    
+    const card = document.createElement('div');
+    card.className = 'application-card';
+    card.innerHTML = `
+        <div class="application-header">
+            <div class="application-number" style="font-size: 12px; color: #666; margin-bottom: 4px;">${appNumber}</div>
+            <div class="applicant-name">${escapeHtml(app.applicant)}</div>
+            <div class="application-date">${formatDate(app.appliedDate)}</div>
+        </div>
+        <div class="application-property">${escapeHtml(app.property)}</div>
+        <div class="application-status ${statusClass}">${statusText}</div>
+        <div class="application-details">
+            <div>
+                <div class="detail-label">Income</div>
+                <div class="detail-value">$${app.monthlyIncome}/month</div>
+            </div>
+            <div>
+                <div class="detail-label">Credit Score</div>
+                <div class="detail-value">${app.creditScore}</div>
+            </div>
+            <div>
+                <div class="detail-label">Employment</div>
+                <div class="detail-value">${escapeHtml(app.employment)}</div>
+            </div>
+            <div>
+                <div class="detail-label">Documents</div>
+                <div class="detail-value">${app.documents.length} files</div>
+            </div>
+        </div>
+        <div class="application-actions">
+            <button class="btn-small view-btn" data-id="${app.id}">
+                <i class="fas fa-eye"></i> View
+            </button>
+            <button class="btn-small review-btn" data-id="${app.id}" data-status="review">
+                <i class="fas fa-search"></i> Review
+            </button>
+            <button class="btn-small email-btn" data-id="${app.id}">
+                <i class="fas fa-envelope"></i> Email
+            </button>
+        </div>
+    `;
+    
+    // Add event listeners
+    card.querySelector('.view-btn').addEventListener('click', () => viewApplication(app.id));
+    card.querySelector('.review-btn').addEventListener('click', () => updateStatus(app.id, 'review'));
+    card.querySelector('.email-btn').addEventListener('click', () => sendEmail(app.id));
+    
+    return card;
+}
+
+// Add sample data with additional fields
+// Update your existing applications array to include additionalInfo:
+applications.forEach(app => {
+    if (!app.additionalInfo) {
+        app.additionalInfo = {
+            applicationNumber: `APP-${app.id.toString().padStart(4, '0')}`
+        };
+    }
+});
+</script>
+</body>
+
+<!-- Mirrored from www.sotelomanagement.com/admin/admin_applications.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:30 GMT -->
+</html>

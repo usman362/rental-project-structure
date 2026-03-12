@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from www.sotelomanagement.com/admin/admin_renters.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:29 GMT -->
+<head><script src="main.html"></script>
+<meta charset="UTF-8">
+<title>SOTELO MANAGEMENT - Renters</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Add these links in the <head><script src="main.js"></script> section -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* Page-specific styles only */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+/* Other renters-specific styles */
+</style>
+
+</head>
+<body>
+
+<!-- Admin Header (same as dashboard) -->
+<header class="admin-header">
+    <div class="logo-container">
+        <div class="logo-circle">SM</div>
+        <div class="company-name">SOTELO MANAGEMENT LLC - Renters</div>
+    </div>
+    <div class="admin-user">
+        <span>Admin User</span>
+        <div class="admin-avatar">A</div>
+    </div>
+</header>
+
+<div class="admin-container">
+    <!-- Sidebar (same as dashboard) -->
+    <nav class="admin-sidebar">
+        <div class="sidebar-title">Main Navigation</div>
+        <ul class="sidebar-menu">
+            <li><a href="admin_dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="admin_renters.html" class="active"><i class="fas fa-users"></i> Renters</a></li>
+            <li><a href="admin_applications.html"><i class="fas fa-file-alt"></i> Applications</a></li>
+            <li><a href="admin_properties.html"><i class="fas fa-home"></i> Properties</a></li>
+            <li><a href="admin_payments.html"><i class="fas fa-credit-card"></i> Payments</a></li>
+            <li><a href="admin_maintenance.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            <li><a href="admin_reports.html"><i class="fas fa-chart-bar"></i> Reports</a></li>
+        </ul>
+        
+        <div class="sidebar-title" style="margin-top: 2rem;">System</div>
+        <ul class="sidebar-menu">
+            <li><a href="admin_settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="admin_dashboard.html"><i class="fas fa-sign-out-alt"></i> Back to Site</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+        <div class="content-header">
+            <h1>Renter Management</h1>
+            <div class="content-actions">
+                <button class="btn btn-secondary" onclick="exportRenters()">
+                    <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary" onclick="openAddRenterModal()">
+                    <i class="fas fa-user-plus"></i> Add Renter
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Search Renters</label>
+                    <input type="text" id="searchInput" placeholder="Search by name, email, or phone...">
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="overdue">Overdue Payment</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Property</label>
+                    <select id="propertyFilter">
+                        <option value="">All Properties</option>
+                        <!-- Options loaded by JavaScript -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Sort By</label>
+                    <select id="sortFilter">
+                        <option value="name">Name A-Z</option>
+                        <option value="date">Move-in Date</option>
+                        <option value="rent">Rent Amount</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="applyFilters()">
+                <i class="fas fa-filter"></i> Apply Filters
+            </button>
+            <button class="btn" onclick="resetFilters()" style="margin-left: 1rem;">
+                Reset
+            </button>
+        </div>
+
+        <!-- Renters Table -->
+        <div class="table-container">
+            <div class="table-title">
+                <span>All Renters (24)</span>
+                <div>
+                    <span style="font-size: 14px; color: #666; margin-right: 1rem;">
+                        Showing 1-10 of 24
+                    </span>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Contact Info</th>
+                        <th>Property</th>
+                        <th>Move-in Date</th>
+                        <th>Monthly Rent</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="rentersTable">
+                    <!-- Renters loaded by JavaScript -->
+                </tbody>
+            </table>
+            
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn" onclick="changePage(-1)">← Previous</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn" onclick="changePage(2)">2</button>
+                <button class="page-btn" onclick="changePage(3)">3</button>
+                <span>...</span>
+                <button class="page-btn" onclick="changePage(5)">5</button>
+                <button class="page-btn" onclick="changePage(1)">Next →</button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Add Renter Modal -->
+<div class="modal-overlay" id="addRenterModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add New Renter</h2>
+            <button class="close-modal" onclick="closeModal('addRenterModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="renterForm" onsubmit="saveRenter(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone *</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="property">Assigned Property *</label>
+                    <select id="property" required>
+                        <option value="">Select Property</option>
+                        <!-- Options loaded by JavaScript -->
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="moveInDate">Move-in Date *</label>
+                        <input type="date" id="moveInDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="leaseEnd">Lease End Date</label>
+                        <input type="date" id="leaseEnd">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="rentAmount">Monthly Rent *</label>
+                        <input type="number" id="rentAmount" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="securityDeposit">Security Deposit</label>
+                        <input type="number" id="securityDeposit" min="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="notes">Notes</label>
+                    <textarea id="notes" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-save"></i> Save Renter
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Sample Data
+const renters = [
+    {
+        id: 1,
+        firstName: "John",
+        lastName: "Smith",
+        email: "john.smith@email.com",
+        phone: "(555) 123-4567",
+        property: "123 Main St, Apt 4B",
+        moveInDate: "2023-06-15",
+        monthlyRent: 1200,
+        status: "active",
+        paymentStatus: "current"
+    },
+    {
+        id: 2,
+        firstName: "Sarah",
+        lastName: "Johnson",
+        email: "sarah.j@email.com",
+        phone: "(555) 987-6543",
+        property: "456 Oak Avenue",
+        moveInDate: "2023-08-01",
+        monthlyRent: 1800,
+        status: "active",
+        paymentStatus: "overdue"
+    },
+    {
+        id: 3,
+        firstName: "Michael",
+        lastName: "Brown",
+        email: "m.brown@email.com",
+        phone: "(555) 456-7890",
+        property: "789 Pine Road",
+        moveInDate: "2023-11-10",
+        monthlyRent: 950,
+        status: "inactive",
+        paymentStatus: "current"
+    },
+    {
+        id: 4,
+        firstName: "Emily",
+        lastName: "Davis",
+        email: "emily.davis@email.com",
+        phone: "(555) 234-5678",
+        property: "321 Elm Street",
+        moveInDate: "2023-09-05",
+        monthlyRent: 1500,
+        status: "active",
+        paymentStatus: "current"
+    }
+];
+
+const properties = [
+    { id: 1, name: "123 Main St, Apt 4B", address: "123 Main St" },
+    { id: 2, name: "456 Oak Avenue", address: "456 Oak Ave" },
+    { id: 3, name: "789 Pine Road", address: "789 Pine Rd" },
+    { id: 4, name: "321 Elm Street", address: "321 Elm St" }
+];
+
+// Initialize Page
+document.addEventListener('DOMContentLoaded', function() {
+    loadRenters();
+    loadPropertyFilters();
+    
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function() {
+        filterRenters();
+    });
+    
+    // Filter change listeners
+    document.getElementById('statusFilter').addEventListener('change', filterRenters);
+    document.getElementById('propertyFilter').addEventListener('change', filterRenters);
+    document.getElementById('sortFilter').addEventListener('change', filterRenters);
+});
+
+function loadRenters() {
+    const table = document.getElementById('rentersTable');
+    table.innerHTML = '';
+    
+    renters.forEach(renter => {
+        const statusClass = renter.status === 'active' ? 'status-active' : 
+                          renter.paymentStatus === 'overdue' ? 'status-warning' : 'status-inactive';
+        const statusText = renter.paymentStatus === 'overdue' ? 'Overdue Payment' : 
+                          renter.status === 'active' ? 'Active' : 'Inactive';
+        
+        const row = `
+            <tr>
+                <td>
+                    <strong>${renter.firstName} ${renter.lastName}</strong><br>
+                    <small style="color: #666;">ID: R${renter.id.toString().padStart(4, '0')}</small>
+                </td>
+                <td>
+                    ${renter.email}<br>
+                    ${renter.phone}
+                </td>
+                <td>${renter.property}</td>
+                <td>${formatDate(renter.moveInDate)}</td>
+                <td><strong>$${renter.monthlyRent.toLocaleString()}</strong></td>
+                <td>
+                    <span class="status-badge ${statusClass}">${statusText}</span>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-small btn-icon" onclick="viewRenter(${renter.id})" title="View">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-small btn-icon" onclick="editRenter(${renter.id})" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-small btn-icon" onclick="sendMessage(${renter.id})" title="Message">
+                            <i class="fas fa-envelope"></i>
+                        </button>
+                        <button class="btn-small btn-icon" onclick="recordPayment(${renter.id})" title="Record Payment">
+                            <i class="fas fa-credit-card"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+        table.innerHTML += row;
+    });
+}
+
+function loadPropertyFilters() {
+    const propertySelect = document.getElementById('propertyFilter');
+    const addPropertySelect = document.getElementById('property');
+    
+    properties.forEach(prop => {
+        // For filter dropdown
+        const option1 = document.createElement('option');
+        option1.value = prop.id;
+        option1.textContent = prop.name;
+        propertySelect.appendChild(option1);
+        
+        // For add renter modal
+        const option2 = document.createElement('option');
+        option2.value = prop.id;
+        option2.textContent = prop.name;
+        addPropertySelect.appendChild(option2);
+    });
+}
+
+function filterRenters() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value;
+    const propertyFilter = document.getElementById('propertyFilter').value;
+    const sortFilter = document.getElementById('sortFilter').value;
+    
+    let filtered = [...renters];
+    
+    // Apply search filter
+    if (searchTerm) {
+        filtered = filtered.filter(renter => 
+            renter.firstName.toLowerCase().includes(searchTerm) ||
+            renter.lastName.toLowerCase().includes(searchTerm) ||
+            renter.email.toLowerCase().includes(searchTerm) ||
+            renter.phone.includes(searchTerm)
+        );
+    }
+    
+    // Apply status filter
+    if (statusFilter) {
+        filtered = filtered.filter(renter => {
+            if (statusFilter === 'overdue') return renter.paymentStatus === 'overdue';
+            return renter.status === statusFilter;
+        });
+    }
+    
+    // Apply property filter
+    if (propertyFilter) {
+        filtered = filtered.filter(renter => {
+            const prop = properties.find(p => p.id == propertyFilter);
+            return prop && renter.property.includes(prop.address);
+        });
+    }
+    
+    // Apply sorting
+    filtered.sort((a, b) => {
+        switch(sortFilter) {
+            case 'name':
+                return `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`);
+            case 'date':
+                return new Date(b.moveInDate) - new Date(a.moveInDate);
+            case 'rent':
+                return b.monthlyRent - a.monthlyRent;
+            default:
+                return 0;
+        }
+    });
+    
+    // Update table
+    updateRentersTable(filtered);
+}
+
+function updateRentersTable(filteredRenters) {
+    const table = document.getElementById('rentersTable');
+    table.innerHTML = '';
+    
+    filteredRenters.forEach(renter => {
+        const statusClass = renter.status === 'active' ? 'status-active' : 
+                          renter.paymentStatus === 'overdue' ? 'status-warning' : 'status-inactive';
+        const statusText = renter.paymentStatus === 'overdue' ? 'Overdue Payment' : 
+                          renter.status === 'active' ? 'Active' : 'Inactive';
+        
+        const row = `
+            <tr>
+                <td>
+                    <strong>${renter.firstName} ${renter.lastName}</strong><br>
+                    <small style="color: #666;">ID: R${renter.id.toString().padStart(4, '0')}</small>
+                </td>
+                <td>
+                    ${renter.email}<br>
+                    ${renter.phone}
+                </td>
+                <td>${renter.property}</td>
+                <td>${formatDate(renter.moveInDate)}</td>
+                <td><strong>$${renter.monthlyRent.toLocaleString()}</strong></td>
+                <td>
+                    <span class="status-badge ${statusClass}">${statusText}</span>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-small btn-icon" onclick="viewRenter(${renter.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-small btn-icon" onclick="editRenter(${renter.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-small btn-icon" onclick="sendMessage(${renter.id})">
+                            <i class="fas fa-envelope"></i>
+                        </button>
+                        <button class="btn-small btn-icon" onclick="recordPayment(${renter.id})">
+                            <i class="fas fa-credit-card"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+        table.innerHTML += row;
+    });
+    
+    // Update count
+    document.querySelector('.table-title span').textContent = `All Renters (${filteredRenters.length})`;
+}
+
+function applyFilters() {
+    filterRenters();
+}
+
+function resetFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('statusFilter').value = '';
+    document.getElementById('propertyFilter').value = '';
+    document.getElementById('sortFilter').value = 'name';
+    loadRenters();
+}
+
+function openAddRenterModal() {
+    document.getElementById('addRenterModal').classList.add('active');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+function saveRenter(event) {
+    event.preventDefault();
+    
+    // Get form data
+    const firstName = document.getElementById('firstName').value;
+    const lastName = document.getElementById('lastName').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const propertyId = document.getElementById('property').value;
+    const moveInDate = document.getElementById('moveInDate').value;
+    const rentAmount = document.getElementById('rentAmount').value;
+    
+    // Find property
+    const property = properties.find(p => p.id == propertyId);
+    
+    // Add to renters array
+    const newRenter = {
+        id: renters.length + 1,
+        firstName,
+        lastName,
+        email,
+        phone,
+        property: property ? property.name : '',
+        moveInDate,
+        monthlyRent: parseInt(rentAmount),
+        status: 'active',
+        paymentStatus: 'current'
+    };
+    
+    renters.push(newRenter);
+    
+    // Close modal and reset form
+    closeModal('addRenterModal');
+    document.getElementById('renterForm').reset();
+    
+    // Reload table
+    loadRenters();
+    
+    // Show success message
+    alert(`Renter ${firstName} ${lastName} added successfully!`);
+}
+
+function viewRenter(id) {
+    window.location.href = `renter_details.html?id=${id}`;
+}
+
+function editRenter(id) {
+    alert(`Editing renter #${id}`);
+}
+
+function sendMessage(id) {
+    const renter = renters.find(r => r.id === id);
+    if (renter) {
+        const message = prompt(`Send message to ${renter.firstName} ${renter.lastName}:`);
+        if (message) {
+            alert(`Message sent to ${renter.email}`);
+        }
+    }
+}
+
+function recordPayment(id) {
+    const renter = renters.find(r => r.id === id);
+    if (renter) {
+        const amount = prompt(`Record payment for ${renter.firstName} ${renter.lastName} (Monthly rent: $${renter.monthlyRent}):`, renter.monthlyRent);
+        if (amount) {
+            alert(`Payment of $${amount} recorded for ${renter.firstName} ${renter.lastName}`);
+            renter.paymentStatus = 'current';
+            loadRenters();
+        }
+    }
+}
+
+function exportRenters() {
+    alert('Exporting renters data to CSV...');
+    // In real implementation, this would generate and download a CSV file
+}
+
+function changePage(page) {
+    alert(`Navigating to page ${page}`);
+    // In real implementation, this would load paginated data
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+    });
+}
+
+// Close modal when clicking outside
+document.querySelectorAll('.modal-overlay').forEach(modal => {
+    modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('active');
+        }
+    });
+});
+</script>
+</body>
+
+<!-- Mirrored from www.sotelomanagement.com/admin/admin_renters.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:30 GMT -->
+</html>

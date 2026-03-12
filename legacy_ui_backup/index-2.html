@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from www.sotelomanagement.com/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:29 GMT -->
+<head><script src="main.js"></script>
+<meta charset="UTF-8">
+<title>SOTELO MANAGEMENT LLC</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SOTELO MANAGEMENT LLC - Wealth. Realty. Management Servicer">
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;display=swap" rel="stylesheet">
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Shared Styles -->
+<link rel="stylesheet" href="styles.html">
+
+<style>
+/* Additional styles for SOTELO MANAGEMENT */
+* { 
+    box-sizing: border-box; 
+    font-family: 'Inter', system-ui, sans-serif; 
+}
+
+body { 
+    margin: 0; 
+    background: #ffffff; 
+    color: #333333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2c5aa0 0%, #1d3a6e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(44, 90, 160, 0.2);
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.company-name-header {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.5px;
+}
+
+.company-slogan-header {
+    font-size: 13px;
+    color: #666;
+    margin-top: 2px;
+    letter-spacing: 0.3px;
+}
+
+/* Navigation */
+nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #444;
+    font-weight: 500;
+    font-size: 15px;
+    transition: color 0.3s;
+    position: relative;
+}
+
+.nav-links a:hover {
+    color: #2c5aa0;
+}
+
+.nav-links a.active {
+    color: #2c5aa0;
+    font-weight: 600;
+}
+
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #2c5aa0;
+    border-radius: 2px;
+}
+
+/* Client Portal Button */
+.client-portal-btn {
+    background-color: #2c5aa0;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 12px rgba(44, 90, 160, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.client-portal-btn:hover {
+    background-color: #1d4a8a;
+    transform: translateY(-2px);
+}
+
+.client-portal-btn i {
+    font-size: 16px;
+}
+
+/* Main Content */
+main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 20px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.hero-content {
+    width: 100%;
+}
+
+/* Company Name & Slogan */
+.company-hero {
+    margin-bottom: 3rem;
+}
+
+.company-name-hero {
+    font-size: 4rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+    letter-spacing: 1px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.company-slogan-hero {
+    font-size: 1.8rem;
+    color: #666;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    margin-top: 0;
+}
+
+/* Contact Info */
+.contact-section {
+    background-color: #f9f9f9;
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.contact-section h2 {
+    color: #2c5aa0;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.contact-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+.contact-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #2c5aa0, #3a6bc5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.contact-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-label {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 4px;
+}
+
+.contact-value {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+.contact-value a {
+    color: #2c5aa0;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.contact-value a:hover {
+    color: #1d4a8a;
+    text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    background-color: #1a1a1a;
+    color: #ddd;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    margin-top: auto;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.footer-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.footer-company-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+}
+
+.footer-slogan {
+    font-size: 14px;
+    color: #aaa;
+}
+
+.copyright {
+    font-size: 14px;
+    color: #aaa;
+    margin-top: 1rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.social-links a {
+    color: #aaa;
+    font-size: 20px;
+    transition: color 0.3s;
+}
+
+.social-links a:hover {
+    color: #2c5aa0;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    background-color: #2c5aa0;
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.close-modal:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #444;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #2c5aa0;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+}
+
+.modal-btn {
+    width: 100%;
+    background-color: #2c5aa0;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.modal-btn:hover {
+    background-color: #1d4a8a;
+}
+
+.modal-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #777;
+    font-size: 14px;
+}
+
+/* Mobile Menu Toggle */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #444;
+    cursor: pointer;
+    padding: 8px;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .company-name-hero {
+        font-size: 3.2rem;
+    }
+    
+    .company-slogan-hero {
+        font-size: 1.5rem;
+    }
+    
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 1rem;
+    }
+    
+    .header-container {
+        flex-wrap: wrap;
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    nav {
+        width: 100%;
+        order: 3;
+        margin-top: 1rem;
+        display: none;
+    }
+    
+    nav.active {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+    }
+    
+    .client-portal-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .company-name-hero {
+        font-size: 2.5rem;
+    }
+    
+    .company-slogan-hero {
+        font-size: 1.3rem;
+    }
+    
+    main {
+        padding: 100px 15px 40px;
+    }
+    
+    .contact-section {
+        padding: 2rem;
+    }
+    
+    .contact-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .contact-details {
+        align-items: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .company-name-hero {
+        font-size: 2rem;
+    }
+    
+    .company-slogan-hero {
+        font-size: 1.1rem;
+    }
+    
+    .contact-section {
+        padding: 1.5rem;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Header -->
+<header>
+    <div class="header-container">
+        <div class="logo-container">
+            <div class="logo-circle">SM</div>
+            <div class="logo-text">
+                <div class="company-name-header">SOTELO MANAGEMENT LLC</div>
+                <div class="company-slogan-header">Wealth. Realty. Management Servicer</div>
+            </div>
+        </div>
+        
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <nav id="mainNav">
+            <ul class="nav-links">
+                <li><a href="app.html">RENTAL APPLICATION</a></li>
+            </ul>
+            <button class="client-portal-btn" id="openModal">
+                <i class="fas fa-user-circle"></i>
+                Client Portal
+            </button>
+        </nav>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main>
+    <div class="hero-content">
+        <div class="company-hero">
+            <h1 class="company-name-hero">SOTELO MANAGEMENT LLC</h1>
+            <p class="company-slogan-hero">Wealth. Realty. Management Servicer</p>
+        </div>
+        
+        <div class="contact-section">
+            <h2>Contact Information</h2>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-details">
+                        <div class="contact-label">Email</div>
+                        <div class="contact-value">
+                            <a href="mailto:support@sotelomanage.com">support@sotelomanage.com</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="contact-details">
+                        <div class="contact-label">Website</div>
+                        <div class="contact-value">
+                            <a href="https://www.sotelomanage.com/" target="_blank">www.sotelomanage.com</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="contact-details">
+                        <div class="contact-label">Phone</div>
+                        <div class="contact-value">307-228-4667</div>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-details">
+                        <div class="contact-label">Address</div>
+                        <div class="contact-value">130 N. Gould St. STE 100<br>Sheridan, WY 82801</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Login Modal -->
+<div class="modal-overlay" id="loginModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Client Portal Login</h2>
+            <button class="close-modal" id="closeModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username or Email</label>
+                    <input type="text" id="username" placeholder="Enter your username or email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="modal-btn">Login to Portal</button>
+            </form>
+            <div class="modal-footer">
+                <p>Need help accessing your account? Contact <a href="mailto:support@sotelomanage.com">support@sotelomanage.com</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-container">
+        <div class="footer-logo">
+            <div class="footer-company-name">SOTELO MANAGEMENT LLC</div>
+            <div class="footer-slogan">Wealth. Realty. Management Servicer</div>
+        </div>
+        
+        <div class="copyright">
+            &copy; 2026 SOTELO MANAGEMENT LLC. All rights reserved.
+        </div>
+        
+        <div class="social-links">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
+</footer>
+
+<script>
+// Mobile menu toggle
+document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+    const nav = document.getElementById('mainNav');
+    nav.classList.toggle('active');
+    
+    // Change icon
+    const icon = this.querySelector('i');
+    if (nav.classList.contains('active')) {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+    } else {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+    }
+});
+
+// Modal functionality
+const openModalBtn = document.getElementById('openModal');
+const closeModalBtn = document.getElementById('closeModal');
+const loginModal = document.getElementById('loginModal');
+const loginForm = document.getElementById('loginForm');
+
+// Open modal
+openModalBtn.addEventListener('click', function() {
+    loginModal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent scrolling behind modal
+});
+
+// Close modal
+closeModalBtn.addEventListener('click', function() {
+    loginModal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+});
+
+// Close modal when clicking outside of it
+loginModal.addEventListener('click', function(e) {
+    if (e.target === loginModal) {
+        loginModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && loginModal.classList.contains('active')) {
+        loginModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+});
+
+// Handle form submission
+// Handle form submission
+loginForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    
+    // User credentials
+    const testUsername = 'test';
+    const adminUsername = 'admin';
+    const userPassword = 'password';
+    
+    // Check if credentials match
+    if ((username === testUsername || username === adminUsername) && password === userPassword) {
+        // Success: Show welcome message
+        let redirectUrl = 'renter/renter_portal.html';
+        let userType = 'renter';
+        
+        // Admin gets different redirect
+        if (username === adminUsername) {
+            redirectUrl = 'admin/admin_dashboard.html';
+            userType = 'admin';
+        }
+        
+        alert(`Welcome, ${username} (${userType})! Redirecting to portal...`);
+        loginForm.reset();
+        loginModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        
+        // Redirect to appropriate portal after a brief delay
+        setTimeout(function() {
+            window.location.href = redirectUrl;
+        }, 500);
+    } else {
+        // Invalid credentials
+        alert('Invalid username or password. Please try again.\n\nFor demo purposes, use:\nUsername: test or admin\nPassword: password');
+        
+        // Clear password field for security
+        document.getElementById('password').value = '';
+        
+        // Focus back on username field
+        document.getElementById('username').focus();
+    }
+});
+
+// Close mobile menu when clicking a link
+const navLinks = document.querySelectorAll('.nav-links a');
+navLinks.forEach(link => {
+    link.addEventListener('click', function() {
+        document.getElementById('mainNav').classList.remove('active');
+        // Reset mobile menu icon
+        const toggleIcon = document.querySelector('#mobileMenuToggle i');
+        toggleIcon.classList.remove('fa-times');
+        toggleIcon.classList.add('fa-bars');
+    });
+});
+
+// Update active nav link on scroll
+window.addEventListener('scroll', function() {
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    
+    let current = '';
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (scrollY >= (sectionTop - 200)) {
+            current = section.getAttribute('id');
+        }
+    });
+    
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+            link.classList.add('active');
+        }
+    });
+});
+
+// Optional: Add a hint for the test account in the modal
+window.addEventListener('DOMContentLoaded', function() {
+    // Add a hint about test credentials (optional - can be removed for production)
+    const modalFooter = document.querySelector('.modal-footer');
+    const hint = document.createElement('p');
+    hint.style.marginTop = '10px';
+    hint.style.fontSize = '12px';
+    hint.style.color = '#888';
+    hint.innerHTML = '<strong>Demo credentials:</strong><br>Renter: username: <code>test</code><br>Admin: username: <code>admin</code><br>Password for both: <code>password</code>';
+    modalFooter.appendChild(hint);
+});
+</script>
+
+</body>
+
+<!-- Mirrored from www.sotelomanagement.com/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:29 GMT -->
+</html>

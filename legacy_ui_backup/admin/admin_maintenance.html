@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from www.sotelomanagement.com/admin/admin_maintenance.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:30 GMT -->
+<head><script src="main.html"></script>
+<meta charset="UTF-8">
+<title>SOTELO MANAGEMENT - Maintenance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Add these links in the <head><script src="main.js"></script> section -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+
+<!-- Admin Header -->
+<header class="admin-header">
+    <div class="logo-container">
+        <div class="logo-circle">SM</div>
+        <div class="company-name">SOTELO MANAGEMENT LLC - Maintenance</div>
+    </div>
+    <div class="admin-user">
+        <span>Admin User</span>
+        <div class="admin-avatar">A</div>
+    </div>
+</header>
+
+<div class="admin-container">
+    <!-- Sidebar -->
+    <nav class="admin-sidebar">
+        <div class="sidebar-title">Main Navigation</div>
+        <ul class="sidebar-menu">
+            <li><a href="admin_dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="admin_renters.html"><i class="fas fa-users"></i> Renters</a></li>
+            <li><a href="admin_applications.html"><i class="fas fa-file-alt"></i> Applications</a></li>
+            <li><a href="admin_properties.html"><i class="fas fa-home"></i> Properties</a></li>
+            <li><a href="admin_payments.html"><i class="fas fa-credit-card"></i> Payments</a></li>
+            <li><a href="admin_maintenance.html" class="active"><i class="fas fa-tools"></i> Maintenance</a></li>
+            <li><a href="admin_reports.html"><i class="fas fa-chart-bar"></i> Reports</a></li>
+        </ul>
+        
+        <div class="sidebar-title" style="margin-top: 2rem;">System</div>
+        <ul class="sidebar-menu">
+            <li><a href="admin_settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="admin_dashboard.html"><i class="fas fa-sign-out-alt"></i> Back to Site</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+        <div class="content-header">
+            <h1>Maintenance Management</h1>
+            <div class="content-actions">
+                <button class="btn btn-secondary" onclick="exportMaintenance()">
+                    <i class="fas fa-download"></i> Export
+                </button>
+                <button class="btn btn-primary" onclick="createRequest()">
+                    <i class="fas fa-plus"></i> New Request
+                </button>
+                <button class="btn btn-success" onclick="scheduleInspection()">
+                    <i class="fas fa-calendar-check"></i> Schedule
+                </button>
+            </div>
+        </div>
+
+        <!-- Maintenance Stats -->
+        <div class="maintenance-stats">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="stat-value" id="openRequests">8</div>
+                <div class="stat-label">Open Requests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-value" id="inProgress">4</div>
+                <div class="stat-label">In Progress</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-value" id="completedThisMonth">12</div>
+                <div class="stat-label">Completed This Month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-value" id="highPriority">3</div>
+                <div class="stat-label">High Priority</div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Search Requests</label>
+                    <input type="text" id="maintenanceSearch" placeholder="Search by property or issue...">
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="maintenanceStatusFilter">
+                        <option value="">All Status</option>
+                        <option value="open">Open</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Priority</label>
+                    <select id="maintenancePriorityFilter">
+                        <option value="">All Priorities</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Property</label>
+                    <select id="maintenancePropertyFilter">
+                        <option value="">All Properties</option>
+                        <!-- Loaded by JavaScript -->
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="filterMaintenance()">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+            <button class="btn" onclick="resetMaintenanceFilters()" style="margin-left: 1rem;">
+                Reset
+            </button>
+        </div>
+
+        <!-- Maintenance Requests -->
+        <div id="maintenanceRequests">
+            <!-- Requests loaded by JavaScript -->
+        </div>
+
+        <!-- Maintenance Schedule -->
+        <div class="schedule-calendar">
+            <h3 style="color: #2c5aa0; margin-bottom: 1rem;">Upcoming Maintenance</h3>
+            <div id="scheduleList">
+                <!-- Schedule loaded by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Vendors Section -->
+        <div class="vendors-grid">
+            <div class="vendor-card">
+                <div class="vendor-header">
+                    <div class="vendor-avatar">PL</div>
+                    <div>
+                        <h4 class="vendor-name">Premium Plumbing</h4>
+                        <div class="vendor-specialty">Plumbing & Water Heater</div>
+                    </div>
+                </div>
+                <div class="vendor-contact">
+                    <div><i class="fas fa-phone"></i> (555) 123-4567</div>
+                    <div><i class="fas fa-envelope"></i> contact@premiumplumbing.com</div>
+                </div>
+                <div class="vendor-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i> 4.5/5
+                </div>
+                <div style="margin-top: 1rem;">
+                    <button class="btn-small" onclick="contactVendor('Premium Plumbing')">
+                        <i class="fas fa-phone"></i> Contact
+                    </button>
+                </div>
+            </div>
+            
+            <div class="vendor-card">
+                <div class="vendor-header">
+                    <div class="vendor-avatar">EC</div>
+                    <div>
+                        <h4 class="vendor-name">Electrical Experts</h4>
+                        <div class="vendor-specialty">Electrical & Lighting</div>
+                    </div>
+                </div>
+                <div class="vendor-contact">
+                    <div><i class="fas fa-phone"></i> (555) 987-6543</div>
+                    <div><i class="fas fa-envelope"></i> service@electricalexperts.com</div>
+                </div>
+                <div class="vendor-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i> 5/5
+                </div>
+                <div style="margin-top: 1rem;">
+                    <button class="btn-small" onclick="contactVendor('Electrical Experts')">
+                        <i class="fas fa-phone"></i> Contact
+                    </button>
+                </div>
+            </div>
+            
+            <div class="vendor-card">
+                <div class="vendor-header">
+                    <div class="vendor-avatar">HC</div>
+                    <div>
+                        <h4 class="vendor-name">HVAC Care</h4>
+                        <div class="vendor-specialty">Heating & Cooling</div>
+                    </div>
+                </div>
+                <div class="vendor-contact">
+                    <div><i class="fas fa-phone"></i> (555) 456-7890</div>
+                    <div><i class="fas fa-envelope"></i> support@hvaccare.com</div>
+                </div>
+                <div class="vendor-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i> 4/5
+                </div>
+                <div style="margin-top: 1rem;">
+                    <button class="btn-small" onclick="contactVendor('HVAC Care')">
+                        <i class="fas fa-phone"></i> Contact
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Create Request Modal -->
+<div class="modal-overlay" id="createRequestModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Create Maintenance Request</h2>
+            <button class="close-modal" onclick="closeModal('createRequestModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="maintenanceForm" onsubmit="saveRequest(event)">
+                <div class="form-section">
+                    <h4>Request Details</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="requestProperty">Property *</label>
+                            <select id="requestProperty" required>
+                                <option value="">Select Property</option>
+                                <!-- Loaded by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="requestUnit">Unit (if applicable)</label>
+                            <input type="text" id="requestUnit">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="requestCategory">Category *</label>
+                            <select id="requestCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="plumbing">Plumbing</option>
+                                <option value="electrical">Electrical</option>
+                                <option value="hvac">HVAC</option>
+                                <option value="appliance">Appliance</option>
+                                <option value="structural">Structural</option>
+                                <option value="pest">Pest Control</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="requestPriority">Priority *</label>
+                            <select id="requestPriority" required>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                                <option value="emergency">Emergency</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="requestTitle">Title *</label>
+                        <input type="text" id="requestTitle" required placeholder="Brief description of the issue">
+                    </div>
+                    <div class="form-group">
+                        <label for="requestDescription">Detailed Description *</label>
+                        <textarea id="requestDescription" rows="4" required></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h4>Contact Information</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="requestRenter">Reported By</label>
+                            <select id="requestRenter">
+                                <option value="">Select Renter</option>
+                                <!-- Loaded by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="requestContact">Contact Phone</label>
+                            <input type="tel" id="requestContact">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="requestAccess">Access Instructions</label>
+                        <textarea id="requestAccess" rows="2" placeholder="How to access the property/unit"></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h4>Additional Information</h4>
+                    <div class="form-group">
+                        <label for="requestPhotos">Upload Photos</label>
+                        <input type="file" id="requestPhotos" multiple accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="requestEmergency">
+                            This is an emergency requiring immediate attention
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-save"></i> Submit Request
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Maintenance Details Modal -->
+<div class="modal-overlay maintenance-details" id="maintenanceDetailsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Maintenance Request Details</h2>
+            <button class="close-modal" onclick="closeModal('maintenanceDetailsModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="details-section">
+                <h3 id="detailTitle">Loading...</h3>
+                <div class="info-grid" id="detailInfo">
+                    <!-- Loaded by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="details-section">
+                <h3>Timeline</h3>
+                <div class="details-timeline" id="detailTimeline">
+                    <!-- Loaded by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="details-section">
+                <h3>Cost Breakdown</h3>
+                <div class="cost-breakdown" id="detailCosts">
+                    <!-- Loaded by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="details-section">
+                <h3>Actions</h3>
+                <div class="application-actions">
+                    <button class="btn btn-success" onclick="updateStatus('in-progress')">
+                        <i class="fas fa-play"></i> Start Work
+                    </button>
+                    <button class="btn btn-primary" onclick="updateStatus('completed')">
+                        <i class="fas fa-check"></i> Mark Complete
+                    </button>
+                    <button class="btn btn-secondary" onclick="assignVendor()">
+                        <i class="fas fa-user-tie"></i> Assign Vendor
+                    </button>
+                    <button class="btn" onclick="addNote()">
+                        <i class="fas fa-comment"></i> Add Note
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Sample Maintenance Data
+const maintenanceRequests = [
+    {
+        id: 1,
+        property: "123 Main St, Apt 4B",
+        unit: "4B",
+        title: "Leaking faucet in kitchen",
+        description: "The kitchen faucet has been leaking for two days. Drip is constant and worsening.",
+        category: "plumbing",
+        priority: "medium",
+        status: "open",
+        reportedBy: "John Smith",
+        reportedDate: "2024-01-15",
+        assignedTo: null,
+        estimatedCost: 150,
+        actualCost: 0,
+        photos: []
+    },
+    {
+        id: 2,
+        property: "456 Oak Avenue",
+        unit: "Main House",
+        title: "AC not cooling properly",
+        description: "Air conditioner blowing warm air. Temperature set to 72 but room stays at 78+.",
+        category: "hvac",
+        priority: "high",
+        status: "in-progress",
+        reportedBy: "Sarah Johnson",
+        reportedDate: "2024-01-14",
+        assignedTo: "HVAC Care",
+        estimatedCost: 450,
+        actualCost: 0,
+        photos: []
+    },
+    {
+        id: 3,
+        property: "789 Pine Road",
+        unit: "Unit 3",
+        title: "Broken light fixture",
+        description: "Living room ceiling light fixture fell down. Electrical wires exposed.",
+        category: "electrical",
+        priority: "high",
+        status: "completed",
+        reportedBy: "Michael Brown",
+        reportedDate: "2024-01-10",
+        assignedTo: "Electrical Experts",
+        estimatedCost: 200,
+        actualCost: 220,
+        photos: []
+    },
+    {
+        id: 4,
+        property: "321 Elm Street",
+        unit: "Basement",
+        title: "Clogged drain",
+        description: "Basement sink draining very slowly. Tried drain cleaner but didn't help.",
+        category: "plumbing",
+        priority: "low",
+        status: "closed",
+        reportedBy: "Emily Davis",
+        reportedDate: "2024-01-05",
+        assignedTo: "Premium Plumbing",
+        estimatedCost: 120,
+        actualCost: 120,
+        photos: []
+    }
+];
+
+const properties = [
+    { id: 1, name: "123 Main St, Apt 4B", address: "123 Main St" },
+    { id: 2, name: "456 Oak Avenue", address: "456 Oak Ave" },
+    { id: 3, name: "789 Pine Road", address: "789 Pine Rd" },
+    { id: 4, name: "321 Elm Street", address: "321 Elm St" }
+];
+
+const renters = [
+    { id: 1, name: "John Smith", property: "123 Main St, Apt 4B" },
+    { id: 2, name: "Sarah Johnson", property: "456 Oak Avenue" },
+    { id: 3, name: "Michael Brown", property: "789 Pine Road" },
+    { id: 4, name: "Emily Davis", property: "321 Elm Street" }
+];
+
+const schedule = [
+    { date: "2024-01-20", property: "123 Main St", task: "Annual fire alarm inspection", vendor: "Safety First Inc." },
+    { date: "2024-01-22", property: "456 Oak Ave", task: "Gutter cleaning", vendor: "Clean Gutters Co." },
+    { date: "2024-01-25", property: "All Properties", task: "Quarterly pest control", vendor: "Pest Free LLC" }
+];
+
+let currentRequestId = null;
+
+// Initialize Page
+document.addEventListener('DOMContentLoaded', function() {
+    loadMaintenanceRequests();
+    loadSchedule();
+    loadPropertyFilters();
+    loadDropdowns();
+    updateStats();
+    
+    // Search functionality
+    document.getElementById('maintenanceSearch').addEventListener('input', function() {
+        filterMaintenance();
+    });
+    
+    // Filter change listeners
+    document.getElementById('maintenanceStatusFilter').addEventListener('change', filterMaintenance);
+    document.getElementById('maintenancePriorityFilter').addEventListener('change', filterMaintenance);
+    document.getElementById('maintenancePropertyFilter').addEventListener('change', filterMaintenance);
+});
+
+function loadMaintenanceRequests() {
+    const container = document.getElementById('maintenanceRequests');
+    container.innerHTML = '';
+    
+    maintenanceRequests.forEach(request => {
+        const priorityClass = `priority-${request.priority}`;
+        const statusClass = request.status === 'open' ? 'status-open' :
+                          request.status === 'in-progress' ? 'status-in-progress' :
+                          request.status === 'completed' ? 'status-completed' : 'status-closed';
+        const statusText = request.status === 'open' ? 'Open' :
+                          request.status === 'in-progress' ? 'In Progress' :
+                          request.status === 'completed' ? 'Completed' : 'Closed';
+        
+        const card = document.createElement('div');
+        card.className = `request-card ${priorityClass}`;
+        card.onclick = () => viewRequest(request.id);
+        card.innerHTML = `
+            <div class="request-header">
+                <h3 class="request-title">${request.title}</h3>
+                <span class="request-status ${statusClass}">${statusText}</span>
+            </div>
+            <div class="request-property">${request.property} ${request.unit ? `- ${request.unit}` : ''}</div>
+            <div class="request-description">${request.description}</div>
+            <div class="request-footer">
+                <div class="request-meta">
+                    <span><i class="fas fa-calendar"></i> ${formatDate(request.reportedDate)}</span>
+                    <span><i class="fas fa-user"></i> ${request.reportedBy}</span>
+                    <span><i class="fas fa-tag"></i> ${request.category}</span>
+                </div>
+                <div class="property-actions">
+                    <button class="btn-small btn-icon" onclick="event.stopPropagation(); updateRequestStatus(${request.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function loadSchedule() {
+    const container = document.getElementById('scheduleList');
+    container.innerHTML = '';
+    
+    schedule.forEach(item => {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'schedule-day';
+        dayDiv.innerHTML = `
+            <div class="schedule-date">${formatDate(item.date)}</div>
+            <div class="schedule-item">
+                <div>
+                    <div style="font-weight: 600;">${item.task}</div>
+                    <div style="font-size: 14px; color: #666;">${item.property}</div>
+                </div>
+                <div>
+                    <small style="color: #666;">${item.vendor}</small>
+                </div>
+            </div>
+        `;
+        container.appendChild(dayDiv);
+    });
+}
+
+function loadPropertyFilters() {
+    const select = document.getElementById('maintenancePropertyFilter');
+    properties.forEach(prop => {
+        const option = document.createElement('option');
+        option.value = prop.id;
+        option.textContent = prop.name;
+        select.appendChild(option);
+    });
+}
+
+function loadDropdowns() {
+    // Property dropdown for create form
+    const propertySelect = document.getElementById('requestProperty');
+    properties.forEach(prop => {
+        const option = document.createElement('option');
+        option.value = prop.id;
+        option.textContent = prop.name;
+        propertySelect.appendChild(option);
+    });
+    
+    // Renter dropdown for create form
+    const renterSelect = document.getElementById('requestRenter');
+    renters.forEach(renter => {
+        const option = document.createElement('option');
+        option.value = renter.id;
+        option.textContent = `${renter.name} (${renter.property})`;
+        renterSelect.appendChild(option);
+    });
+}
+
+function updateStats() {
+    const openRequests = maintenanceRequests.filter(r => r.status === 'open').length;
+    const inProgress = maintenanceRequests.filter(r => r.status === 'in-progress').length;
+    const completedThisMonth = maintenanceRequests.filter(r => 
+        r.status === 'completed' && 
+        new Date(r.reportedDate).getMonth() === new Date().getMonth()
+    ).length;
+    const highPriority = maintenanceRequests.filter(r => 
+        r.priority === 'high' || r.priority === 'emergency'
+    ).length;
+    
+    document.getElementById('openRequests').textContent = openRequests;
+    document.getElementById('inProgress').textContent = inProgress;
+    document.getElementById('completedThisMonth').textContent = completedThisMonth;
+    document.getElementById('highPriority').textContent = highPriority;
+}
+
+function createRequest() {
+    document.getElementById('createRequestModal').classList.add('active');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+function saveRequest(event) {
+    event.preventDefault();
+    
+    const propertyId = document.getElementById('requestProperty').value;
+    const unit = document.getElementById('requestUnit').value;
+    const category = document.getElementById('requestCategory').value;
+    const priority = document.getElementById('requestPriority').value;
+    const title = document.getElementById('requestTitle').value;
+    const description = document.getElementById('requestDescription').value;
+    const renterId = document.getElementById('requestRenter').value;
+    const emergency = document.getElementById('requestEmergency').checked;
+    
+    const property = properties.find(p => p.id == propertyId);
+    const renter = renters.find(r => r.id == renterId);
+    
+    // Add to maintenance requests array
+    const newRequest = {
+        id: maintenanceRequests.length + 1,
+        property: property ? property.name : 'Unknown Property',
+        unit: unit,
+        title: title,
+        description: description,
+        category: category,
+        priority: emergency ? 'emergency' : priority,
+        status: 'open',
+        reportedBy: renter ? renter.name : 'Maintenance Staff',
+        reportedDate: new Date().toISOString().split('T')[0],
+        assignedTo: null,
+        estimatedCost: 0,
+        actualCost: 0,
+        photos: []
+    };
+    
+    maintenanceRequests.push(newRequest);
+    
+    // Close modal and reset form
+    closeModal('createRequestModal');
+    document.getElementById('maintenanceForm').reset();
+    
+    // Reload requests and update stats
+    loadMaintenanceRequests();
+    updateStats();
+    
+    alert(`Maintenance request "${title}" created successfully!`);
+}
+
+function viewRequest(id) {
+    currentRequestId = id;
+    const request = maintenanceRequests.find(r => r.id === id);
+    
+    if (!request) return;
+    
+    // Load title
+    document.getElementById('detailTitle').textContent = request.title;
+    
+    // Load info
+    const info = document.getElementById('detailInfo');
+    info.innerHTML = `
+        <div class="detail-item">
+            <label>Property</label>
+            <span>${request.property} ${request.unit ? `- ${request.unit}` : ''}</span>
+        </div>
+        <div class="detail-item">
+            <label>Category</label>
+            <span style="text-transform: capitalize;">${request.category}</span>
+        </div>
+        <div class="detail-item">
+            <label>Priority</label>
+            <span style="text-transform: capitalize; color: ${request.priority === 'high' || request.priority === 'emergency' ? '#ef4444' : request.priority === 'medium' ? '#f59e0b' : '#10b981'}">
+                ${request.priority}
+            </span>
+        </div>
+        <div class="detail-item">
+            <label>Status</label>
+            <span style="text-transform: capitalize;">${request.status}</span>
+        </div>
+        <div class="detail-item">
+            <label>Reported By</label>
+            <span>${request.reportedBy}</span>
+        </div>
+        <div class="detail-item">
+            <label>Reported Date</label>
+            <span>${formatDate(request.reportedDate)}</span>
+        </div>
+        <div class="detail-item">
+            <label>Assigned To</label>
+            <span>${request.assignedTo || 'Not assigned'}</span>
+        </div>
+        <div class="detail-item">
+            <label>Description</label>
+            <span>${request.description}</span>
+        </div>
+    `;
+    
+    // Load timeline
+    const timeline = document.getElementById('detailTimeline');
+    timeline.innerHTML = `
+        <div class="timeline-item">
+            <div class="timeline-date">${formatDate(request.reportedDate)}</div>
+            <div class="timeline-content">
+                <strong>Request Created</strong><br>
+                ${request.reportedBy} reported: "${request.title}"
+            </div>
+        </div>
+        ${request.status === 'in-progress' || request.status === 'completed' || request.status === 'closed' ? `
+        <div class="timeline-item">
+            <div class="timeline-date">${formatDate(new Date().toISOString().split('T')[0])}</div>
+            <div class="timeline-content">
+                <strong>Work Started</strong><br>
+                Maintenance work initiated by ${request.assignedTo || 'maintenance team'}
+            </div>
+        </div>
+        ` : ''}
+        ${request.status === 'completed' || request.status === 'closed' ? `
+        <div class="timeline-item">
+            <div class="timeline-date">${formatDate(new Date().toISOString().split('T')[0])}</div>
+            <div class="timeline-content">
+                <strong>Work Completed</strong><br>
+                Issue resolved and marked as complete
+            </div>
+        </div>
+        ` : ''}
+    `;
+    
+    // Load costs
+    const costs = document.getElementById('detailCosts');
+    costs.innerHTML = `
+        <div class="cost-item">
+            <span>Estimated Cost:</span>
+            <span>$${request.estimatedCost}</span>
+        </div>
+        <div class="cost-item">
+            <span>Actual Cost:</span>
+            <span>$${request.actualCost}</span>
+        </div>
+        <div class="cost-item">
+            <span>Variance:</span>
+            <span style="color: ${request.actualCost <= request.estimatedCost ? '#10b981' : '#ef4444'}">
+                $${Math.abs(request.actualCost - request.estimatedCost)} 
+                ${request.actualCost <= request.estimatedCost ? 'under' : 'over'}
+            </span>
+        </div>
+    `;
+    
+    // Show modal
+    document.getElementById('maintenanceDetailsModal').classList.add('active');
+}
+
+function filterMaintenance() {
+    const searchTerm = document.getElementById('maintenanceSearch').value.toLowerCase();
+    const statusFilter = document.getElementById('maintenanceStatusFilter').value;
+    const priorityFilter = document.getElementById('maintenancePriorityFilter').value;
+    const propertyFilter = document.getElementById('maintenancePropertyFilter').value;
+    
+    let filtered = [...maintenanceRequests];
+    
+    if (searchTerm) {
+        filtered = filtered.filter(request => 
+            request.property.toLowerCase().includes(searchTerm) ||
+            request.title.toLowerCase().includes(searchTerm) ||
+            request.description.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    if (statusFilter) {
+        filtered = filtered.filter(request => request.status === statusFilter);
+    }
+    
+    if (priorityFilter) {
+        filtered = filtered.filter(request => request.priority === priorityFilter);
+    }
+    
+    if (propertyFilter) {
+        const prop = properties.find(p => p.id == propertyFilter);
+        filtered = filtered.filter(request => prop && request.property.includes(prop.address));
+    }
+    
+    renderFilteredRequests(filtered);
+}
+
+function renderFilteredRequests(filteredRequests) {
+    const container = document.getElementById('maintenanceRequests');
+    container.innerHTML = '';
+    
+    filteredRequests.forEach(request => {
+        const priorityClass = `priority-${request.priority}`;
+        const statusClass = request.status === 'open' ? 'status-open' :
+                          request.status === 'in-progress' ? 'status-in-progress' :
+                          request.status === 'completed' ? 'status-completed' : 'status-closed';
+        const statusText = request.status === 'open' ? 'Open' :
+                          request.status === 'in-progress' ? 'In Progress' :
+                          request.status === 'completed' ? 'Completed' : 'Closed';
+        
+        const card = document.createElement('div');
+        card.className = `request-card ${priorityClass}`;
+        card.onclick = () => viewRequest(request.id);
+        card.innerHTML = `
+            <div class="request-header">
+                <h3 class="request-title">${request.title}</h3>
+                <span class="request-status ${statusClass}">${statusText}</span>
+            </div>
+            <div class="request-property">${request.property} ${request.unit ? `- ${request.unit}` : ''}</div>
+            <div class="request-description">${request.description}</div>
+            <div class="request-footer">
+                <div class="request-meta">
+                    <span><i class="fas fa-calendar"></i> ${formatDate(request.reportedDate)}</span>
+                    <span><i class="fas fa-user"></i> ${request.reportedBy}</span>
+                    <span><i class="fas fa-tag"></i> ${request.category}</span>
+                </div>
+                <div class="property-actions">
+                    <button class="btn-small btn-icon" onclick="event.stopPropagation(); updateRequestStatus(${request.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function resetMaintenanceFilters() {
+    document.getElementById('maintenanceSearch').value = '';
+    document.getElementById('maintenanceStatusFilter').value = '';
+    document.getElementById('maintenancePriorityFilter').value = '';
+    document.getElementById('maintenancePropertyFilter').value = '';
+    loadMaintenanceRequests();
+}
+
+function updateRequestStatus(id) {
+    const request = maintenanceRequests.find(r => r.id === id);
+    if (!request) return;
+    
+    const newStatus = prompt(`Update status for "${request.title}":\n\nCurrent: ${request.status}\n\nEnter new status (open, in-progress, completed, closed):`, request.status);
+    
+    if (newStatus && ['open', 'in-progress', 'completed', 'closed'].includes(newStatus)) {
+        request.status = newStatus;
+        
+        if (newStatus === 'in-progress' && !request.assignedTo) {
+            const vendor = prompt('Assign to vendor:', request.assignedTo || '');
+            if (vendor) request.assignedTo = vendor;
+        }
+        
+        if (newStatus === 'completed' || newStatus === 'closed') {
+            const actualCost = prompt('Enter actual cost:', request.actualCost || request.estimatedCost);
+            if (actualCost) request.actualCost = parseFloat(actualCost);
+        }
+        
+        loadMaintenanceRequests();
+        updateStats();
+        alert(`Status updated to: ${newStatus}`);
+    }
+}
+
+function updateStatus(newStatus) {
+    if (currentRequestId) {
+        updateRequestStatus(currentRequestId);
+        closeModal('maintenanceDetailsModal');
+    }
+}
+
+function assignVendor() {
+    if (currentRequestId) {
+        const request = maintenanceRequests.find(r => r.id === currentRequestId);
+        if (request) {
+            const vendor = prompt('Assign vendor to this request:', request.assignedTo || '');
+            if (vendor) {
+                request.assignedTo = vendor;
+                request.status = 'in-progress';
+                loadMaintenanceRequests();
+                updateStats();
+                alert(`Assigned to: ${vendor}`);
+            }
+        }
+    }
+}
+
+function addNote() {
+    if (currentRequestId) {
+        const note = prompt('Add note to maintenance request:');
+        if (note) {
+            alert('Note added successfully!');
+        }
+    }
+}
+
+function contactVendor(vendorName) {
+    alert(`Contacting ${vendorName}...\n\nThis would open contact options in a real application.`);
+}
+
+function scheduleInspection() {
+    alert('Opening inspection scheduling calendar...');
+}
+
+function exportMaintenance() {
+    alert('Exporting maintenance data...');
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+    });
+}
+
+// Close modal when clicking outside
+document.querySelectorAll('.modal-overlay').forEach(modal => {
+    modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('active');
+        }
+    });
+});
+</script>
+</body>
+
+<!-- Mirrored from www.sotelomanagement.com/admin/admin_maintenance.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:30 GMT -->
+</html>

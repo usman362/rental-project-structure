@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from www.sotelomanagement.com/renter/help_center.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:29 GMT -->
+<head><script src="main.html"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center - SOTELO MANAGEMENT LLC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Inter', system-ui, sans-serif; 
+        }
+        
+        body { 
+            background: #f8f9fa; 
+            color: #333333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2c5aa0 0%, #1d3a6e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(44, 90, 160, 0.2);
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .company-name-header {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: 0.5px;
+        }
+        
+        .company-slogan-header {
+            font-size: 13px;
+            color: #666;
+            margin-top: 2px;
+            letter-spacing: 0.3px;
+        }
+        
+        /* User Menu */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2c5aa0, #3a6bc5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .logout-btn {
+            background-color: #f8f9fa;
+            color: #2c5aa0;
+            border: 1px solid #ddd;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: #2c5aa0;
+            color: white;
+            border-color: #2c5aa0;
+        }
+        
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #444;
+            cursor: pointer;
+            padding: 8px;
+        }
+        
+        /* Main Container */
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 100px auto 40px;
+            width: 100%;
+            padding: 0 20px;
+            gap: 30px;
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+        
+        .nav-section h3 {
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+            padding-left: 10px;
+        }
+        
+        .nav-links {
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-bottom: 8px;
+        }
+        
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 15px;
+            color: #444;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .nav-links a:hover {
+            background-color: #f0f7ff;
+            color: #2c5aa0;
+        }
+        
+        .nav-links a.active {
+            background-color: #2c5aa0;
+            color: white;
+        }
+        
+        .nav-links a i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
+        }
+        
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .dashboard-header h1 {
+            color: #2c5aa0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .quick-search {
+            position: relative;
+            width: 300px;
+        }
+        
+        .quick-search input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .quick-search input:focus {
+            outline: none;
+            border-color: #2c5aa0;
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+        }
+        
+        .quick-search i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 18px;
+        }
+        
+        /* Help Categories */
+        .help-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 2.5rem 0;
+        }
+        
+        .help-category {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid #eee;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .help-category:hover {
+            border-color: #2c5aa0;
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(44, 90, 160, 0.15);
+        }
+        
+        .help-category-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            background-color: rgba(44, 90, 160, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 28px;
+            color: #2c5aa0;
+        }
+        
+        .help-category h3 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+        
+        .help-category p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            margin: 3rem 0;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .faq-section h2 {
+            margin-bottom: 2rem;
+            color: #2c5aa0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .faq-item {
+            border-bottom: 1px solid #eee;
+            padding: 1.5rem 0;
+        }
+        
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px 0;
+        }
+        
+        .faq-question h4 {
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1rem;
+            flex: 1;
+        }
+        
+        .faq-question i {
+            color: #2c5aa0;
+            font-size: 18px;
+            transition: transform 0.3s;
+        }
+        
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            color: #666;
+            line-height: 1.7;
+            margin-top: 1.2rem;
+            padding-left: 1rem;
+            border-left: 3px solid #2c5aa0;
+            display: none;
+        }
+        
+        .faq-item.active .faq-answer {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .faq-answer p {
+            margin-bottom: 1rem;
+        }
+        
+        .faq-answer ol, .faq-answer ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .faq-answer li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        
+        /* Contact Methods */
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 3rem 0;
+        }
+        
+        .contact-method {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .contact-method:hover {
+            border-color: #2c5aa0;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(44, 90, 160, 0.1);
+        }
+        
+        .contact-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: rgba(44, 90, 160, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 28px;
+            color: #2c5aa0;
+        }
+        
+        .contact-method h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .contact-method p {
+            color: #666;
+            margin: 12px 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .contact-method a {
+            color: #2c5aa0;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        
+        /* Contact Form */
+        .contact-form {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 2.5rem;
+            margin-top: 3rem;
+            border: 1px solid #eee;
+        }
+        
+        .contact-form h2 {
+            margin-bottom: 2rem;
+            color: #2c5aa0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        /* Form Styles */
+        .form-section {
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: #444;
+            font-weight: 500;
+            font-size: 15px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s, box-shadow 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #2c5aa0;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 1.8rem;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .file-upload {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 2.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .file-upload:hover {
+            border-color: #2c5aa0;
+            background-color: #f0f7ff;
+        }
+        
+        .file-upload i {
+            font-size: 2.5rem;
+            color: #2c5aa0;
+            margin-bottom: 1rem;
+        }
+        
+        .file-upload p {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .file-upload small {
+            color: #888;
+            font-size: 14px;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background-color: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1d4a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 90, 160, 0.2);
+        }
+        
+        /* Emergency Section */
+        .emergency-section {
+            background-color: #fff5f5;
+            border: 2px solid #e74c3c;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .emergency-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #e74c3c;
+            margin-bottom: 1rem;
+        }
+        
+        .emergency-contacts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .emergency-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .contact-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .contact-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #1a1a1a;
+            color: #ddd;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: auto;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .footer-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .footer-company-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .footer-slogan {
+            font-size: 15px;
+            color: #aaa;
+        }
+        
+        .copyright {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 1.5rem;
+        }
+        
+        .portal-links {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .portal-links a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+        
+        .portal-links a:hover {
+            color: #2c5aa0;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-container {
+                max-width: 100%;
+                padding: 0 30px;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+                gap: 25px;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+            
+            .nav-links {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 12px;
+            }
+            
+            .help-categories {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+            
+            .header-container {
+                flex-wrap: wrap;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .user-menu {
+                display: none;
+                width: 100%;
+                order: 3;
+                margin-top: 1.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .user-menu.active {
+                display: flex;
+            }
+            
+            .main-container {
+                margin: 100px auto 20px;
+                padding: 0 15px;
+                gap: 20px;
+            }
+            
+            .main-content {
+                padding: 1.8rem;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+            
+            .quick-search {
+                width: 100%;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .help-categories {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .contact-methods {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .contact-form {
+                padding: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 1.5rem;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .help-category {
+                padding: 1.5rem;
+            }
+            
+            .help-category-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+            
+            .contact-method {
+                padding: 2rem 1.5rem;
+            }
+            
+            .contact-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+            
+            .portal-links {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo-container">
+                <div class="logo-circle">SM</div>
+                <div class="logo-text">
+                    <div class="company-name-header">SOTELO MANAGEMENT LLC</div>
+                    <div class="company-slogan-header">Renter Portal</div>
+                </div>
+            </div>
+            
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="user-menu" id="userMenu">
+                <div class="user-info">
+                    <div class="user-avatar">JD</div>
+                    <div class="user-details">
+                        <div class="user-name">John Doe</div>
+                        <div class="user-role">Tenant</div>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="nav-section">
+                <h3>Dashboard</h3>
+                <ul class="nav-links">
+                    <li><a href="renter_portal.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="#payments"><i class="fas fa-credit-card"></i> Payments</a></li>
+                    <li><a href="#maintenance"><i class="fas fa-tools"></i> Maintenance</a></li>
+                    <li><a href="#documents"><i class="fas fa-file-alt"></i> Documents</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h3>Communication</h3>
+                <ul class="nav-links">
+                    <li><a href="#messages"><i class="fas fa-envelope"></i> Messages</a></li>
+                    <li><a href="#notifications"><i class="fas fa-bell"></i> Notifications</a></li>
+                    <li><a href="#emergency"><i class="fas fa-exclamation-triangle"></i> Emergency</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h3>Account</h3>
+                <ul class="nav-links">
+                    <li><a href="my_profile.html"><i class="fas fa-user"></i> My Profile</a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="help_center.html" class="active"><i class="fas fa-question-circle"></i> Help Center</a></li>
+                </ul>
+            </div>
+            
+            <div class="emergency-section">
+                <div class="emergency-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4>Emergency Contact</h4>
+                </div>
+                <div class="emergency-contacts">
+                    <div class="emergency-contact">
+                        <div class="contact-label">Property Manager</div>
+                        <div class="contact-value">(307) 228-4667</div>
+                    </div>
+                    <div class="emergency-contact">
+                        <div class="contact-label">24/7 Emergency</div>
+                        <div class="contact-value">(307) 228-4667</div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Help Center</h1>
+                <div class="quick-search">
+                    <input type="text" placeholder="Search for help...">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            
+            <!-- Help Categories -->
+            <div class="help-categories">
+                <div class="help-category" onclick="showFAQ('payments')">
+                    <div class="help-category-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h3>Payments & Billing</h3>
+                    <p>Questions about rent payments, fees, and billing issues</p>
+                </div>
+                
+                <div class="help-category" onclick="showFAQ('maintenance')">
+                    <div class="help-category-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3>Maintenance</h3>
+                    <p>How to request repairs and maintenance FAQs</p>
+                </div>
+                
+                <div class="help-category" onclick="showFAQ('documents')">
+                    <div class="help-category-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Documents & Leases</h3>
+                    <p>Lease agreements, policies, and document management</p>
+                </div>
+                
+                <div class="help-category" onclick="showFAQ('account')">
+                    <div class="help-category-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>Account & Security</h3>
+                    <p>Managing your account, login issues, and security</p>
+                </div>
+            </div>
+            
+            <!-- FAQ Section -->
+            <div class="faq-section" id="faqSection">
+                <h2>Frequently Asked Questions</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h4>How do I pay my rent online?</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You can pay your rent through the portal by following these steps:</p>
+                        <ol>
+                            <li>Go to the Payments tab in your dashboard</li>
+                            <li>Click on "Pay Now" for the current month's rent</li>
+                            <li>Select your payment method (bank account or credit card)</li>
+                            <li>Enter the payment amount and confirm</li>
+                            <li>You'll receive a confirmation email with your receipt</li>
+                        </ol>
+                        <p>Note: Payments may take 1-3 business days to process.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h4>What should I do in case of a maintenance emergency?</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>For maintenance emergencies that require immediate attention (such as flooding, no heat in winter, or electrical issues):</p>
+                        <ul>
+                            <li><strong>During business hours (9AM-5PM):</strong> Call the property manager at (307) 228-4667</li>
+                            <li><strong>After hours:</strong> Call the 24/7 emergency line at (307) 228-4667</li>
+                            <li><strong>For life-threatening emergencies:</strong> Always call 911 first</li>
+                        </ul>
+                        <p>Please also submit a maintenance request through the portal for documentation purposes.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h4>How do I request a copy of my lease agreement?</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You can download your lease agreement at any time from the Documents tab in your portal. If you need a signed copy or have trouble accessing it:</p>
+                        <ol>
+                            <li>Go to the Documents tab</li>
+                            <li>Click on "Lease Agreement" to download</li>
+                            <li>If the document is not available, contact support@sotelomanage.com</li>
+                            <li>Allow 1-2 business days for processing</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h4>What is the late fee policy for rent payments?</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Our late fee policy is as follows:</p>
+                        <ul>
+                            <li>Rent is due on the 1st of each month</li>
+                            <li>A 5-day grace period is provided (rent is considered late after the 5th)</li>
+                            <li>Late fee: $75 if paid between the 6th and 10th</li>
+                            <li>Additional $10 per day after the 10th</li>
+                            <li>Maximum late fee: $150</li>
+                        </ul>
+                        <p>We recommend setting up auto-pay to avoid late fees.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h4>How do I update my contact information?</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>To update your contact information:</p>
+                        <ol>
+                            <li>Go to "My Profile" from the sidebar</li>
+                            <li>Edit your contact details in the Personal Information section</li>
+                            <li>Click "Save Changes" to update</li>
+                            <li>Important: Updating your email or phone may require verification</li>
+                        </ol>
+                        <p>Please ensure your contact information is always current for emergency notifications.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h4>What should I do if I'm locked out of my apartment?</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>If you're locked out during business hours (9AM-5PM):</p>
+                        <ul>
+                            <li>Contact the property manager at (307) 228-4667</li>
+                            <li>A staff member can let you in during office hours</li>
+                        </ul>
+                        <p>If you're locked out after hours:</p>
+                        <ul>
+                            <li>Call the 24/7 emergency line at (307) 228-4667</li>
+                            <li>There is a $50 service fee for after-hours lockouts</li>
+                            <li>Consider contacting a locksmith at your own expense</li>
+                        </ul>
+                        <p>We recommend keeping a spare key with a trusted neighbor or family member.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Methods -->
+            <div class="contact-methods">
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <h3>Call Us</h3>
+                    <p>Available Monday-Friday, 9AM-5PM</p>
+                    <a href="tel:3072284667">(307) 228-4667</a>
+                </div>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Email Support</h3>
+                    <p>24/7 email support with 24-hour response time</p>
+                    <a href="mailto:support@sotelomanage.com">support@sotelomanage.com</a>
+                </div>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>Live Chat</h3>
+                    <p>Available Monday-Friday, 9AM-5PM</p>
+                    <button class="btn-primary" onclick="startLiveChat()">
+                        <i class="fas fa-comment-dots"></i> Start Chat
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Contact Form -->
+            <div class="contact-form">
+                <h2>Submit a Help Request</h2>
+                
+                <form id="helpRequestForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="helpCategory">Category *</label>
+                            <select id="helpCategory" required>
+                                <option value="">Select a category</option>
+                                <option value="payments">Payments & Billing</option>
+                                <option value="maintenance">Maintenance</option>
+                                <option value="documents">Documents</option>
+                                <option value="account">Account Issues</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="helpUrgency">Urgency *</label>
+                            <select id="helpUrgency" required>
+                                <option value="">Select urgency</option>
+                                <option value="low">Low - General inquiry</option>
+                                <option value="medium">Medium - Need assistance</option>
+                                <option value="high">High - Urgent issue</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="helpSubject">Subject *</label>
+                        <input type="text" id="helpSubject" required placeholder="Brief description of your issue">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="helpDescription">Description *</label>
+                        <textarea id="helpDescription" rows="5" required placeholder="Please provide detailed information about your issue..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Attachments (Optional)</label>
+                        <div class="file-upload" id="fileUploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag & drop files or click to browse</p>
+                            <small>Max file size: 10MB each. Supported formats: PDF, JPG, PNG, DOC</small>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-paper-plane"></i> Submit Request
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <div class="footer-company-name">SOTELO MANAGEMENT LLC</div>
+                <div class="footer-slogan">Wealth. Realty. Management Servicer</div>
+            </div>
+            
+            <div class="portal-links">
+                <a href="renter_portal.html">Dashboard</a>
+                <a href="mailto:support@sotelomanage.com">Contact Support</a>
+                <a href="tel:3072284667">(307) 228-4667</a>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2026 SOTELO MANAGEMENT LLC. All rights reserved. | Renter Portal v2.1
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+            const userMenu = document.getElementById('userMenu');
+            userMenu.classList.toggle('active');
+            
+            const icon = this.querySelector('i');
+            if (userMenu.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        // FAQ toggle function
+        function toggleFAQ(element) {
+            const faqItem = element.closest('.faq-item');
+            const allFaqItems = document.querySelectorAll('.faq-item');
+            
+            // Close all other FAQs
+            allFaqItems.forEach(item => {
+                if (item !== faqItem) {
+                    item.classList.remove('active');
+                    const itemIcon = item.querySelector('.faq-question i');
+                    if (itemIcon) {
+                        itemIcon.classList.remove('fa-chevron-up');
+                        itemIcon.classList.add('fa-chevron-down');
+                    }
+                }
+            });
+            
+            // Toggle current FAQ
+            faqItem.classList.toggle('active');
+            
+            const icon = element.querySelector('i');
+            if (faqItem.classList.contains('active')) {
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+        
+        // Show specific FAQ category
+        function showFAQ(category) {
+            document.getElementById('faqSection').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            // Highlight relevant FAQs (simplified example)
+            setTimeout(() => {
+                const firstFaq = document.querySelector('.faq-item');
+                if (firstFaq) {
+                    firstFaq.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 300);
+        }
+        
+        // Start live chat
+        function startLiveChat() {
+            alert('Starting live chat...\n\nIn a real implementation, this would open a chat window with a support agent.');
+        }
+        
+        // Help request form submission
+        document.getElementById('helpRequestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const category = document.getElementById('helpCategory').value;
+            const urgency = document.getElementById('helpUrgency').value;
+            const subject = document.getElementById('helpSubject').value;
+            const description = document.getElementById('helpDescription').value;
+            
+            if (!category || !urgency || !subject || !description) {
+                alert('Please fill all required fields marked with *');
+                return;
+            }
+            
+            // Show success message
+            alert('Help request submitted successfully! You will receive a response within 24 hours.');
+            
+            // Reset form
+            this.reset();
+        });
+        
+        // File upload interaction
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        if (fileUploadArea) {
+            fileUploadArea.addEventListener('click', () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.multiple = true;
+                input.accept = 'image/*,.pdf,.doc,.docx';
+                
+                input.onchange = (e) => {
+                    const files = e.target.files;
+                    if (files.length > 0) {
+                        alert(`Selected ${files.length} file(s) for upload`);
+                        // In real implementation, upload files to server
+                    }
+                };
+                
+                input.click();
+            });
+        }
+        
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('Logging out... Redirecting to login page.');
+                // window.location.href = 'login.html';
+            }
+        });
+        
+        // Search functionality
+        const searchInput = document.querySelector('.quick-search input');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        alert(`Searching for: "${query}"\n\nIn a real implementation, this would search the help center database.`);
+                    }
+                }
+            });
+        }
+        
+        // Initialize all FAQ icons
+        document.addEventListener('DOMContentLoaded', () => {
+            const faqQuestions = document.querySelectorAll('.faq-question i');
+            faqQuestions.forEach(icon => {
+                icon.classList.add('fa-chevron-down');
+            });
+        });
+    </script>
+</body>
+
+<!-- Mirrored from www.sotelomanagement.com/renter/help_center.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Feb 2026 10:55:29 GMT -->
+</html>
