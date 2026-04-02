@@ -1,4 +1,10 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteRule ^(.*)$ public/$1 [L]
-</IfModule>
+RewriteEngine On
+RewriteBase /
+
+# Serve static assets from public/ directory
+RewriteRule ^(assets/.*)$ public/$1 [L]
+RewriteRule ^(uploads/.*)$ public/$1 [L]
+
+# Route all other requests to public/index.php
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^(.*)$ public/index.php?url=$1 [QSA,L]
