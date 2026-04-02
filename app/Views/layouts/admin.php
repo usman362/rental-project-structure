@@ -17,6 +17,9 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- App CSS -->
     <link rel="stylesheet" href="<?= route('assets.css', 'app.css') ?>">
 </head>
@@ -28,8 +31,14 @@
             <div class="company-name">SOTELO MANAGEMENT LLC</div>
         </div>
         <div class="admin-user">
-            <span><?= e($user['name'] ?? 'Admin User') ?></span>
-            <div class="admin-avatar"><?= e(substr($user['name'] ?? 'A', 0, 1)) ?></div>
+            <span><?php
+                $adminDisplayName = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
+                echo e($adminDisplayName ?: 'Admin User');
+            ?></span>
+            <div class="admin-avatar"><?php
+                $adminInitial = strtoupper(substr($user['first_name'] ?? 'A', 0, 1));
+                echo e($adminInitial);
+            ?></div>
         </div>
     </header>
 

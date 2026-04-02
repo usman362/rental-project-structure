@@ -1419,6 +1419,122 @@ input:checked + .slider:before {
     max-width: 800px;
 }
 
+/* Application detail modal: white header */
+.application-details-modal .modal-header {
+    background-color: #ffffff;
+    color: #1a1a1a;
+    border-bottom: 1px solid #eaeaea;
+    padding: 1.5rem 2rem;
+}
+
+.application-details-modal .modal-header h2 {
+    color: #1a1a1a;
+    font-size: 1.4rem;
+}
+
+.application-details-modal .close-modal {
+    color: #666;
+}
+
+.application-details-modal .close-modal:hover {
+    color: #333;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Details section headings inside detail modals */
+.application-details-modal .details-section h3,
+.property-details-modal .details-section h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c5aa0;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f0f5ff;
+}
+
+/* Detail item label uppercase */
+.application-details-modal .detail-item label,
+.property-details-modal .detail-item label {
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: #888;
+    font-weight: 600;
+}
+
+.application-details-modal .detail-item span,
+.property-details-modal .detail-item span {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-top: 0.25rem;
+}
+
+/* Property Units styling */
+.unit-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    transition: background 0.2s;
+}
+
+.unit-item:hover {
+    background: #f8fafc;
+}
+
+.unit-info strong {
+    display: block;
+    font-size: 1rem;
+    color: #1a1a1a;
+    margin-bottom: 0.25rem;
+}
+
+.unit-meta {
+    font-size: 0.875rem;
+    color: #666;
+    display: flex;
+    gap: 1rem;
+}
+
+.unit-edit-btn {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.unit-edit-btn:hover {
+    border-color: #2c5aa0;
+    color: #2c5aa0;
+}
+
+.add-unit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    background: none;
+    border: 2px dashed #ccc;
+    border-radius: 6px;
+    color: #666;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+}
+
+.add-unit-btn:hover {
+    border-color: #2c5aa0;
+    color: #2c5aa0;
+}
+
 .property-gallery {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -1820,6 +1936,11 @@ tr:hover {
 
 .modal-overlay.active {
     display: flex;
+}
+
+/* SweetAlert2 must appear above modals */
+.swal2-container {
+    z-index: 3000 !important;
 }
 
 .modal-content {
@@ -2617,4 +2738,61 @@ tr:hover {
 
 .flash-close:hover {
     opacity: 1;
+}
+
+/* Settings Section */
+.settings-section {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eaeaea;
+}
+
+.settings-section h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c5aa0;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.settings-section h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 1rem;
+}
+
+.settings-section label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.settings-section input[type="text"],
+.settings-section input[type="email"],
+.settings-section input[type="tel"],
+.settings-section input[type="number"],
+.settings-section select,
+.settings-section textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.settings-section input:focus,
+.settings-section select:focus,
+.settings-section textarea:focus {
+    border-color: #2c5aa0;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
 }

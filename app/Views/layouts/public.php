@@ -243,7 +243,9 @@
             <button class="mobile-menu-toggle" id="mobileMenuToggle"><i class="fas fa-bars"></i></button>
             <nav class="public-nav" id="mainNav">
                 <ul class="nav-links">
+                    <?php if (isset($title) && $title !== 'Home'): ?>
                     <li><a href="<?= route('home') ?>">HOME</a></li>
+                    <?php endif; ?>
                     <li><a href="<?= route('rental-application') ?>">RENTAL APPLICATION</a></li>
                     <li><button class="client-portal-btn" id="openModal"><i class="fas fa-user-circle"></i> Client Portal</button></li>
                 </ul>

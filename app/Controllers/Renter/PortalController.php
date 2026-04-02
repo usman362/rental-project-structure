@@ -6,6 +6,8 @@ require_once BASE_PATH . '/app/Models/Renter.php';
 require_once BASE_PATH . '/app/Models/Payment.php';
 require_once BASE_PATH . '/app/Models/MaintenanceRequest.php';
 require_once BASE_PATH . '/app/Models/Property.php';
+require_once BASE_PATH . '/app/Models/Document.php';
+require_once BASE_PATH . '/app/Models/Notification.php';
 
 class PortalController extends Controller
 {
@@ -44,7 +46,10 @@ class PortalController extends Controller
                     'nextAmount' => 0
                 ],
                 'maintenanceRequests' => [],
-                'recentActivity' => []
+                'recentActivity' => [],
+                'documents' => [],
+                'notifications' => [],
+                'unreadNotifCount' => 0
             ]);
             return;
         }
@@ -60,6 +65,13 @@ class PortalController extends Controller
         // Get maintenance requests for this renter
         $maintenanceRequests = MaintenanceRequest::forRenter($renterId);
 
+        // Get documents for this renter
+        $documents = Document::forRenter($renterId);
+
+        // Get notifications for this user
+        $notifications = Notification::forUser($userId, 20);
+        $unreadNotifCount = Notification::unreadCount($userId);
+
         // Build recent activity feed from payments and maintenance requests
         $recentActivity = $this->buildRecentActivity($payments, $maintenanceRequests);
 
@@ -73,6 +85,9 @@ class PortalController extends Controller
             'payments' => $payments,
             'paymentStats' => $paymentStats,
             'maintenanceRequests' => $maintenanceRequests,
+            'documents' => $documents,
+            'notifications' => $notifications,
+            'unreadNotifCount' => $unreadNotifCount,
             'recentActivity' => $recentActivity
         ]);
     }

@@ -200,6 +200,47 @@ class MaintenanceRequest
     }
 
     /**
+     * Get maintenance cost breakdown by category
+     *
+     * @return array With 'labels' (category names) and 'data' (cost amounts)
+     */
+    public static function costByCategory(): array
+    {
+        // Use actual_cost if available, fallback to estimated_cost, then count-based
+        $rows = Database::all(
+            'SELECT category,
+                    COALESCE(SUM(CASE WHEN actual_cost > 0 THEN actual_cost ELSE estimated_cost END), 0) as total_cost,
+                    COUNT(*) as request_count
+             FROM maintenance_requests
+             WHERE category IS NOT NULL AND category != ""
+             GROUP BY category
+             ORDER BY total_cost DESC',
+            []
+        );
+
+        $labels = [];
+        $data = [];
+
+        foreach ($rows as $row) {
+            $labels[] = ucfirst(str_replace('_', ' ', $row['category']));
+            // If cost is still 0, use request count as a fallback metric
+            $cost = (float) $row['total_cost'];
+            $data[] = $cost > 0 ? $cost : (float) $row['request_count'];
+        }
+
+        // If no data at all, show placeholder categories
+        if (empty($labels)) {
+            $labels = ['No Data'];
+            $data = [1];
+        }
+
+        return [
+            'labels' => $labels,
+            'data' => $data
+        ];
+    }
+
+    /**
      * Get maintenance request count grouped by status
      *
      * @return array Associative array with status as key and count as value

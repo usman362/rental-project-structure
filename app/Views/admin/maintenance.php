@@ -107,24 +107,16 @@ $completedThisMonth = $completedThisMonth ?? 0;
     </form>
 </div>
 
-<!-- Maintenance Requests Grid -->
-<div id="maintenanceRequests" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+<!-- Maintenance Requests List -->
+<div id="maintenanceRequests" style="display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0;">
     <?php if (empty($maintenanceRequests)): ?>
-        <div style="grid-column: 1/-1; padding: 2rem; text-align: center; color: #999;">
+        <div style="padding: 2rem; text-align: center; color: #999; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
             <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 1rem;"></i>
             <p>No maintenance requests found.</p>
         </div>
     <?php else: ?>
         <?php foreach ($maintenanceRequests as $request): ?>
             <?php
-            $priorityClass = 'priority-' . $request['priority'];
-            $statusClass = match($request['status']) {
-                'open' => 'status-open',
-                'in_progress' => 'status-in-progress',
-                'completed' => 'status-completed',
-                'closed' => 'status-closed',
-                default => 'status-open'
-            };
             $statusText = match($request['status']) {
                 'open' => 'Open',
                 'in_progress' => 'In Progress',
@@ -132,44 +124,148 @@ $completedThisMonth = $completedThisMonth ?? 0;
                 'closed' => 'Closed',
                 default => 'Open'
             };
-            $priorityText = ucfirst($request['priority']);
+            $statusBg = match($request['status']) {
+                'open' => 'background:#fef3c7;color:#92400e;',
+                'in_progress' => 'background:#dbeafe;color:#1e40af;',
+                'completed' => 'background:#d1fae5;color:#065f46;',
+                'closed' => 'background:#e5e7eb;color:#374151;',
+                default => 'background:#fef3c7;color:#92400e;'
+            };
+            $borderColor = match($request['priority']) {
+                'high', 'emergency' => '#ef4444',
+                'medium' => '#f59e0b',
+                'low' => '#10b981',
+                default => '#3b82f6'
+            };
+            if ($request['status'] === 'in_progress') $borderColor = '#3b82f6';
+            if ($request['status'] === 'completed') $borderColor = '#ef4444';
+            if ($request['status'] === 'closed') $borderColor = '#10b981';
+
+            $categoryText = ucfirst(str_replace('_', ' ', $request['category']));
+            $renterName = trim(($request['first_name'] ?? '') . ' ' . ($request['last_name'] ?? ''));
             ?>
-            <div class="request-card <?= $priorityClass ?>" onclick="viewRequest(<?= (int) $request['id'] ?>)" style="cursor: pointer; padding: 1.5rem; border-left: 4px solid; background: white; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
-                    <h3 class="request-title" style="margin: 0; color: #2c5aa0; font-size: 1rem;">
-                        <?= e($request['title']) ?>
-                    </h3>
-                    <span class="request-status <?= $statusClass ?>" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 12px; white-space: nowrap;">
+            <div class="request-card" onclick="viewRequest(<?= (int) $request['id'] ?>)"
+                 style="cursor:pointer; padding:1.5rem; border-left:4px solid <?= $borderColor ?>; background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.06); transition:box-shadow 0.2s;"
+                 onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.06)'">
+
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem;">
+                    <h3 style="margin:0; font-size:1.1rem; font-weight:600; color:#1a1a1a;"><?= e($request['title']) ?></h3>
+                    <span style="font-size:0.75rem; padding:0.25rem 0.75rem; border-radius:12px; white-space:nowrap; font-weight:600; <?= $statusBg ?>">
                         <?= $statusText ?>
                     </span>
                 </div>
 
-                <div style="margin-bottom: 0.75rem;">
-                    <div style="font-weight: 600; color: #333;"><?= e($request['property_name'] ?? 'N/A') ?></div>
-                    <?php if (!empty($request['first_name'])): ?>
-                        <div style="font-size: 0.875rem; color: #666;"><?= e($request['first_name'] . ' ' . $request['last_name']) ?></div>
-                    <?php endif; ?>
+                <div style="color:#2c5aa0; font-size:0.9rem; margin-bottom:0.75rem;">
+                    <?= e($request['property_name'] ?? 'N/A') ?>
                 </div>
 
-                <div class="request-description" style="font-size: 0.875rem; color: #666; margin-bottom: 1rem; max-height: 3em; overflow: hidden; text-overflow: ellipsis;">
-                    <?= e(substr($request['description'], 0, 100)) ?>...
+                <div style="font-size:0.875rem; color:#555; margin-bottom:1rem; line-height:1.5;">
+                    <?= e($request['description']) ?>
                 </div>
 
-                <div class="request-footer" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #999; border-top: 1px solid #eee; padding-top: 0.75rem;">
-                    <div style="display: flex; gap: 1rem;">
-                        <span><i class="fas fa-calendar"></i> <?= date('M d', strtotime($request['created_at'])) ?></span>
-                        <span><i class="fas fa-tag"></i> <?= e(ucfirst(str_replace('_', ' ', $request['category']))) ?></span>
-                        <span style="color: <?= $request['priority'] === 'high' || $request['priority'] === 'emergency' ? '#ef4444' : ($request['priority'] === 'medium' ? '#f59e0b' : '#10b981') ?>;">
-                            <i class="fas fa-flag"></i> <?= $priorityText ?>
-                        </span>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #f0f0f0; padding-top:0.75rem;">
+                    <div style="display:flex; gap:1.25rem; font-size:0.8rem; color:#888;">
+                        <span><i class="fas fa-calendar"></i> <?= date('M d, Y', strtotime($request['created_at'])) ?></span>
+                        <?php if ($renterName): ?>
+                            <span><i class="fas fa-user"></i> <?= e($renterName) ?></span>
+                        <?php endif; ?>
+                        <span><i class="fas fa-tag"></i> <?= e($categoryText) ?></span>
                     </div>
-                    <button class="btn-small btn-icon" onclick="event.stopPropagation(); updateRequestStatus(<?= (int) $request['id'] ?>)" title="Edit">
-                        <i class="fas fa-edit"></i>
+                    <button class="btn-small btn-icon" onclick="event.stopPropagation(); updateRequestStatus(<?= (int) $request['id'] ?>)" title="Edit" style="border:1px solid #ddd; border-radius:6px; padding:6px 8px; background:white; cursor:pointer;">
+                        <i class="fas fa-edit" style="color:#666;"></i>
                     </button>
                 </div>
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
+</div>
+
+<!-- Upcoming Maintenance Section -->
+<div style="background:white; border-radius:10px; padding:1.5rem; margin-bottom:2rem; box-shadow:0 2px 10px rgba(0,0,0,0.05); border:1px solid #eaeaea;">
+    <h3 style="margin:0 0 1.25rem 0; color:#2c5aa0; font-size:1.15rem;">
+        <i class="fas fa-calendar-alt" style="margin-right:0.5rem;"></i>Upcoming Maintenance
+    </h3>
+    <div id="upcomingMaintenance">
+        <?php
+        // Filter upcoming scheduled items (if any have assigned_to and status is open/in_progress)
+        $upcoming = array_filter($maintenanceRequests, function($r) {
+            return in_array($r['status'], ['open', 'in_progress']) && !empty($r['assigned_to']);
+        });
+        ?>
+        <?php if (!empty($upcoming)): ?>
+            <?php foreach ($upcoming as $item): ?>
+                <div style="border-bottom:1px solid #f0f0f0; padding:1rem 0;">
+                    <div style="color:#2c5aa0; font-weight:600; font-size:0.9rem; margin-bottom:0.5rem;">
+                        <?= date('M d, Y', strtotime($item['created_at'])) ?>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding-left:1rem;">
+                        <div>
+                            <div style="font-weight:600; color:#333;"><?= e($item['title']) ?></div>
+                            <div style="font-size:0.85rem; color:#666;"><?= e($item['property_name'] ?? '') ?></div>
+                        </div>
+                        <div style="font-size:0.85rem; color:#666;"><?= e($item['assigned_to']) ?></div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div style="text-align:center; padding:2rem 0; color:#999;">
+                <i class="fas fa-calendar-check" style="font-size:1.5rem; margin-bottom:0.5rem; display:block;"></i>
+                <p style="margin:0;">No upcoming scheduled maintenance.</p>
+                <p style="margin:0.25rem 0 0; font-size:0.85rem;">Click "Schedule" to add an inspection.</p>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<!-- Vendor Directory Section -->
+<div style="margin-bottom:2rem;">
+    <h3 style="margin:0 0 1.25rem 0; color:#333; font-size:1.15rem;">
+        <i class="fas fa-address-book" style="margin-right:0.5rem; color:#2c5aa0;"></i>Vendor Directory
+    </h3>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:1.25rem;">
+        <?php
+        $vendors = [
+            ['initials' => 'PL', 'name' => 'Premium Plumbing', 'specialty' => 'Plumbing & Water Heater', 'phone' => '(555) 123-4567', 'email' => 'contact@premiumplumbing.com', 'rating' => 4.5],
+            ['initials' => 'EC', 'name' => 'Electrical Experts', 'specialty' => 'Electrical & Lighting', 'phone' => '(555) 987-6543', 'email' => 'service@electricalexperts.com', 'rating' => 5],
+            ['initials' => 'HC', 'name' => 'HVAC Care', 'specialty' => 'Heating & Cooling', 'phone' => '(555) 456-7890', 'email' => 'support@hvaccare.com', 'rating' => 4],
+        ];
+        foreach ($vendors as $vendor):
+            $stars = '';
+            for ($i = 1; $i <= 5; $i++) {
+                if ($i <= floor($vendor['rating'])) {
+                    $stars .= '<i class="fas fa-star" style="color:#f59e0b;"></i>';
+                } elseif ($i - $vendor['rating'] <= 0.5) {
+                    $stars .= '<i class="fas fa-star-half-alt" style="color:#f59e0b;"></i>';
+                } else {
+                    $stars .= '<i class="far fa-star" style="color:#f59e0b;"></i>';
+                }
+            }
+        ?>
+        <div style="background:white; border-radius:10px; padding:1.5rem; box-shadow:0 2px 10px rgba(0,0,0,0.05); border:1px solid #eaeaea;">
+            <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
+                <div style="width:45px; height:45px; border-radius:50%; background:#2c5aa0; color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem;">
+                    <?= $vendor['initials'] ?>
+                </div>
+                <div>
+                    <div style="font-weight:600; color:#333;"><?= $vendor['name'] ?></div>
+                    <div style="font-size:0.8rem; color:#888;"><?= $vendor['specialty'] ?></div>
+                </div>
+            </div>
+            <div style="font-size:0.85rem; color:#555; margin-bottom:0.25rem;">
+                <i class="fas fa-phone" style="width:18px; color:#2c5aa0;"></i> <?= $vendor['phone'] ?>
+            </div>
+            <div style="font-size:0.85rem; color:#555; margin-bottom:0.75rem;">
+                <i class="fas fa-envelope" style="width:18px; color:#2c5aa0;"></i> <?= $vendor['email'] ?>
+            </div>
+            <div style="margin-bottom:1rem;">
+                <?= $stars ?> <span style="font-size:0.8rem; color:#888;"><?= $vendor['rating'] ?>/5</span>
+            </div>
+            <button class="btn btn-secondary" style="font-size:0.8rem; padding:0.4rem 1rem;" onclick="Swal.fire({title:'Contact <?= $vendor['name'] ?>', html:'<p>Phone: <?= $vendor['phone'] ?></p><p>Email: <?= $vendor['email'] ?></p>', icon:'info', confirmButtonColor:'#2c5aa0'})">
+                <i class="fas fa-phone"></i> Contact
+            </button>
+        </div>
+        <?php endforeach; ?>
+    </div>
 </div>
 
 <!-- Create Request Modal -->
@@ -180,7 +276,7 @@ $completedThisMonth = $completedThisMonth ?? 0;
             <button class="close-modal" onclick="closeModal('createRequestModal')">&times;</button>
         </div>
         <div class="modal-body">
-            <form id="maintenanceForm" method="POST" action="<?= route('admin.maintenance') ?>/store">
+            <form id="maintenanceForm" method="POST" action="<?= route('admin.maintenance') ?>">
                 <?= csrf_field() ?>
 
                 <div class="form-section">
@@ -375,23 +471,18 @@ function viewRequest(id) {
             </div>
         </div>
 
-        <div class="application-actions" style="display: flex; gap: 1rem;">
-            <form method="POST" action="" style="display: contents;">
-                <?= csrf_field() ?>
-                <input type="hidden" name="status" value="in_progress">
-                <button type="submit" class="btn btn-success" onclick="this.form.action='<?= route('admin.maintenance') ?>/${currentRequestId}/status'">
-                    <i class="fas fa-play"></i> Start Work
-                </button>
-            </form>
-            <form method="POST" action="" style="display: contents;">
-                <?= csrf_field() ?>
-                <input type="hidden" name="status" value="completed">
-                <button type="submit" class="btn btn-primary" onclick="this.form.action='<?= route('admin.maintenance') ?>/${currentRequestId}/status'">
-                    <i class="fas fa-check"></i> Mark Complete
-                </button>
-            </form>
-            <button class="btn btn-secondary" onclick="alert('Assigning vendor...')">
+        <div class="application-actions" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button class="btn btn-success" onclick="submitStatusChange('in_progress')">
+                <i class="fas fa-play"></i> Start Work
+            </button>
+            <button class="btn btn-primary" onclick="submitStatusChange('completed')">
+                <i class="fas fa-check"></i> Mark Complete
+            </button>
+            <button class="btn btn-secondary" onclick="assignVendor(currentRequestId)">
                 <i class="fas fa-user-tie"></i> Assign Vendor
+            </button>
+            <button class="btn" style="background:#ef4444;color:white;" onclick="submitStatusChange('closed')">
+                <i class="fas fa-times"></i> Close
             </button>
         </div>
     `;
@@ -403,27 +494,215 @@ function updateRequestStatus(id) {
     const request = maintenanceData.find(r => r.id === id);
     if (!request) return;
 
-    const newStatus = prompt(`Update status for "${request.title}":\n\nCurrent: ${request.status}\n\nEnter new status (open, in_progress, completed, closed):`, request.status);
+    Swal.fire({
+        title: 'Update Status',
+        html: `<p>Update status for <strong>${request.title}</strong></p><p style="color:#666;font-size:14px;">Current: ${request.status}</p>`,
+        input: 'select',
+        inputOptions: { 'open': 'Open', 'in_progress': 'In Progress', 'completed': 'Completed', 'closed': 'Closed' },
+        inputValue: request.status,
+        showCancelButton: true,
+        confirmButtonColor: '#2c5aa0',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Update Status'
+    }).then((result) => {
+        if (result.isConfirmed && result.value) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `<?= route('admin.maintenance') ?>/${id}/status`;
+            form.innerHTML = `
+                <?= csrf_field() ?>
+                <input type="hidden" name="status" value="${result.value}">
+            `;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
 
-    if (newStatus && ['open', 'in_progress', 'completed', 'closed'].includes(newStatus)) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `<?= route('admin.maintenance') ?>/${id}/status`;
-        form.innerHTML = `
-            <?= csrf_field() ?>
-            <input type="hidden" name="status" value="${newStatus}">
-        `;
-        document.body.appendChild(form);
-        form.submit();
-    }
+function submitStatusChange(newStatus) {
+    if (!currentRequestId) return;
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '<?= route("admin.maintenance") ?>/' + currentRequestId + '/status';
+    form.innerHTML = `<?= csrf_field() ?><input type="hidden" name="status" value="${newStatus}">`;
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function assignVendor(requestId) {
+    const id = requestId || currentRequestId;
+    if (!id) return;
+
+    Swal.fire({
+        title: 'Assign Vendor',
+        html: `
+            <div style="text-align:left;margin-top:0.5rem;">
+                <label style="display:block;margin-bottom:0.5rem;font-weight:500;">Vendor / Company Name *</label>
+                <input type="text" id="swal-vendor" style="width:100%;padding:0.6rem;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:1rem;" placeholder="Enter vendor name or company...">
+                <label style="display:block;margin-bottom:0.5rem;font-weight:500;">Contact Phone</label>
+                <input type="tel" id="swal-vendor-phone" style="width:100%;padding:0.6rem;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:1rem;" placeholder="Phone number...">
+                <label style="display:block;margin-bottom:0.5rem;font-weight:500;">Scheduled Visit Date</label>
+                <input type="date" id="swal-vendor-date" style="width:100%;padding:0.6rem;border:1px solid #ddd;border-radius:6px;font-size:14px;">
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonColor: '#2c5aa0',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-user-tie"></i> Assign',
+        width: 450,
+        preConfirm: () => {
+            const vendor = document.getElementById('swal-vendor').value;
+            if (!vendor) {
+                Swal.showValidationMessage('Please enter a vendor name');
+                return false;
+            }
+            return {
+                vendor: vendor,
+                phone: document.getElementById('swal-vendor-phone').value,
+                date: document.getElementById('swal-vendor-date').value
+            };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?= route("admin.maintenance") ?>/' + id + '/assign';
+            form.innerHTML = `
+                <?= csrf_field() ?>
+                <input type="hidden" name="assigned_to" value="${result.value.vendor}">
+                <input type="hidden" name="vendor_phone" value="${result.value.phone}">
+                <input type="hidden" name="visit_date" value="${result.value.date}">
+            `;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
 }
 
 function exportMaintenance() {
-    alert('Exporting maintenance data...');
+    if (!maintenanceData || maintenanceData.length === 0) {
+        Swal.fire({ title: 'No Data', text: 'No maintenance requests to export.', icon: 'warning', confirmButtonColor: '#2c5aa0' });
+        return;
+    }
+
+    const headers = ['ID', 'Title', 'Property', 'Reported By', 'Category', 'Priority', 'Status', 'Assigned To', 'Estimated Cost', 'Actual Cost', 'Created Date', 'Description'];
+
+    const rows = maintenanceData.map(r => [
+        r.id,
+        r.title || '',
+        r.property_name || 'N/A',
+        ((r.first_name || '') + ' ' + (r.last_name || '')).trim() || 'N/A',
+        (r.category || '').replace(/_/g, ' '),
+        (r.priority || '').charAt(0).toUpperCase() + (r.priority || '').slice(1),
+        (r.status || '').replace(/_/g, ' ').charAt(0).toUpperCase() + (r.status || '').replace(/_/g, ' ').slice(1),
+        r.assigned_to || 'Unassigned',
+        parseFloat(r.estimated_cost || 0).toFixed(2),
+        parseFloat(r.actual_cost || 0).toFixed(2),
+        r.created_at ? new Date(r.created_at).toLocaleDateString() : '',
+        r.description || ''
+    ]);
+
+    const csvContent = [headers, ...rows].map(row =>
+        row.map(field => {
+            const str = String(field);
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+        }).join(',')
+    ).join('\n');
+
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'maintenance_export_' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    Swal.fire({
+        title: 'Export Complete!',
+        text: 'Maintenance data has been downloaded as CSV.',
+        icon: 'success',
+        confirmButtonColor: '#2c5aa0',
+        timer: 3000,
+        timerProgressBar: true
+    });
 }
 
+const propertiesList = <?= json_encode(array_map(function($p) {
+    return ['id' => $p['id'], 'name' => $p['name']];
+}, $properties)) ?>;
+
 function scheduleInspection() {
-    alert('Schedule inspection feature coming soon.');
+    const propertyOptions = propertiesList.map(p =>
+        `<option value="${p.id}">${p.name}</option>`
+    ).join('');
+
+    Swal.fire({
+        title: 'Schedule Inspection',
+        html: `
+            <div style="text-align:left;margin-top:1rem;">
+                <label style="display:block;margin-bottom:0.5rem;font-weight:500;">Property *</label>
+                <select id="swal-property" style="width:100%;padding:0.6rem;border:1px solid #ddd;border-radius:6px;margin-bottom:1rem;font-size:14px;">
+                    <option value="">Select Property</option>
+                    ${propertyOptions}
+                </select>
+                <label style="display:block;margin-bottom:0.5rem;font-weight:500;">Inspection Date *</label>
+                <input type="date" id="swal-date" style="width:100%;padding:0.6rem;border:1px solid #ddd;border-radius:6px;margin-bottom:1rem;font-size:14px;">
+                <label style="display:block;margin-bottom:0.5rem;font-weight:500;">Time Slot *</label>
+                <select id="swal-time" style="width:100%;padding:0.6rem;border:1px solid #ddd;border-radius:6px;margin-bottom:1rem;font-size:14px;">
+                    <option value="">Select Time</option>
+                    <option value="09:00">9:00 AM</option>
+                    <option value="10:00">10:00 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="13:00">1:00 PM</option>
+                    <option value="14:00">2:00 PM</option>
+                    <option value="15:00">3:00 PM</option>
+                    <option value="16:00">4:00 PM</option>
+                </select>
+                <label style="display:block;margin-bottom:0.5rem;font-weight:500;">Notes</label>
+                <textarea id="swal-notes" rows="2" style="width:100%;padding:0.6rem;border:1px solid #ddd;border-radius:6px;font-size:14px;font-family:inherit;" placeholder="Any special instructions..."></textarea>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonColor: '#2c5aa0',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-calendar-check"></i> Schedule',
+        width: 480,
+        preConfirm: () => {
+            const propertyId = document.getElementById('swal-property').value;
+            const propertyName = document.getElementById('swal-property').selectedOptions[0]?.text || '';
+            const date = document.getElementById('swal-date').value;
+            const time = document.getElementById('swal-time').value;
+            const notes = document.getElementById('swal-notes').value;
+            if (!propertyId || !date || !time) {
+                Swal.showValidationMessage('Please fill in property, date and time');
+                return false;
+            }
+            return { propertyId, propertyName, date, time, notes };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const data = result.value;
+            // POST to backend
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?= route("admin.maintenance") ?>/schedule';
+            form.innerHTML = `
+                <?= csrf_field() ?>
+                <input type="hidden" name="property_id" value="${data.propertyId}">
+                <input type="hidden" name="scheduled_date" value="${data.date}">
+                <input type="hidden" name="scheduled_time" value="${data.time}">
+                <input type="hidden" name="notes" value="${data.notes}">
+            `;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
 }
 
 // Close modal when clicking outside

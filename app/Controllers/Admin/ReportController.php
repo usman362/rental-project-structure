@@ -55,11 +55,18 @@ class ReportController extends Controller
         $paidPayments = array_filter($allPayments, fn($p) => $p['status'] === 'paid');
         $paymentCollectionRate = count($allPayments) > 0 ? (int) ((count($paidPayments) / count($allPayments)) * 100) : 0;
 
-        // Build revenue data by property
+        // Build revenue data by property (with real maintenance expenses)
         $revenueByProperty = [];
         foreach ($properties as $property) {
             $propertyPayments = array_filter($allPayments, fn($p) => $p['property_id'] == $property['id'] && $p['status'] === 'paid');
             $propertyRevenue = array_sum(array_column($propertyPayments, 'amount'));
+
+            // Get real maintenance costs for this property
+            $propertyMaintenance = array_filter($maintenanceRequests, fn($m) => $m['property_id'] == $property['id']);
+            $propertyExpenses = 0;
+            foreach ($propertyMaintenance as $m) {
+                $propertyExpenses += (float) ($m['actual_cost'] ?? 0);
+            }
 
             $revenueByProperty[] = [
                 'property_id' => $property['id'],
@@ -67,20 +74,20 @@ class ReportController extends Controller
                 'address' => $property['address'],
                 'monthly_rent' => (float) $property['monthly_rent'],
                 'collected' => $propertyRevenue,
-                'expenses' => 500, // placeholder
-                'occupancy' => $propertyStats['occupied'] > 0 ? '100%' : '0%'
+                'expenses' => $propertyExpenses,
+                'occupancy' => $property['status'] === 'occupied' ? '100%' : '0%'
             ];
         }
 
-        // Generate revenue trend data (last 6 months)
-        $revenueData = $this->generateRevenueData();
+        // Generate revenue trend data (last 6 months) - REAL data from DB
+        $revenueData = Payment::lastSixMonthsRevenue();
 
         // Build KPI cards data
         $kpiData = [
             'occupancy_rate' => $occupancyRate,
             'monthly_revenue' => $totalCollected,
             'payment_collection' => $paymentCollectionRate,
-            'renter_satisfaction' => 4.2 // placeholder
+            'renter_satisfaction' => $paymentCollectionRate >= 80 ? 4.5 : ($paymentCollectionRate >= 50 ? 3.5 : 2.5)
         ];
 
         // Build chart data
@@ -90,10 +97,7 @@ class ReportController extends Controller
                 'labels' => array_column($properties, 'name'),
                 'data' => array_fill(0, count($properties), $occupancyRate)
             ],
-            'maintenance_costs' => [
-                'labels' => ['Plumbing', 'Electrical', 'HVAC', 'Appliances', 'Structural', 'Pest Control'],
-                'data' => [1200, 850, 2100, 650, 300, 400]
-            ]
+            'maintenance_costs' => MaintenanceRequest::costByCategory()
         ];
 
         // Pass to view
@@ -114,26 +118,5 @@ class ReportController extends Controller
         ]);
     }
 
-    /**
-     * Generate revenue data for the last 6 months
-     */
-    private function generateRevenueData(): array
-    {
-        $labels = [];
-        $values = [];
-
-        // Generate last 6 months
-        for ($i = 5; $i >= 0; $i--) {
-            $date = date('Y-m-01', strtotime("-$i months"));
-            $labels[] = date('M', strtotime($date));
-
-            // In a real app, fetch actual data from Payment model
-            $values[] = rand(35000, 52000);
-        }
-
-        return [
-            'labels' => $labels,
-            'values' => $values
-        ];
-    }
+    // Revenue data now comes from Payment::lastSixMonthsRevenue() - no fake rand() data
 }

@@ -169,6 +169,56 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     ");
 
+    // Create notifications table
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS notifications (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            user_id INT UNSIGNED NOT NULL,
+            type VARCHAR(50) NOT NULL DEFAULT 'info',
+            icon VARCHAR(50) DEFAULT 'bell',
+            title VARCHAR(255) NOT NULL,
+            message TEXT NOT NULL,
+            is_read TINYINT(1) DEFAULT 0,
+            link VARCHAR(500),
+            created_at DATETIME NOT NULL,
+            INDEX idx_user_id (user_id),
+            INDEX idx_is_read (is_read),
+            INDEX idx_type (type),
+            INDEX idx_created_at (created_at),
+            CONSTRAINT fk_notifications_user_id
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ");
+
+    // Create documents table
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS documents (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            renter_id INT UNSIGNED,
+            property_id INT UNSIGNED,
+            user_id INT UNSIGNED,
+            title VARCHAR(255) NOT NULL,
+            type VARCHAR(50) DEFAULT 'other',
+            file_name VARCHAR(255) NOT NULL,
+            file_path VARCHAR(500) NOT NULL,
+            file_size INT UNSIGNED DEFAULT 0,
+            mime_type VARCHAR(100),
+            uploaded_by ENUM('admin','renter') DEFAULT 'renter',
+            created_at DATETIME NOT NULL,
+            updated_at DATETIME NOT NULL,
+            INDEX idx_renter_id (renter_id),
+            INDEX idx_property_id (property_id),
+            INDEX idx_user_id (user_id),
+            INDEX idx_type (type),
+            CONSTRAINT fk_documents_renter_id
+                FOREIGN KEY (renter_id) REFERENCES renters(id) ON DELETE SET NULL,
+            CONSTRAINT fk_documents_property_id
+                FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE SET NULL,
+            CONSTRAINT fk_documents_user_id
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ");
+
     // Create settings table
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS settings (
@@ -179,26 +229,68 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     ");
 
-    // Seed admin user
-    $adminPassword = password_hash('Admin@123', PASSWORD_BCRYPT);
+    // Create user_settings table (per-user preferences)
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS user_settings (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            user_id INT UNSIGNED NOT NULL,
+            setting_key VARCHAR(100) NOT NULL,
+            setting_value VARCHAR(255) NOT NULL DEFAULT '',
+            updated_at DATETIME NOT NULL,
+            UNIQUE KEY uk_user_setting (user_id, setting_key),
+            INDEX idx_user_id (user_id),
+            CONSTRAINT fk_user_settings_user_id
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ");
+
+    // Create support_requests table
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS support_requests (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            user_id INT UNSIGNED NOT NULL,
+            subject VARCHAR(255) NOT NULL,
+            category VARCHAR(100) NOT NULL,
+            message TEXT NOT NULL,
+            status VARCHAR(30) DEFAULT 'open',
+            admin_reply TEXT,
+            replied_at DATETIME,
+            created_at DATETIME NOT NULL,
+            updated_at DATETIME NOT NULL,
+            INDEX idx_user_id (user_id),
+            INDEX idx_status (status),
+            INDEX idx_created_at (created_at),
+            CONSTRAINT fk_support_requests_user_id
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ");
+
+    // Seed admin user (username: admin, password: password)
+    $adminPassword = password_hash('password', PASSWORD_BCRYPT);
     $adminCreatedAt = date('Y-m-d H:i:s');
 
     $pdo->prepare("
-        INSERT IGNORE INTO users (role, username, email, password, first_name, last_name, phone, created_at)
+        INSERT INTO users (role, username, email, password, first_name, last_name, phone, created_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE password = VALUES(password), role = VALUES(role), updated_at = NOW()
     ")->execute(['admin', 'admin', 'admin@sotelomanagement.com', $adminPassword, 'Admin', 'User', '1-800-SOTELO-1', $adminCreatedAt]);
 
-    // Seed renter user
-    $renterPassword = password_hash('Renter@123', PASSWORD_BCRYPT);
+    // Get admin user ID
+    $adminRow = $pdo->query("SELECT id FROM users WHERE username = 'admin' LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+    $adminId = $adminRow ? (int) $adminRow['id'] : null;
+
+    // Seed renter user (username: test, password: password)
+    $renterPassword = password_hash('password', PASSWORD_BCRYPT);
     $renterCreatedAt = date('Y-m-d H:i:s');
 
     $pdo->prepare("
-        INSERT IGNORE INTO users (role, username, email, password, first_name, last_name, phone, created_at)
+        INSERT INTO users (role, username, email, password, first_name, last_name, phone, created_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    ")->execute(['renter', 'renter1', 'renter1@example.com', $renterPassword, 'John', 'Renter', '555-1234', $renterCreatedAt]);
+        ON DUPLICATE KEY UPDATE password = VALUES(password), username = VALUES(username), role = VALUES(role), updated_at = NOW()
+    ")->execute(['renter', 'test', 'test@sotelomanagement.com', $renterPassword, 'Test', 'Renter', '555-1234', $renterCreatedAt]);
 
     // Get renter user ID for later use
-    $renterUser = $pdo->query("SELECT id FROM users WHERE username = 'renter1' LIMIT 1")->fetch();
+    $renterUser = $pdo->query("SELECT id FROM users WHERE username = 'test' LIMIT 1")->fetch();
     $renterId = $renterUser ? $renterUser['id'] : null;
 
     // Seed sample properties
@@ -312,25 +404,163 @@ try {
         }
     }
 
-    // Seed sample maintenance request
+    // Seed sample maintenance requests (multiple categories for reports chart)
     if (!empty($propertyIds)) {
-        $pdo->prepare("
-            INSERT IGNORE INTO maintenance_requests
-            (property_id, renter_id, title, description, category, priority, status, assigned_to, estimated_cost, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ")->execute([
-            $propertyIds[0],
-            $renterId ? $renterRecordId : null,
-            'Leaky kitchen faucet',
-            'The kitchen faucet is dripping water continuously. Needs inspection and repair or replacement.',
-            'plumbing',
-            'medium',
-            'open',
-            null,
-            150.00,
-            $now,
-            $now
-        ]);
+        $maintenanceRequests = [
+            [
+                'property_id' => $propertyIds[0],
+                'title' => 'Leaky kitchen faucet',
+                'description' => 'The kitchen faucet is dripping water continuously. Needs inspection and repair or replacement.',
+                'category' => 'plumbing',
+                'priority' => 'medium',
+                'status' => 'open',
+                'assigned_to' => null,
+                'estimated_cost' => 150.00,
+                'actual_cost' => null
+            ],
+            [
+                'property_id' => $propertyIds[0],
+                'title' => 'Bathroom pipe burst',
+                'description' => 'Bathroom pipe has a small leak near the joint. Water damage risk if not fixed soon.',
+                'category' => 'plumbing',
+                'priority' => 'high',
+                'status' => 'in_progress',
+                'assigned_to' => 'Premium Plumbing Co.',
+                'estimated_cost' => 450.00,
+                'actual_cost' => 380.00
+            ],
+            [
+                'property_id' => $propertyIds[1],
+                'title' => 'Living room outlet not working',
+                'description' => 'Two outlets in the living room stopped working. Breaker reset did not help.',
+                'category' => 'electrical',
+                'priority' => 'high',
+                'status' => 'completed',
+                'assigned_to' => 'Electrical Experts LLC',
+                'estimated_cost' => 200.00,
+                'actual_cost' => 175.00
+            ],
+            [
+                'property_id' => $propertyIds[2],
+                'title' => 'Flickering lights in hallway',
+                'description' => 'Hallway lights flicker intermittently. May be a wiring issue.',
+                'category' => 'electrical',
+                'priority' => 'medium',
+                'status' => 'open',
+                'assigned_to' => null,
+                'estimated_cost' => 120.00,
+                'actual_cost' => null
+            ],
+            [
+                'property_id' => $propertyIds[0],
+                'title' => 'AC unit not cooling properly',
+                'description' => 'Central AC is running but not cooling the apartment below 78°F. Needs inspection.',
+                'category' => 'hvac',
+                'priority' => 'high',
+                'status' => 'in_progress',
+                'assigned_to' => 'HVAC Care Services',
+                'estimated_cost' => 600.00,
+                'actual_cost' => null
+            ],
+            [
+                'property_id' => $propertyIds[1],
+                'title' => 'Heater making loud noise',
+                'description' => 'The heating unit makes a banging noise when starting up. Possible blower motor issue.',
+                'category' => 'hvac',
+                'priority' => 'medium',
+                'status' => 'completed',
+                'assigned_to' => 'HVAC Care Services',
+                'estimated_cost' => 350.00,
+                'actual_cost' => 420.00
+            ],
+            [
+                'property_id' => $propertyIds[2],
+                'title' => 'Furnace filter replacement',
+                'description' => 'Annual furnace filter replacement and system check needed.',
+                'category' => 'hvac',
+                'priority' => 'low',
+                'status' => 'completed',
+                'assigned_to' => 'HVAC Care Services',
+                'estimated_cost' => 80.00,
+                'actual_cost' => 95.00
+            ],
+            [
+                'property_id' => $propertyIds[0],
+                'title' => 'Dishwasher not draining',
+                'description' => 'Dishwasher leaves standing water after cycle. Drain may be clogged.',
+                'category' => 'appliances',
+                'priority' => 'medium',
+                'status' => 'open',
+                'assigned_to' => null,
+                'estimated_cost' => 180.00,
+                'actual_cost' => null
+            ],
+            [
+                'property_id' => $propertyIds[1],
+                'title' => 'Refrigerator making noise',
+                'description' => 'Refrigerator compressor runs loudly. Food still cold but noise is disruptive.',
+                'category' => 'appliances',
+                'priority' => 'low',
+                'status' => 'completed',
+                'assigned_to' => 'ApplianceFix Pro',
+                'estimated_cost' => 250.00,
+                'actual_cost' => 200.00
+            ],
+            [
+                'property_id' => $propertyIds[2],
+                'title' => 'Crack in bedroom wall',
+                'description' => 'A visible crack has appeared on the bedroom wall near the window. May be settling.',
+                'category' => 'structural',
+                'priority' => 'medium',
+                'status' => 'open',
+                'assigned_to' => null,
+                'estimated_cost' => 300.00,
+                'actual_cost' => null
+            ],
+            [
+                'property_id' => $propertyIds[0],
+                'title' => 'Ant infestation in kitchen',
+                'description' => 'Small ants found in kitchen near the sink area. Need pest control treatment.',
+                'category' => 'pest_control',
+                'priority' => 'medium',
+                'status' => 'completed',
+                'assigned_to' => 'BugFree Pest Control',
+                'estimated_cost' => 150.00,
+                'actual_cost' => 130.00
+            ],
+            [
+                'property_id' => $propertyIds[1],
+                'title' => 'Mouse sighting in basement',
+                'description' => 'Tenant reported seeing a mouse in the basement storage area.',
+                'category' => 'pest_control',
+                'priority' => 'high',
+                'status' => 'in_progress',
+                'assigned_to' => 'BugFree Pest Control',
+                'estimated_cost' => 200.00,
+                'actual_cost' => null
+            ],
+        ];
+
+        foreach ($maintenanceRequests as $req) {
+            $pdo->prepare("
+                INSERT IGNORE INTO maintenance_requests
+                (property_id, renter_id, title, description, category, priority, status, assigned_to, estimated_cost, actual_cost, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ")->execute([
+                $req['property_id'],
+                $renterId ? ($renterRecordId ?? null) : null,
+                $req['title'],
+                $req['description'],
+                $req['category'],
+                $req['priority'],
+                $req['status'],
+                $req['assigned_to'],
+                $req['estimated_cost'],
+                $req['actual_cost'],
+                date('Y-m-d H:i:s', strtotime('-' . rand(1, 90) . ' days')),
+                $now
+            ]);
+        }
     }
 
     // Seed sample applications
@@ -389,6 +619,183 @@ try {
         }
     }
 
+    // Seed default user settings for test renter
+    if ($renterId) {
+        $defaultUserSettings = [
+            ['email_notifications', '1'],
+            ['sms_notifications', '0'],
+            ['payment_reminders', '1'],
+            ['maintenance_updates', '1'],
+            ['newsletter', '0'],
+            ['marketing', '0'],
+            ['show_profile', '1'],
+            ['show_phone', '0'],
+            ['show_email', '0'],
+            ['allow_data_collection', '0'],
+            ['language', 'en'],
+            ['timezone', 'America/Denver'],
+            ['date_format', 'MM/DD/YYYY']
+        ];
+
+        foreach ($defaultUserSettings as $us) {
+            $pdo->prepare("
+                INSERT INTO user_settings (user_id, setting_key, setting_value, updated_at)
+                VALUES (?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value), updated_at = VALUES(updated_at)
+            ")->execute([$renterId, $us[0], $us[1], $now]);
+        }
+
+        // Seed a sample support request
+        $pdo->prepare("
+            INSERT IGNORE INTO support_requests (user_id, subject, category, message, status, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ")->execute([
+            $renterId,
+            'Question about lease renewal',
+            'Lease & Documents',
+            'I would like to know the process for renewing my lease. My current lease ends in January 2027. Can you please guide me on the next steps?',
+            'in_progress',
+            date('Y-m-d H:i:s', strtotime('-3 days')),
+            $now
+        ]);
+    }
+
+    // Seed notifications for test renter
+    if ($renterId) {
+        $notifications = [
+            [
+                'type' => 'payment',
+                'icon' => 'bell',
+                'title' => 'Rent Reminder',
+                'message' => 'April rent is due in 5 days. Amount: $1,500.00',
+                'is_read' => 0,
+                'link' => '/renter/portal?tab=payments',
+                'created_at' => date('Y-m-d H:i:s', strtotime('-2 hours'))
+            ],
+            [
+                'type' => 'maintenance',
+                'icon' => 'wrench',
+                'title' => 'Maintenance Update',
+                'message' => 'Your request for kitchen faucet has been scheduled',
+                'is_read' => 0,
+                'link' => '/renter/portal?tab=maintenance',
+                'created_at' => date('Y-m-d H:i:s', strtotime('-1 day'))
+            ],
+            [
+                'type' => 'message',
+                'icon' => 'envelope',
+                'title' => 'New Message',
+                'message' => 'You have a new message from property management',
+                'is_read' => 0,
+                'link' => '/renter/portal?tab=messages',
+                'created_at' => date('Y-m-d H:i:s', strtotime('-2 days'))
+            ],
+            [
+                'type' => 'payment',
+                'icon' => 'check-circle',
+                'title' => 'Payment Confirmed',
+                'message' => 'Your March rent payment of $1,500.00 has been received. Receipt: RCP-2026-03-001',
+                'is_read' => 1,
+                'link' => '/renter/portal?tab=payments',
+                'created_at' => date('Y-m-d H:i:s', strtotime('-5 days'))
+            ],
+            [
+                'type' => 'info',
+                'icon' => 'info-circle',
+                'title' => 'Welcome to Portal',
+                'message' => 'Welcome to the SOTELO Management Renter Portal. Explore your dashboard to manage payments and maintenance requests.',
+                'is_read' => 1,
+                'link' => '/renter/portal',
+                'created_at' => date('Y-m-d H:i:s', strtotime('-30 days'))
+            ]
+        ];
+
+        foreach ($notifications as $notif) {
+            $pdo->prepare("
+                INSERT IGNORE INTO notifications (user_id, type, icon, title, message, is_read, link, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ")->execute([
+                $renterId,
+                $notif['type'],
+                $notif['icon'],
+                $notif['title'],
+                $notif['message'],
+                $notif['is_read'],
+                $notif['link'],
+                $notif['created_at']
+            ]);
+        }
+    }
+
+    // Seed default documents for test renter (property 1)
+    if ($renterId && !empty($propertyIds) && isset($renterRecordId)) {
+        $defaultDocs = [
+            ['Lease Agreement', 'lease', 'lease_agreement.pdf', 'uploads/documents/lease_agreement.pdf', 'application/pdf'],
+            ['Property Rules', 'rules', 'property_rules.pdf', 'uploads/documents/property_rules.pdf', 'application/pdf'],
+            ['Move-in Inspection Report', 'inspection', 'move_in_inspection.pdf', 'uploads/documents/move_in_inspection.pdf', 'application/pdf'],
+        ];
+
+        foreach ($defaultDocs as $doc) {
+            $pdo->prepare("
+                INSERT IGNORE INTO documents
+                (renter_id, property_id, user_id, title, type, file_name, file_path, file_size, mime_type, uploaded_by, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ")->execute([
+                $renterRecordId,
+                $propertyIds[0],
+                $renterId,
+                $doc[0],
+                $doc[1],
+                $doc[2],
+                $doc[3],
+                0,
+                $doc[4],
+                'admin',
+                date('Y-m-d H:i:s', strtotime('-30 days')),
+                $now
+            ]);
+        }
+    }
+
+    // Seed documents for all properties (admin-uploaded)
+    if (!empty($propertyIds) && $adminId) {
+        $propertyDocs = [
+            // Property 1 - Maple Residency (already has renter docs above, add more)
+            [$propertyIds[0], 'Property Insurance', 'insurance', 'maple_insurance_2024.pdf', 'uploads/documents/property_1/maple_insurance_2024.pdf', 245000, 'application/pdf'],
+            [$propertyIds[0], 'Tax Assessment 2024', 'tax', 'maple_tax_2024.pdf', 'uploads/documents/property_1/maple_tax_2024.pdf', 180000, 'application/pdf'],
+            // Property 2 - Oak Apartments
+            [$propertyIds[1], 'Lease Agreement', 'lease', 'oak_lease_agreement.pdf', 'uploads/documents/property_2/oak_lease_agreement.pdf', 320000, 'application/pdf'],
+            [$propertyIds[1], 'Inspection Report', 'inspection', 'oak_inspection_2024.pdf', 'uploads/documents/property_2/oak_inspection_2024.pdf', 156000, 'application/pdf'],
+            [$propertyIds[1], 'Property Insurance', 'insurance', 'oak_insurance_2024.pdf', 'uploads/documents/property_2/oak_insurance_2024.pdf', 210000, 'application/pdf'],
+            // Property 3 - Pine Condos
+            [$propertyIds[2], 'Lease Agreement', 'lease', 'pine_lease_agreement.pdf', 'uploads/documents/property_3/pine_lease_agreement.pdf', 290000, 'application/pdf'],
+            [$propertyIds[2], 'Inspection Report', 'inspection', 'pine_inspection_2024.pdf', 'uploads/documents/property_3/pine_inspection_2024.pdf', 175000, 'application/pdf'],
+            [$propertyIds[2], 'Property Insurance', 'insurance', 'pine_insurance_2024.pdf', 'uploads/documents/property_3/pine_insurance_2024.pdf', 198000, 'application/pdf'],
+            [$propertyIds[2], 'Maintenance Record', 'maintenance', 'pine_maintenance_log.pdf', 'uploads/documents/property_3/pine_maintenance_log.pdf', 89000, 'application/pdf'],
+        ];
+
+        foreach ($propertyDocs as $doc) {
+            $pdo->prepare("
+                INSERT IGNORE INTO documents
+                (renter_id, property_id, user_id, title, type, file_name, file_path, file_size, mime_type, uploaded_by, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ")->execute([
+                null,
+                $doc[0],
+                $adminId,
+                $doc[1],
+                $doc[2],
+                $doc[3],
+                $doc[4],
+                $doc[5],
+                $doc[6],
+                'admin',
+                date('Y-m-d H:i:s', strtotime('-' . rand(5, 60) . ' days')),
+                $now
+            ]);
+        }
+    }
+
     // Seed default settings
     $settings = [
         ['company_name', 'Sotelo Management'],
@@ -411,13 +818,13 @@ try {
     echo "<h3>Admin Credentials</h3>";
     echo "<p><strong>Username:</strong> admin</p>";
     echo "<p><strong>Email:</strong> admin@sotelomanagement.com</p>";
-    echo "<p><strong>Password:</strong> Admin@123</p>";
+    echo "<p><strong>Password:</strong> password</p>";
     echo "</div>";
     echo "<div style='background: white; padding: 20px; border-radius: 5px; margin: 20px 0;'>";
     echo "<h3>Sample Renter Credentials</h3>";
-    echo "<p><strong>Username:</strong> renter1</p>";
-    echo "<p><strong>Email:</strong> renter1@example.com</p>";
-    echo "<p><strong>Password:</strong> Renter@123</p>";
+    echo "<p><strong>Username:</strong> test</p>";
+    echo "<p><strong>Email:</strong> test@sotelomanagement.com</p>";
+    echo "<p><strong>Password:</strong> password</p>";
     echo "</div>";
     echo "<div style='background: white; padding: 20px; border-radius: 5px; margin: 20px 0;'>";
     echo "<h3>Sample Data Created</h3>";
@@ -428,6 +835,8 @@ try {
     echo "<li>1 Maintenance request</li>";
     echo "<li>2 Applications (submitted and under review)</li>";
     echo "<li>Default company settings</li>";
+    echo "<li>Default user preferences for test renter</li>";
+    echo "<li>1 Sample support request</li>";
     echo "</ul>";
     echo "</div>";
     echo "<p style='color: #666;'>Redirecting to home page in 3 seconds...</p>";

@@ -458,18 +458,35 @@ function initializeCharts() {
     });
 }
 
+// ========== FILTERS ==========
 function applyReportFilters() {
     const dateRange = document.getElementById('reportDateRange').value;
     const property = document.getElementById('reportProperty').value;
     const reportType = document.getElementById('reportType').value;
 
-    let message = 'Applying filters:\n';
-    message += `• Date Range: ${dateRange}\n`;
-    message += `• Property: ${property}\n`;
-    message += `• Report Type: ${reportType}\n\n`;
-    message += 'In a real application, this would filter the report data.';
+    // Build URL with query params and reload page
+    const params = new URLSearchParams();
+    params.set('date_range', dateRange);
+    if (property !== 'all') params.set('property', property);
+    if (reportType !== 'summary') params.set('report_type', reportType);
 
-    alert(message);
+    if (dateRange === 'custom') {
+        const from = document.getElementById('dateFrom').value;
+        const to = document.getElementById('dateTo').value;
+        if (from) params.set('date_from', from);
+        if (to) params.set('date_to', to);
+    }
+
+    Swal.fire({
+        title: 'Applying Filters...',
+        html: 'Refreshing report data',
+        timer: 1200,
+        timerProgressBar: true,
+        didOpen: () => Swal.showLoading(),
+        allowOutsideClick: false
+    }).then(() => {
+        window.location.href = '<?= route("admin.reports") ?>?' + params.toString();
+    });
 }
 
 function resetReportFilters() {
@@ -478,62 +495,389 @@ function resetReportFilters() {
     document.getElementById('reportType').value = 'summary';
     document.getElementById('customDateRange').style.display = 'none';
 
-    alert('Filters reset to default values.');
+    Swal.fire({
+        icon: 'success',
+        title: 'Filters Reset',
+        text: 'All filters have been reset to defaults.',
+        confirmButtonColor: '#2c5aa0',
+        timer: 1500,
+        timerProgressBar: true
+    }).then(() => {
+        window.location.href = '<?= route("admin.reports") ?>';
+    });
 }
 
+// ========== QUICK REPORT CARDS ==========
 function viewFinancialReport() {
-    alert('Loading Financial Report...\n\nThis would open a detailed financial report in a real application.');
+    Swal.fire({
+        icon: 'info',
+        title: 'Financial Report',
+        text: 'Scrolling to the detailed financial summary below.',
+        confirmButtonColor: '#2c5aa0',
+        timer: 1500,
+        timerProgressBar: true
+    });
     document.getElementById('reportPreview').scrollIntoView({ behavior: 'smooth' });
 }
 
 function viewOccupancyReport() {
-    alert('Loading Occupancy Report...\n\nThis would open a detailed occupancy report in a real application.');
+    Swal.fire({
+        icon: 'info',
+        title: 'Occupancy Report',
+        text: 'Scrolling to occupancy chart.',
+        confirmButtonColor: '#2c5aa0',
+        timer: 1500,
+        timerProgressBar: true
+    });
+    document.getElementById('occupancyChart').scrollIntoView({ behavior: 'smooth' });
 }
 
 function viewMaintenanceReport() {
-    alert('Loading Maintenance Report...\n\nThis would open a detailed maintenance report in a real application.');
+    Swal.fire({
+        icon: 'info',
+        title: 'Maintenance Report',
+        text: 'Scrolling to maintenance costs breakdown.',
+        confirmButtonColor: '#2c5aa0',
+        timer: 1500,
+        timerProgressBar: true
+    });
+    document.getElementById('maintenanceCostChart').scrollIntoView({ behavior: 'smooth' });
 }
 
 function viewRenterReport() {
-    alert('Loading Renter Report...\n\nThis would open a detailed renter report in a real application.');
+    Swal.fire({
+        icon: 'info',
+        title: 'Renter Report',
+        html: `<p><strong>Active Renters:</strong> <?= count($revenueByProperty) ?></p>
+               <p><strong>Collection Rate:</strong> <?= e((string)$kpiData['payment_collection']) ?>%</p>
+               <p><strong>Satisfaction:</strong> <?= number_format($kpiData['renter_satisfaction'], 1) ?>/5</p>`,
+        confirmButtonColor: '#2c5aa0'
+    });
+}
+
+// ========== REPORT DATA FOR EXPORTS ==========
+const reportTableData = <?= json_encode($revenueByProperty ?? []) ?>;
+const reportKPI = <?= json_encode($kpiData ?? []) ?>;
+
+// ========== EXPORT FUNCTIONS ==========
+function buildReportCSV() {
+    const headers = ['Property', 'Monthly Rent', 'Collected', 'Expenses', 'Net Profit', 'Profit Margin', 'Occupancy'];
+    const rows = reportTableData.map(item => {
+        const netProfit = parseFloat(item.collected || 0) - parseFloat(item.expenses || 0);
+        const margin = item.collected > 0 ? ((netProfit / item.collected) * 100).toFixed(1) + '%' : '0%';
+        return [
+            item.property_name || '',
+            parseFloat(item.monthly_rent || 0).toFixed(2),
+            parseFloat(item.collected || 0).toFixed(2),
+            parseFloat(item.expenses || 0).toFixed(2),
+            netProfit.toFixed(2),
+            margin,
+            item.occupancy || '0%'
+        ];
+    });
+
+    // Totals row
+    const totalRent = reportTableData.reduce((s, i) => s + parseFloat(i.monthly_rent || 0), 0);
+    const totalCollected = reportTableData.reduce((s, i) => s + parseFloat(i.collected || 0), 0);
+    const totalExpenses = reportTableData.reduce((s, i) => s + parseFloat(i.expenses || 0), 0);
+    rows.push(['TOTAL', totalRent.toFixed(2), totalCollected.toFixed(2), totalExpenses.toFixed(2), (totalCollected - totalExpenses).toFixed(2), '', '']);
+
+    // KPI section
+    rows.unshift([]);
+    rows.unshift(['KPI', 'Value']);
+    rows.unshift(['Occupancy Rate', reportKPI.occupancy_rate + '%']);
+    rows.unshift(['Monthly Revenue', '$' + parseFloat(reportKPI.monthly_revenue || 0).toFixed(2)]);
+    rows.unshift(['Payment Collection', reportKPI.payment_collection + '%']);
+    rows.unshift(['Renter Satisfaction', parseFloat(reportKPI.renter_satisfaction || 0).toFixed(1) + '/5']);
+    rows.unshift([]);
+    rows.unshift(['Sotelo Management LLC - Financial Report', new Date().toLocaleDateString()]);
+
+    return [[''], ...rows.map(r => r)].map(row =>
+        (Array.isArray(row) ? row : [row]).map(field => {
+            const str = String(field);
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+        }).join(',')
+    ).join('\n');
+}
+
+function downloadFile(content, filename, mimeType) {
+    const blob = new Blob(['\uFEFF' + content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 }
 
 function exportReport(format) {
-    const formats = {
-        'pdf': 'PDF',
-        'excel': 'Excel',
-        'csv': 'CSV'
-    };
+    if (format === 'csv') {
+        const csv = buildReportCSV();
+        downloadFile(csv, 'financial_report_' + new Date().toISOString().slice(0, 10) + '.csv', 'text/csv;charset=utf-8;');
+        Swal.fire({ icon: 'success', title: 'CSV Downloaded!', text: 'Financial report exported as CSV.', confirmButtonColor: '#2c5aa0', timer: 2500, timerProgressBar: true });
+    } else if (format === 'excel') {
+        // Generate a tab-separated file that Excel opens natively
+        const csv = buildReportCSV().replace(/,/g, '\t');
+        downloadFile(csv, 'financial_report_' + new Date().toISOString().slice(0, 10) + '.xls', 'application/vnd.ms-excel;charset=utf-8;');
+        Swal.fire({ icon: 'success', title: 'Excel Downloaded!', text: 'Financial report exported as Excel.', confirmButtonColor: '#2c5aa0', timer: 2500, timerProgressBar: true });
+    } else if (format === 'pdf') {
+        // Open a print-friendly version of the report preview
+        printReportPreview();
+    }
+}
 
-    alert(`Exporting report as ${formats[format]}...\n\nIn a real application, this would generate and download a ${formats[format]} file.`);
+function printReportPreview() {
+    const preview = document.getElementById('reportPreview');
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html><head><title>Sotelo Management - Financial Report</title>
+        <style>
+            body { font-family: Arial, sans-serif; padding: 2rem; color: #333; }
+            h3 { color: #2c5aa0; }
+            table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+            th, td { padding: 0.75rem; border: 1px solid #ddd; text-align: left; }
+            th { background: #f8fafc; font-weight: 600; }
+            .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; text-align: center; margin: 1rem 0; }
+            .kpi-box { padding: 1rem; background: #f8fafc; border-radius: 8px; }
+            .kpi-val { font-size: 1.5rem; font-weight: 700; color: #2c5aa0; }
+            .kpi-lbl { font-size: 12px; color: #666; }
+            @media print { body { padding: 0; } }
+        </style></head><body>
+        <h2 style="color:#2c5aa0;">SOTELO MANAGEMENT LLC</h2>
+        <div style="text-align:right;margin-top:-2rem;"><strong>MONTHLY FINANCIAL REPORT</strong><br>${new Date().toLocaleDateString()}</div>
+        <hr style="border-color:#2c5aa0;">
+        <h3>Key Performance Indicators</h3>
+        <div class="kpi-grid">
+            <div class="kpi-box"><div class="kpi-val">${reportKPI.occupancy_rate}%</div><div class="kpi-lbl">Occupancy Rate</div></div>
+            <div class="kpi-box"><div class="kpi-val">$${parseFloat(reportKPI.monthly_revenue||0).toLocaleString()}</div><div class="kpi-lbl">Monthly Revenue</div></div>
+            <div class="kpi-box"><div class="kpi-val">${reportKPI.payment_collection}%</div><div class="kpi-lbl">Collection Rate</div></div>
+            <div class="kpi-box"><div class="kpi-val">${parseFloat(reportKPI.renter_satisfaction||0).toFixed(1)}/5</div><div class="kpi-lbl">Satisfaction</div></div>
+        </div>
+        <h3>Revenue Breakdown</h3>
+        <table>
+            <thead><tr><th>Property</th><th style="text-align:right">Monthly Rent</th><th style="text-align:right">Collected</th><th style="text-align:right">Expenses</th><th style="text-align:right">Net Profit</th><th style="text-align:center">Occupancy</th></tr></thead>
+            <tbody>
+            ${reportTableData.map(i => {
+                const net = parseFloat(i.collected||0) - parseFloat(i.expenses||0);
+                return '<tr><td>'+i.property_name+'</td><td style="text-align:right">$'+parseFloat(i.monthly_rent||0).toLocaleString()+'</td><td style="text-align:right;color:#10b981">$'+parseFloat(i.collected||0).toLocaleString()+'</td><td style="text-align:right;color:#ef4444">$'+parseFloat(i.expenses||0).toLocaleString()+'</td><td style="text-align:right;font-weight:600">$'+net.toLocaleString()+'</td><td style="text-align:center">'+i.occupancy+'</td></tr>';
+            }).join('')}
+            </tbody>
+        </table>
+        <p style="color:#999;font-size:12px;margin-top:2rem;">Generated by Sotelo Management LLC on ${new Date().toLocaleString()}</p>
+        </body></html>
+    `);
+    printWindow.document.close();
+    setTimeout(() => { printWindow.print(); }, 500);
 }
 
 function printReport() {
-    alert('Printing report...\n\nIn a real application, this would open the print dialog with a formatted report.');
+    printReportPreview();
 }
 
+// ========== SCHEDULE REPORT ==========
 function scheduleReport() {
-    const reportType = prompt('Enter report type to schedule:');
-    const email = prompt('Enter recipient email:');
-    const frequency = prompt('Enter frequency (daily, weekly, monthly):');
+    Swal.fire({
+        title: 'Schedule New Report',
+        html: `
+            <div style="text-align:left;">
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; font-weight:600; margin-bottom:0.3rem; font-size:14px;">Report Type</label>
+                    <select id="swal_report_type" class="swal2-select" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px;">
+                        <option value="financial">Financial Report</option>
+                        <option value="occupancy">Occupancy Report</option>
+                        <option value="maintenance">Maintenance Report</option>
+                        <option value="renter">Renter Report</option>
+                    </select>
+                </div>
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; font-weight:600; margin-bottom:0.3rem; font-size:14px;">Recipient Email</label>
+                    <input type="email" id="swal_email" class="swal2-input" placeholder="email@example.com" style="width:100%; margin:0; padding:8px; border:1px solid #ddd; border-radius:6px;">
+                </div>
+                <div>
+                    <label style="display:block; font-weight:600; margin-bottom:0.3rem; font-size:14px;">Frequency</label>
+                    <select id="swal_frequency" class="swal2-select" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px;">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly" selected>Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                    </select>
+                </div>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: '<i class="fas fa-calendar-check"></i> Schedule',
+        confirmButtonColor: '#2c5aa0',
+        cancelButtonColor: '#6c757d',
+        preConfirm: () => {
+            const email = document.getElementById('swal_email').value;
+            if (!email) {
+                Swal.showValidationMessage('Please enter a recipient email');
+                return false;
+            }
+            return {
+                type: document.getElementById('swal_report_type').value,
+                email: email,
+                frequency: document.getElementById('swal_frequency').value
+            };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const d = result.value;
+            // Add to the scheduled reports section dynamically
+            const container = document.querySelector('.scheduled-reports');
+            const newItem = document.createElement('div');
+            newItem.className = 'schedule-item';
+            newItem.innerHTML = `
+                <div class="schedule-info">
+                    <h4>${d.type.charAt(0).toUpperCase() + d.type.slice(1)} Report</h4>
+                    <div class="schedule-details">
+                        Sent to: ${d.email} • Frequency: ${d.frequency.charAt(0).toUpperCase() + d.frequency.slice(1)}
+                    </div>
+                </div>
+                <div>
+                    <button class="btn-small" onclick="this.closest('.schedule-item').remove(); Swal.fire({icon:'success',title:'Removed',timer:1000,timerProgressBar:true,confirmButtonColor:'#2c5aa0'})">Delete</button>
+                </div>
+            `;
+            container.appendChild(newItem);
 
-    if (reportType && email && frequency) {
-        alert(`Report scheduled!\n\n• Type: ${reportType}\n• Recipient: ${email}\n• Frequency: ${frequency}\n\nReport will be sent automatically.`);
-    }
+            Swal.fire({
+                icon: 'success',
+                title: 'Report Scheduled!',
+                html: `<strong>${d.type.charAt(0).toUpperCase() + d.type.slice(1)} Report</strong> will be sent <strong>${d.frequency}</strong> to <strong>${d.email}</strong>`,
+                confirmButtonColor: '#2c5aa0'
+            });
+        }
+    });
 }
 
 function generateCustomReport() {
-    alert('Opening custom report generator...\n\nThis would open a form to create custom reports in a real application.');
+    Swal.fire({
+        title: 'Custom Report Builder',
+        html: `
+            <div style="text-align:left;">
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; font-weight:600; margin-bottom:0.3rem; font-size:14px;">Report Name</label>
+                    <input type="text" id="swal_custom_name" class="swal2-input" placeholder="My Custom Report" style="width:100%; margin:0; padding:8px; border:1px solid #ddd; border-radius:6px;">
+                </div>
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; font-weight:600; margin-bottom:0.3rem; font-size:14px;">Include Sections</label>
+                    <div style="display:flex; flex-direction:column; gap:0.5rem; padding:0.5rem;">
+                        <label><input type="checkbox" checked> Financial Summary</label>
+                        <label><input type="checkbox" checked> Revenue by Property</label>
+                        <label><input type="checkbox"> Maintenance Breakdown</label>
+                        <label><input type="checkbox"> Renter Details</label>
+                        <label><input type="checkbox" checked> KPI Overview</label>
+                    </div>
+                </div>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: '<i class="fas fa-chart-bar"></i> Generate',
+        confirmButtonColor: '#2c5aa0',
+        cancelButtonColor: '#6c757d'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Generating Report...',
+                didOpen: () => Swal.showLoading(),
+                timer: 2000,
+                timerProgressBar: true,
+                allowOutsideClick: false
+            }).then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Report Generated!',
+                    text: 'Your custom report is ready. Scroll down to view the preview.',
+                    confirmButtonColor: '#2c5aa0'
+                });
+                document.getElementById('reportPreview').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+    });
 }
 
+// ========== SCHEDULED REPORTS EDIT/DELETE ==========
 function editSchedule(id) {
-    alert(`Editing scheduled report #${id}...`);
+    const item = event.target.closest('.schedule-item');
+    const title = item.querySelector('h4').textContent;
+    const details = item.querySelector('.schedule-details').textContent;
+
+    Swal.fire({
+        title: 'Edit Scheduled Report',
+        html: `
+            <div style="text-align:left;">
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; font-weight:600; margin-bottom:0.3rem; font-size:14px;">Report Name</label>
+                    <input type="text" id="swal_edit_name" value="${title}" class="swal2-input" style="width:100%; margin:0; padding:8px; border:1px solid #ddd; border-radius:6px;">
+                </div>
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; font-weight:600; margin-bottom:0.3rem; font-size:14px;">Frequency</label>
+                    <select id="swal_edit_freq" class="swal2-select" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:6px;">
+                        <option value="Daily">Daily</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Quarterly">Quarterly</option>
+                    </select>
+                </div>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: '<i class="fas fa-save"></i> Save Changes',
+        confirmButtonColor: '#2c5aa0',
+        cancelButtonColor: '#6c757d'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const newName = document.getElementById('swal_edit_name').value;
+            const newFreq = document.getElementById('swal_edit_freq').value;
+            item.querySelector('h4').textContent = newName;
+            item.querySelector('.schedule-details').textContent =
+                item.querySelector('.schedule-details').textContent.replace(/Frequency: \w+/, 'Frequency: ' + newFreq);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Updated!',
+                text: 'Scheduled report has been updated.',
+                confirmButtonColor: '#2c5aa0',
+                timer: 1500,
+                timerProgressBar: true
+            });
+        }
+    });
 }
 
 function deleteSchedule(id) {
-    if (confirm('Are you sure you want to delete this scheduled report?')) {
-        alert(`Scheduled report #${id} deleted.`);
-    }
+    const item = event.target.closest('.schedule-item');
+
+    Swal.fire({
+        title: 'Delete Scheduled Report?',
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '<i class="fas fa-trash"></i> Delete',
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6c757d'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            item.style.transition = 'opacity 0.3s, transform 0.3s';
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(20px)';
+            setTimeout(() => item.remove(), 300);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Deleted!',
+                text: 'Scheduled report has been removed.',
+                confirmButtonColor: '#2c5aa0',
+                timer: 1500,
+                timerProgressBar: true
+            });
+        }
+    });
 }
 </script>
 

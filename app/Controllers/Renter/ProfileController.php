@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once BASE_PATH . '/app/Core/Controller.php';
+require_once BASE_PATH . '/app/Core/CSRF.php';
 require_once BASE_PATH . '/app/Models/User.php';
 require_once BASE_PATH . '/app/Models/Renter.php';
 require_once BASE_PATH . '/app/Models/Property.php';
@@ -55,9 +56,8 @@ class ProfileController extends Controller
     public function update(): void
     {
         // Verify CSRF token
-        $csrf = $_POST['_token'] ?? '';
-        if (!hash_equals($_SESSION['csrf_token'] ?? '', $csrf)) {
-            flash('error', 'Invalid CSRF token');
+        if (!CSRF::verify()) {
+            flash('error', 'Invalid security token. Please try again.');
             $this->back();
             return;
         }
@@ -148,6 +148,12 @@ class ProfileController extends Controller
         if ($renter) {
             Renter::update($renter['id'], $renterData);
         }
+
+        // Update session user data so header reflects changes immediately
+        $_SESSION['user']['first_name'] = $firstName;
+        $_SESSION['user']['last_name'] = $lastName;
+        $_SESSION['user']['email'] = $email;
+        $_SESSION['user']['phone'] = $phone;
 
         // Flash success message
         flash('success', 'Profile updated successfully');

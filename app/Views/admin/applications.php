@@ -153,7 +153,7 @@ ob_start();
                 <button class="btn-small view-btn" onclick="viewApplication(<?php echo $app['id']; ?>)">
                     <i class="fas fa-eye"></i> View
                 </button>
-                <button class="btn-small review-btn" onclick="updateStatus(<?php echo $app['id']; ?>, 'pending')">
+                <button class="btn-small review-btn" onclick="reviewApplication(<?php echo $app['id']; ?>)">
                     <i class="fas fa-search"></i> Review
                 </button>
             </div>
@@ -200,18 +200,18 @@ ob_start();
                 </div>
             </div>
 
-            <div class="details-section">
+            <div class="details-section" style="border-bottom: none; margin-bottom: 0;">
                 <h3>Actions</h3>
-                <div class="application-actions">
+                <div class="application-actions" style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;">
                     <button class="btn btn-success" onclick="approveApplication()">
                         <i class="fas fa-check"></i> Approve
                     </button>
-                    <form id="changeStatusForm" method="POST" style="display: inline;">
-                        <?php echo csrf_field(); ?>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <input type="hidden" name="id" id="statusAppId">
-                        <select name="status" id="statusSelect" style="padding: 0.5rem; margin-right: 0.5rem;">
+                        <select name="status" id="statusSelect" style="padding: 0.6rem 0.75rem; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
                             <option value="">Change Status...</option>
                             <option value="pending">Pending</option>
+                            <option value="under_review">Under Review</option>
                             <option value="approved">Approved</option>
                             <option value="rejected">Rejected</option>
                             <option value="withdrawn">Withdrawn</option>
@@ -219,7 +219,7 @@ ob_start();
                         <button type="button" class="btn btn-secondary" onclick="submitStatusChange()">
                             <i class="fas fa-sync"></i> Update Status
                         </button>
-                    </form>
+                    </div>
                     <button class="btn" style="background: #ef4444; color: white;" onclick="rejectApplication()">
                         <i class="fas fa-times"></i> Reject
                     </button>
@@ -380,8 +380,28 @@ function viewApplication(id) {
         </div>
     `;
 
+    // Set statusAppId so Update Status button works inside modal
+    document.getElementById('statusAppId').value = id;
+    document.getElementById('statusSelect').value = '';
+
     // Show modal
     document.getElementById('appDetailsModal').classList.add('active');
+}
+
+function reviewApplication(id) {
+    // Open the details modal
+    viewApplication(id);
+
+    // Auto-set status to under_review and submit
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '<?= route("admin.applications") ?>/' + id + '/status';
+    form.innerHTML = `
+        ${document.querySelector('input[name="_token"]').outerHTML}
+        <input type="hidden" name="status" value="under_review">
+    `;
+    document.body.appendChild(form);
+    form.submit();
 }
 
 function updateStatus(appId, status) {
@@ -391,18 +411,23 @@ function updateStatus(appId, status) {
 }
 
 function submitStatusChange() {
-    const appId = document.getElementById('statusAppId').value;
+    const appId = document.getElementById('statusAppId').value || currentAppId;
     const status = document.getElementById('statusSelect').value;
 
+    if (!appId) {
+        Swal.fire({ title: 'Error', text: 'No application selected.', icon: 'error', confirmButtonColor: '#2c5aa0' });
+        return;
+    }
+
     if (!status) {
-        alert('Please select a status');
+        Swal.fire({ title: 'Select Status', text: 'Please select a status before submitting.', icon: 'warning', confirmButtonColor: '#2c5aa0' });
         return;
     }
 
     // Create form and submit
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = '/admin/applications/' + appId + '/status';
+    form.action = '<?= route("admin.applications") ?>/' + appId + '/status';
 
     form.innerHTML = `
         ${document.querySelector('input[name="_token"]').outerHTML}
@@ -429,7 +454,7 @@ function approveApplication() {
 
     // Update form action
     document.getElementById('approveForm').action =
-        '/admin/applications/' + currentAppId + '/approve';
+        '<?= route("admin.applications") ?>/' + currentAppId + '/approve';
 
     // Close details modal and open approval modal
     closeModal('appDetailsModal');
@@ -445,25 +470,93 @@ function submitApprovalForm() {
 
 function rejectApplication() {
     if (currentAppId) {
-        const reason = prompt('Please enter reason for rejection:');
-        if (reason) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/admin/applications/' + currentAppId + '/status';
+        Swal.fire({
+            title: 'Reject Application',
+            input: 'textarea',
+            inputPlaceholder: 'Enter reason for rejection...',
+            showCancelButton: true,
+            confirmButtonColor: '#e74c3c',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-times"></i> Reject',
+            cancelButtonText: 'Cancel',
+            inputValidator: (value) => {
+                if (!value) return 'Please enter a reason for rejection';
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '<?= route("admin.applications") ?>/' + currentAppId + '/status';
 
-            form.innerHTML = `
-                ${document.querySelector('input[name="_token"]').outerHTML}
-                <input type="hidden" name="status" value="rejected">
-            `;
+                form.innerHTML = `
+                    ${document.querySelector('input[name="_token"]').outerHTML}
+                    <input type="hidden" name="status" value="rejected">
+                `;
 
-            document.body.appendChild(form);
-            form.submit();
-        }
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
     }
 }
 
 function exportApplications() {
-    alert('Exporting applications data...');
+    if (!applicationsData || applicationsData.length === 0) {
+        Swal.fire({ title: 'No Data', text: 'No applications to export.', icon: 'warning', confirmButtonColor: '#2c5aa0' });
+        return;
+    }
+
+    // CSV headers
+    const headers = ['ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Property', 'Monthly Income', 'Credit Score', 'Employment', 'Desired Move-in', 'Lease Term', 'Status', 'Submitted Date', 'Notes'];
+
+    // CSV rows
+    const rows = applicationsData.map(a => [
+        a.id,
+        a.first_name || '',
+        a.last_name || '',
+        a.email || '',
+        a.phone || '',
+        a.property_name || 'N/A',
+        a.monthly_income || 0,
+        a.credit_score || 'N/A',
+        a.employment || 'N/A',
+        a.desired_move_in || '',
+        a.lease_term || '',
+        (a.status || 'pending').charAt(0).toUpperCase() + (a.status || 'pending').slice(1),
+        a.submitted_at ? new Date(a.submitted_at).toLocaleDateString() : 'N/A',
+        a.notes || ''
+    ]);
+
+    // Build CSV with proper escaping
+    const csvContent = [headers, ...rows].map(row =>
+        row.map(field => {
+            const str = String(field);
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+        }).join(',')
+    ).join('\n');
+
+    // BOM for Excel UTF-8 compatibility + download
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'applications_export_' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    Swal.fire({
+        title: 'Export Complete!',
+        text: 'Applications data has been downloaded as CSV.',
+        icon: 'success',
+        confirmButtonColor: '#2c5aa0',
+        timer: 3000,
+        timerProgressBar: true
+    });
 }
 
 function escapeHtml(text) {

@@ -267,6 +267,59 @@ class Payment
     }
 
     /**
+     * Get payment method breakdown with totals and percentages
+     *
+     * @return array Each item has: method, total, percentage, icon, label
+     */
+    public static function methodBreakdown(): array
+    {
+        // Get total of all paid payments
+        $totalResult = Database::one(
+            'SELECT COALESCE(SUM(amount), 0) as grand_total FROM payments WHERE status = ?',
+            ['paid']
+        );
+        $grandTotal = (float) ($totalResult['grand_total'] ?? 0);
+
+        // Get breakdown by method
+        $rows = Database::all(
+            'SELECT method, COALESCE(SUM(amount), 0) as total
+             FROM payments
+             WHERE status = ? AND method IS NOT NULL AND method != ""
+             GROUP BY method
+             ORDER BY total DESC',
+            ['paid']
+        );
+
+        // Method display config
+        $methodConfig = [
+            'bank_transfer' => ['label' => 'Bank Transfer', 'icon' => 'fas fa-university'],
+            'credit_card'   => ['label' => 'Credit Card',   'icon' => 'fab fa-cc-visa'],
+            'mobile_pay'    => ['label' => 'Mobile Pay',     'icon' => 'fas fa-mobile-alt'],
+            'cash'          => ['label' => 'Cash',           'icon' => 'fas fa-money-bill-wave'],
+            'check'         => ['label' => 'Check',          'icon' => 'fas fa-money-check'],
+        ];
+
+        $breakdown = [];
+        foreach ($rows as $row) {
+            $method = $row['method'];
+            $total = (float) $row['total'];
+            $percentage = $grandTotal > 0 ? round(($total / $grandTotal) * 100) : 0;
+
+            $config = $methodConfig[$method] ?? ['label' => ucfirst(str_replace('_', ' ', $method)), 'icon' => 'fas fa-credit-card'];
+
+            $breakdown[] = [
+                'method'     => $method,
+                'label'      => $config['label'],
+                'icon'       => $config['icon'],
+                'total'      => $total,
+                'percentage' => $percentage,
+            ];
+        }
+
+        return $breakdown;
+    }
+
+    /**
      * Get total count of payments
      */
     public static function count(): int

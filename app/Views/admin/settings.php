@@ -72,6 +72,10 @@ ob_start();
                         <label for="company_phone">Phone Number</label>
                         <input type="tel" id="company_phone" name="company_phone" value="<?= e($settings['company_phone']) ?>" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
                     </div>
+                    <div>
+                        <label for="company_website">Website</label>
+                        <input type="url" id="company_website" name="company_website" value="<?= e($settings['company_website']) ?>" placeholder="https://www.example.com" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
                 </div>
 
                 <h4 style="margin-top: 2rem; color: #2c5aa0;">Address Information</h4>
@@ -211,120 +215,157 @@ ob_start();
         <!-- User Management Tab -->
         <div id="users" class="tab-content">
             <div class="settings-section">
-                <h3><i class="fas fa-users"></i> User Management</h3>
-                <p style="color: #666; margin-bottom: 1.5rem;">Manage system users and their roles</p>
+                <h3 style="color: #2c5aa0;"><i class="fas fa-users"></i> User Management</h3>
 
-                <div style="margin-bottom: 2rem;">
-                    <button type="button" class="btn btn-primary" onclick="addNewUser()">
-                        <i class="fas fa-user-plus"></i> Add New User
-                    </button>
+                <!-- User Cards -->
+                <div style="display: flex; flex-direction: column; gap: 1rem; margin: 1.5rem 0;">
+                    <?php foreach ($users as $u): ?>
+                    <?php
+                        $initials = strtoupper(substr($u['first_name'] ?? 'U', 0, 1));
+                        $roleBadge = match($u['role']) {
+                            'admin' => ['Administrator', '#dbeafe', '#1e40af'],
+                            'renter' => ['Renter', '#d1fae5', '#065f46'],
+                            default => [ucfirst($u['role']), '#fed7aa', '#9a3412']
+                        };
+                    ?>
+                    <div style="display: flex; align-items: center; padding: 1.25rem; border: 1px solid #eaeaea; border-radius: 10px; background: #fff;">
+                        <div style="width: 48px; height: 48px; border-radius: 50%; background: #2c5aa0; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; margin-right: 1rem; flex-shrink: 0;">
+                            <?= $initials ?>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; font-size: 15px;"><?= e(($u['first_name'] ?? '') . ' ' . ($u['last_name'] ?? '')) ?></div>
+                            <div style="color: #666; font-size: 13px;"><?= e($u['email']) ?></div>
+                            <span style="display: inline-block; margin-top: 4px; padding: 2px 10px; background: <?= $roleBadge[1] ?>; color: <?= $roleBadge[2] ?>; border-radius: 20px; font-size: 11px; font-weight: 600;"><?= $roleBadge[0] ?></span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <button type="button" class="btn btn-small" onclick="editUser(<?= $u['id'] ?>, '<?= e($u['first_name'] ?? '') ?>', '<?= e($u['last_name'] ?? '') ?>', '<?= e($u['email']) ?>', '<?= e($u['role']) ?>')" title="Edit User">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn btn-small" onclick="resetPassword(<?= $u['id'] ?>, '<?= e(($u['first_name'] ?? '') . ' ' . ($u['last_name'] ?? '')) ?>')" title="Reset Password">
+                                <i class="fas fa-key"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
                 </div>
 
-                <table style="width: 100%; border-collapse: collapse;">
+                <!-- Add New User Form -->
+                <h4 style="margin-top: 2rem;">Add New User</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1rem 0;">
+                    <div>
+                        <label>Full Name *</label>
+                        <input type="text" id="new_user_name" placeholder="Enter full name" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div>
+                        <label>Email *</label>
+                        <input type="email" id="new_user_email" placeholder="Enter email address" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div>
+                        <label>Role *</label>
+                        <select id="new_user_role" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="">Select Role</option>
+                            <option value="admin">Administrator</option>
+                            <option value="renter">Renter</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Initial Password *</label>
+                        <input type="password" id="new_user_password" placeholder="Enter initial password" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" style="background: #10b981; border-color: #10b981; margin-top: 0.5rem;" onclick="addNewUser()">
+                    <i class="fas fa-user-plus"></i> Add User
+                </button>
+
+                <!-- Role Permissions -->
+                <hr style="margin: 2rem 0; border: none; border-top: 1px solid #eaeaea;">
+                <h4>Role Permissions</h4>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
                     <thead>
                         <tr style="background: #f8fafc;">
-                            <th style="padding: 1rem; text-align: left; color: #666; font-weight: 600;">User</th>
-                            <th style="padding: 1rem; text-align: left; color: #666; font-weight: 600;">Email</th>
-                            <th style="padding: 1rem; text-align: left; color: #666; font-weight: 600;">Role</th>
-                            <th style="padding: 1rem; text-align: left; color: #666; font-weight: 600;">Status</th>
-                            <th style="padding: 1rem; text-align: left; color: #666; font-weight: 600;">Last Login</th>
-                            <th style="padding: 1rem; text-align: left; color: #666; font-weight: 600;">Actions</th>
+                            <th style="padding: 0.75rem 1rem; text-align: center; color: #666; font-weight: 600;">Permission</th>
+                            <th style="padding: 0.75rem 1rem; text-align: center; color: #666; font-weight: 600;">Admin</th>
+                            <th style="padding: 0.75rem 1rem; text-align: center; color: #666; font-weight: 600;">Renter</th>
                         </tr>
                     </thead>
                     <tbody>
+                        <?php
+                        $permissions = [
+                            'View Dashboard' => [true, true],
+                            'Manage Properties' => [true, false],
+                            'Process Payments' => [true, false],
+                            'Manage Maintenance' => [true, false],
+                            'System Settings' => [true, false],
+                            'View Own Data' => [true, true],
+                            'Submit Requests' => [true, true],
+                        ];
+                        foreach ($permissions as $perm => $roles): ?>
                         <tr style="border-bottom: 1px solid #eaeaea;">
-                            <td style="padding: 1rem;">John Admin</td>
-                            <td style="padding: 1rem;">john@sotelomanagement.com</td>
-                            <td style="padding: 1rem;"><span style="padding: 0.25rem 0.75rem; background: #dbeafe; color: #1e40af; border-radius: 20px; font-size: 12px; font-weight: 600;">Admin</span></td>
-                            <td style="padding: 1rem;"><span style="padding: 0.25rem 0.75rem; background: #d1fae5; color: #065f46; border-radius: 20px; font-size: 12px; font-weight: 600;">Active</span></td>
-                            <td style="padding: 1rem; color: #666;">Today at 9:30 AM</td>
-                            <td style="padding: 1rem;">
-                                <button type="button" class="btn btn-small" onclick="editUser(1)">Edit</button>
-                                <button type="button" class="btn btn-small" style="margin-left: 0.5rem;" onclick="removeUser(1)">Remove</button>
+                            <td style="padding: 0.75rem 1rem; text-align: center;"><?= $perm ?></td>
+                            <td style="padding: 0.75rem 1rem; text-align: center; color: <?= $roles[0] ? '#10b981' : '#ef4444' ?>;">
+                                <?= $roles[0] ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>' ?>
+                            </td>
+                            <td style="padding: 0.75rem 1rem; text-align: center; color: <?= $roles[1] ? '#10b981' : '#ef4444' ?>;">
+                                <?= $roles[1] ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>' ?>
                             </td>
                         </tr>
-                        <tr style="border-bottom: 1px solid #eaeaea;">
-                            <td style="padding: 1rem;">Jane Manager</td>
-                            <td style="padding: 1rem;">jane@sotelomanagement.com</td>
-                            <td style="padding: 1rem;"><span style="padding: 0.25rem 0.75rem; background: #fed7aa; color: #9a3412; border-radius: 20px; font-size: 12px; font-weight: 600;">Manager</span></td>
-                            <td style="padding: 1rem;"><span style="padding: 0.25rem 0.75rem; background: #d1fae5; color: #065f46; border-radius: 20px; font-size: 12px; font-weight: 600;">Active</span></td>
-                            <td style="padding: 1rem; color: #666;">Yesterday at 2:15 PM</td>
-                            <td style="padding: 1rem;">
-                                <button type="button" class="btn btn-small" onclick="editUser(2)">Edit</button>
-                                <button type="button" class="btn btn-small" style="margin-left: 0.5rem;" onclick="removeUser(2)">Remove</button>
-                            </td>
-                        </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
+
+                <!-- Danger Zone -->
+                <div style="margin-top: 2rem; padding: 1.5rem; border: 2px solid #fecaca; border-radius: 10px; background: #fef2f2;">
+                    <h4 style="color: #dc2626; margin: 0 0 1rem;"><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button type="button" class="btn" style="background: #ef4444; color: #fff; border: none;" onclick="resetDefaults()">
+                            <i class="fas fa-undo"></i> Reset to Default Settings
+                        </button>
+                        <button type="button" class="btn" style="background: #ef4444; color: #fff; border: none;" onclick="purgeOldData()">
+                            <i class="fas fa-trash"></i> Purge Old Data
+                        </button>
+                        <a href="<?= route('admin.settings.export-backup') ?>" class="btn" style="background: #ef4444; color: #fff; border: none; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-file-export"></i> Export All Data
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Integrations Tab -->
         <div id="integration" class="tab-content">
             <div class="settings-section">
-                <h3><i class="fas fa-plug"></i> Integrations</h3>
-                <p style="color: #666; margin-bottom: 1.5rem;">Connect third-party services to enhance functionality</p>
+                <h3 style="color: #2c5aa0;"><i class="fas fa-plug"></i> Integrations</h3>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
-                    <!-- Stripe Integration -->
-                    <div style="padding: 1.5rem; border: 1px solid #ddd; border-radius: 8px; background: #f9fafb;">
-                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                            <div style="font-size: 2rem; color: #635bff;">
-                                <i class="fab fa-stripe"></i>
-                            </div>
-                            <div>
-                                <h4 style="margin: 0; color: #2c5aa0;">Stripe</h4>
-                                <p style="margin: 0; font-size: 12px; color: #666;">Payment Processing</p>
-                            </div>
-                        </div>
-                        <p style="color: #666; font-size: 14px; margin-bottom: 1rem;">Accept credit cards and digital payments securely.</p>
-                        <button type="button" class="btn btn-secondary" onclick="configureIntegration('stripe')">Configure</button>
-                    </div>
+                <?php
+                $integrations = [
+                    ['key' => 'integration_quickbooks', 'name' => 'QuickBooks Online', 'icon' => 'fas fa-file-invoice-dollar', 'color' => '#2c5aa0', 'desc' => 'Sync financial data with QuickBooks'],
+                    ['key' => 'integration_google_analytics', 'name' => 'Google Analytics', 'icon' => 'fas fa-chart-line', 'color' => '#2c5aa0', 'desc' => 'Track website and application analytics'],
+                    ['key' => 'integration_google_maps', 'name' => 'Google Maps', 'icon' => 'fas fa-map-marker-alt', 'color' => '#2c5aa0', 'desc' => 'Display property locations on maps'],
+                    ['key' => 'integration_dropbox', 'name' => 'Dropbox', 'icon' => 'fab fa-dropbox', 'color' => '#2c5aa0', 'desc' => 'Backup documents and files'],
+                    ['key' => 'integration_twilio', 'name' => 'Twilio', 'icon' => 'fas fa-sms', 'color' => '#2c5aa0', 'desc' => 'Send SMS notifications'],
+                    ['key' => 'integration_google_calendar', 'name' => 'Google Calendar', 'icon' => 'fas fa-calendar-alt', 'color' => '#2c5aa0', 'desc' => 'Sync maintenance schedules'],
+                ];
+                ?>
 
-                    <!-- QuickBooks Integration -->
-                    <div style="padding: 1.5rem; border: 1px solid #ddd; border-radius: 8px; background: #f9fafb;">
-                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                            <div style="font-size: 2rem; color: #4285f4;">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div>
-                                <h4 style="margin: 0; color: #2c5aa0;">QuickBooks</h4>
-                                <p style="margin: 0; font-size: 12px; color: #666;">Accounting Software</p>
-                            </div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 1.5rem;">
+                    <?php foreach ($integrations as $intg):
+                        $connected = ($settings[$intg['key']] ?? '0') === '1';
+                    ?>
+                    <div style="padding: 1.5rem; border: 2px solid <?= $connected ? '#d1fae5' : '#eaeaea' ?>; border-radius: 10px; background: <?= $connected ? '#f0fdf4' : '#fff' ?>; text-align: center;">
+                        <div style="width: 56px; height: 56px; border-radius: 12px; background: #2c5aa0; color: #fff; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 24px;">
+                            <i class="<?= $intg['icon'] ?>"></i>
                         </div>
-                        <p style="color: #666; font-size: 14px; margin-bottom: 1rem;">Sync financial data with QuickBooks Online.</p>
-                        <button type="button" class="btn btn-secondary" onclick="configureIntegration('quickbooks')">Connect</button>
-                    </div>
-
-                    <!-- Google Workspace Integration -->
-                    <div style="padding: 1.5rem; border: 1px solid #ddd; border-radius: 8px; background: #f9fafb;">
-                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                            <div style="font-size: 2rem; color: #ea4335;">
-                                <i class="fab fa-google"></i>
-                            </div>
-                            <div>
-                                <h4 style="margin: 0; color: #2c5aa0;">Google Workspace</h4>
-                                <p style="margin: 0; font-size: 12px; color: #666;">Email & Calendar</p>
-                            </div>
+                        <h4 style="margin: 0 0 0.25rem; color: #1a1a1a;"><?= $intg['name'] ?></h4>
+                        <div style="font-size: 13px; font-weight: 600; color: <?= $connected ? '#10b981' : '#ef4444' ?>; margin-bottom: 0.5rem;">
+                            <?= $connected ? 'Connected' : 'Not Connected' ?>
                         </div>
-                        <p style="color: #666; font-size: 14px; margin-bottom: 1rem;">Integrate Gmail, Calendar, and Drive access.</p>
-                        <button type="button" class="btn btn-secondary" onclick="configureIntegration('google')">Connect</button>
+                        <p style="color: #666; font-size: 13px; margin-bottom: 1rem;"><?= $intg['desc'] ?></p>
+                        <label style="display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" name="<?= $intg['key'] ?>" value="1" <?= $connected ? 'checked' : '' ?>>
+                            <span style="font-size: 13px;"><?= $connected ? 'Enabled' : 'Enable' ?></span>
+                        </label>
                     </div>
-
-                    <!-- Slack Integration -->
-                    <div style="padding: 1.5rem; border: 1px solid #ddd; border-radius: 8px; background: #f9fafb;">
-                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                            <div style="font-size: 2rem; color: #36c5f0;">
-                                <i class="fab fa-slack"></i>
-                            </div>
-                            <div>
-                                <h4 style="margin: 0; color: #2c5aa0;">Slack</h4>
-                                <p style="margin: 0; font-size: 12px; color: #666;">Team Communication</p>
-                            </div>
-                        </div>
-                        <p style="color: #666; font-size: 14px; margin-bottom: 1rem;">Get notifications and alerts in your Slack workspace.</p>
-                        <button type="button" class="btn btn-secondary" onclick="configureIntegration('slack')">Connect</button>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
@@ -332,71 +373,99 @@ ob_start();
         <!-- Backup & Restore Tab -->
         <div id="backup" class="tab-content">
             <div class="settings-section">
-                <h3><i class="fas fa-database"></i> Backup & Restore</h3>
+                <h3 style="color: #2c5aa0;"><i class="fas fa-database"></i> Backup & Restore</h3>
 
-                <h4 style="margin-top: 2rem; color: #2c5aa0;">Manual Backup</h4>
-                <div style="padding: 1.5rem; background: #f8fafc; border-radius: 8px; margin: 1.5rem 0;">
-                    <p style="color: #666; margin-bottom: 1rem;">Create an immediate backup of your system data.</p>
-                    <button type="button" class="btn btn-primary" onclick="createBackup()">
-                        <i class="fas fa-download"></i> Create Backup Now
+                <!-- Stat Cards -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="padding: 1.5rem; border: 1px solid #eaeaea; border-radius: 10px; text-align: center;">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: #2c5aa0; color: #fff; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; font-size: 20px;">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div style="color: #666; font-size: 13px;">Database Size</div>
+                        <div style="font-size: 28px; font-weight: 700; color: #1a1a1a;" id="dbSizeDisplay">--</div>
+                        <div style="color: #10b981; font-size: 12px;">Active</div>
+                    </div>
+                    <div style="padding: 1.5rem; border: 1px solid #eaeaea; border-radius: 10px; text-align: center;">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: #10b981; color: #fff; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; font-size: 20px;">
+                            <i class="fas fa-save"></i>
+                        </div>
+                        <div style="color: #666; font-size: 13px;">Last Backup</div>
+                        <div style="font-size: 28px; font-weight: 700; color: #1a1a1a;">Manual</div>
+                        <div style="color: #2c5aa0; font-size: 12px;">On Demand</div>
+                    </div>
+                    <div style="padding: 1.5rem; border: 1px solid #eaeaea; border-radius: 10px; text-align: center;">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; font-size: 20px;">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div style="color: #666; font-size: 13px;">Retention Period</div>
+                        <div style="font-size: 28px; font-weight: 700; color: #1a1a1a;"><?= e($settings['backup_retention_days']) ?></div>
+                        <div style="color: #666; font-size: 12px;">Days</div>
+                    </div>
+                </div>
+
+                <!-- Backup Settings -->
+                <h4 style="margin-top: 2rem;">Backup Settings</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1rem 0;">
+                    <div>
+                        <label for="backup_frequency">Backup Frequency</label>
+                        <select id="backup_frequency" name="backup_frequency" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="daily" <?= $settings['backup_frequency'] === 'daily' ? 'selected' : '' ?>>Daily</option>
+                            <option value="weekly" <?= $settings['backup_frequency'] === 'weekly' ? 'selected' : '' ?>>Weekly</option>
+                            <option value="monthly" <?= $settings['backup_frequency'] === 'monthly' ? 'selected' : '' ?>>Monthly</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="backup_retention_days">Retention Period (days)</label>
+                        <input type="number" id="backup_retention_days" name="backup_retention_days" value="<?= e($settings['backup_retention_days']) ?>" min="7" max="365" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                </div>
+                <div style="margin: 1rem 0;">
+                    <div style="margin-bottom: 0.75rem;">
+                        <label>
+                            <input type="checkbox" name="backup_include_media" value="1" <?= $settings['backup_include_media'] === '1' ? 'checked' : '' ?>>
+                            <span>Include media files (photos, documents)</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input type="checkbox" name="backup_auto_delete" value="1" <?= $settings['backup_auto_delete'] === '1' ? 'checked' : '' ?>>
+                            <span>Auto-delete old backups</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Backup Actions -->
+                <hr style="margin: 2rem 0; border: none; border-top: 1px solid #eaeaea;">
+                <h4>Backup Actions</h4>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-primary" style="background: #f59e0b; border-color: #f59e0b;" onclick="createManualBackup()">
+                        <i class="fas fa-plus-circle"></i> Create Manual Backup
+                    </button>
+                    <a href="<?= route('admin.settings.export-backup') ?>" class="btn" style="border: 2px solid #2c5aa0; color: #2c5aa0; background: #fff; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-download"></i> Download Latest Backup
+                    </a>
+                    <button type="button" class="btn" style="background: #ef4444; color: #fff; border: none;" onclick="restoreBackup()">
+                        <i class="fas fa-undo"></i> Restore from Backup
                     </button>
                 </div>
 
-                <h4 style="margin-top: 2rem; color: #2c5aa0;">Automatic Backup</h4>
-                <div style="margin: 1.5rem 0;">
-                    <label>
-                        <input type="checkbox" id="auto_backup" checked>
-                        <span>Enable automatic daily backups</span>
-                    </label>
-                    <select id="backup_time" style="margin-left: 2rem; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
-                        <option value="00">Midnight (00:00)</option>
-                        <option value="01">1:00 AM</option>
-                        <option value="02">2:00 AM</option>
-                        <option value="03">3:00 AM</option>
-                        <option value="04">4:00 AM</option>
-                    </select>
+                <!-- Recent Backups -->
+                <hr style="margin: 2rem 0; border: none; border-top: 1px solid #eaeaea;">
+                <h4>Recent Backups</h4>
+                <div style="margin-top: 1rem;" id="backupList">
+                    <div style="padding: 1rem; border: 1px solid #eaeaea; border-radius: 8px; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600;">backup_<?= date('Y_m_d') ?>_manual.csv</div>
+                            <div style="color: #666; font-size: 13px;">Available on demand</div>
+                        </div>
+                        <a href="<?= route('admin.settings.export-backup') ?>" class="btn btn-small" style="text-decoration: none;">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                    </div>
+                    <div style="padding: 1rem; color: #666; font-size: 14px; text-align: center; border: 1px dashed #ddd; border-radius: 8px;">
+                        <i class="fas fa-info-circle"></i> Click "Create Manual Backup" or "Download Latest Backup" to export all system data as CSV.
+                    </div>
                 </div>
-
-                <h4 style="margin-top: 2rem; color: #2c5aa0;">Backup History</h4>
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background: #f8fafc;">
-                            <th style="padding: 1rem; text-align: left; color: #666; font-weight: 600;">Date</th>
-                            <th style="padding: 1rem; text-align: left; color: #666; font-weight: 600;">Size</th>
-                            <th style="padding: 1rem; text-align: left; color: #666; font-weight: 600;">Type</th>
-                            <th style="padding: 1rem; text-align: left; color: #666; font-weight: 600;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="border-bottom: 1px solid #eaeaea;">
-                            <td style="padding: 1rem;">Mar 12, 2026 - 2:15 AM</td>
-                            <td style="padding: 1rem;">245 MB</td>
-                            <td style="padding: 1rem;"><span style="padding: 0.25rem 0.75rem; background: #dbeafe; color: #1e40af; border-radius: 20px; font-size: 12px; font-weight: 600;">Automatic</span></td>
-                            <td style="padding: 1rem;">
-                                <button type="button" class="btn btn-small" onclick="downloadBackup('2026-03-12')">Download</button>
-                                <button type="button" class="btn btn-small" style="margin-left: 0.5rem;" onclick="restoreBackup('2026-03-12')">Restore</button>
-                            </td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #eaeaea;">
-                            <td style="padding: 1rem;">Mar 11, 2026 - 2:18 AM</td>
-                            <td style="padding: 1rem;">243 MB</td>
-                            <td style="padding: 1rem;"><span style="padding: 0.25rem 0.75rem; background: #dbeafe; color: #1e40af; border-radius: 20px; font-size: 12px; font-weight: 600;">Automatic</span></td>
-                            <td style="padding: 1rem;">
-                                <button type="button" class="btn btn-small" onclick="downloadBackup('2026-03-11')">Download</button>
-                                <button type="button" class="btn btn-small" style="margin-left: 0.5rem;" onclick="restoreBackup('2026-03-11')">Restore</button>
-                            </td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #eaeaea;">
-                            <td style="padding: 1rem;">Mar 10, 2026 - 2:12 AM</td>
-                            <td style="padding: 1rem;">241 MB</td>
-                            <td style="padding: 1rem;"><span style="padding: 0.25rem 0.75rem; background: #dbeafe; color: #1e40af; border-radius: 20px; font-size: 12px; font-weight: 600;">Automatic</span></td>
-                            <td style="padding: 1rem;">
-                                <button type="button" class="btn btn-small" onclick="downloadBackup('2026-03-10')">Download</button>
-                                <button type="button" class="btn btn-small" style="margin-left: 0.5rem;" onclick="restoreBackup('2026-03-10')">Restore</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
@@ -413,29 +482,15 @@ ob_start();
 </form>
 
 <script>
+const csrfToken = '<?= CSRF::generate() ?>';
+
 function showTab(event, tabName) {
-    if (event && event.preventDefault) {
-        event.preventDefault();
-    }
-
-    // Hide all tabs
-    const tabs = document.querySelectorAll('.tab-content');
-    tabs.forEach(tab => tab.classList.remove('active'));
-
-    // Remove active class from all buttons
-    const buttons = document.querySelectorAll('.tab-btn');
-    buttons.forEach(btn => btn.style.borderBottomColor = 'transparent');
-
-    // Show selected tab
+    if (event && event.preventDefault) event.preventDefault();
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.style.borderBottomColor = 'transparent');
     const tab = document.getElementById(tabName);
-    if (tab) {
-        tab.classList.add('active');
-    }
-
-    // Mark button as active
-    if (event && event.target) {
-        event.target.style.borderBottomColor = '#2c5aa0';
-    }
+    if (tab) tab.classList.add('active');
+    if (event && event.target) event.target.style.borderBottomColor = '#2c5aa0';
 }
 
 function saveAllSettings() {
@@ -443,49 +498,201 @@ function saveAllSettings() {
 }
 
 function resetForm() {
-    if (confirm('Are you sure you want to discard your changes?')) {
-        location.reload();
-    }
+    Swal.fire({
+        title: 'Discard Changes?',
+        text: 'Are you sure you want to discard all unsaved changes?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e74c3c',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, Discard',
+        cancelButtonText: 'Keep Editing'
+    }).then((result) => {
+        if (result.isConfirmed) location.reload();
+    });
 }
 
+// ===== User Management Functions =====
 function addNewUser() {
-    alert('Opening add user dialog...\n\nIn a real application, this would open a form to create a new user.');
-}
+    const name = document.getElementById('new_user_name').value.trim();
+    const email = document.getElementById('new_user_email').value.trim();
+    const role = document.getElementById('new_user_role').value;
+    const password = document.getElementById('new_user_password').value;
 
-function editUser(id) {
-    alert(`Editing user #${id}...`);
-}
-
-function removeUser(id) {
-    if (confirm('Are you sure you want to remove this user?')) {
-        alert(`User #${id} removed.`);
+    if (!name || !email || !role || !password) {
+        Swal.fire({ title: 'Missing Fields', text: 'Please fill in all required fields.', icon: 'warning', confirmButtonColor: '#2c5aa0' });
+        return;
     }
-}
 
-function configureIntegration(service) {
-    alert(`Configuring ${service} integration...\n\nIn a real application, this would open the configuration dialog for ${service}.`);
-}
+    // Split name into first/last
+    const parts = name.split(' ');
+    const firstName = parts[0];
+    const lastName = parts.slice(1).join(' ') || '';
 
-function createBackup() {
-    alert('Creating backup...\n\nIn a real application, this would create a full system backup and prepare it for download.');
-}
-
-function downloadBackup(date) {
-    alert(`Downloading backup from ${date}...\n\nIn a real application, this would download the backup file.`);
-}
-
-function restoreBackup(date) {
-    if (confirm(`Are you sure you want to restore from ${date}? This will overwrite current data.`)) {
-        alert(`Restoring backup from ${date}...\n\nIn a real application, this would restore the system from the backup.`);
+    // Create form and submit
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '<?= route("admin.settings.add-user") ?>';
+    const fields = { _token: csrfToken, first_name: firstName, last_name: lastName, email: email, role: role, password: password };
+    for (const [k, v] of Object.entries(fields)) {
+        const input = document.createElement('input');
+        input.type = 'hidden'; input.name = k; input.value = v;
+        form.appendChild(input);
     }
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function editUser(id, firstName, lastName, email, role) {
+    Swal.fire({
+        title: 'Edit User',
+        html: `
+            <div style="text-align:left;">
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block;margin-bottom:0.25rem;font-weight:500;">First Name</label>
+                    <input type="text" id="swal-fname" class="swal2-input" style="width:100%;margin:0;" value="${firstName}">
+                </div>
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block;margin-bottom:0.25rem;font-weight:500;">Last Name</label>
+                    <input type="text" id="swal-lname" class="swal2-input" style="width:100%;margin:0;" value="${lastName}">
+                </div>
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block;margin-bottom:0.25rem;font-weight:500;">Email</label>
+                    <input type="email" id="swal-email" class="swal2-input" style="width:100%;margin:0;" value="${email}">
+                </div>
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block;margin-bottom:0.25rem;font-weight:500;">Role</label>
+                    <select id="swal-role" class="swal2-select" style="width:100%;padding:0.5rem;border:1px solid #ddd;border-radius:4px;">
+                        <option value="admin" ${role==='admin'?'selected':''}>Administrator</option>
+                        <option value="renter" ${role==='renter'?'selected':''}>Renter</option>
+                    </select>
+                </div>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonColor: '#2c5aa0',
+        confirmButtonText: '<i class="fas fa-save"></i> Save Changes',
+        preConfirm: () => {
+            return {
+                first_name: document.getElementById('swal-fname').value,
+                last_name: document.getElementById('swal-lname').value,
+                email: document.getElementById('swal-email').value,
+                role: document.getElementById('swal-role').value
+            };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?= route("admin.settings.update-user") ?>';
+            const fields = { _token: csrfToken, user_id: id, ...result.value };
+            for (const [k, v] of Object.entries(fields)) {
+                const input = document.createElement('input');
+                input.type = 'hidden'; input.name = k; input.value = v;
+                form.appendChild(input);
+            }
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+
+function resetPassword(id, name) {
+    Swal.fire({
+        title: 'Reset Password',
+        html: `<p>Set a new password for <strong>${name}</strong></p>
+               <input type="password" id="swal-newpass" class="swal2-input" placeholder="New password" style="width:100%;margin:0.5rem 0;">`,
+        showCancelButton: true,
+        confirmButtonColor: '#2c5aa0',
+        confirmButtonText: '<i class="fas fa-key"></i> Reset Password',
+        preConfirm: () => {
+            const pass = document.getElementById('swal-newpass').value;
+            if (!pass || pass.length < 6) {
+                Swal.showValidationMessage('Password must be at least 6 characters');
+                return false;
+            }
+            return pass;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?= route("admin.settings.update-user") ?>';
+            const fields = { _token: csrfToken, user_id: id, password: result.value };
+            for (const [k, v] of Object.entries(fields)) {
+                const input = document.createElement('input');
+                input.type = 'hidden'; input.name = k; input.value = v;
+                form.appendChild(input);
+            }
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+
+function resetDefaults() {
+    Swal.fire({
+        title: 'Reset to Default Settings?',
+        html: '<p style="color:#e74c3c;">This will reset all system settings to their default values. User accounts and data will NOT be affected.</p>',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e74c3c',
+        confirmButtonText: '<i class="fas fa-undo"></i> Reset All',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({ title: 'Settings Reset!', text: 'All settings have been reset to defaults. Please reload the page.', icon: 'success', confirmButtonColor: '#2c5aa0' }).then(() => location.reload());
+        }
+    });
+}
+
+function purgeOldData() {
+    Swal.fire({
+        title: 'Purge Old Data?',
+        html: '<p style="color:#e74c3c;">This will remove notifications older than 90 days and completed maintenance requests older than 1 year. This cannot be undone.</p>',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e74c3c',
+        confirmButtonText: '<i class="fas fa-trash"></i> Purge Data',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({ title: 'Data Purged!', text: 'Old data has been cleaned up successfully.', icon: 'success', confirmButtonColor: '#2c5aa0' });
+        }
+    });
+}
+
+// ===== Backup Functions =====
+function createManualBackup() {
+    Swal.fire({
+        title: 'Create Manual Backup?',
+        text: 'This will export all system data as a CSV file for download.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#f59e0b',
+        confirmButtonText: '<i class="fas fa-database"></i> Create & Download',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = '<?= route("admin.settings.export-backup") ?>';
+        }
+    });
+}
+
+function restoreBackup() {
+    Swal.fire({
+        title: 'Restore from Backup',
+        html: '<p>To restore from a backup, please contact your system administrator with the backup file.</p><p style="color:#666;font-size:14px;">For security reasons, restore operations require manual verification.</p>',
+        icon: 'info',
+        confirmButtonColor: '#2c5aa0',
+        confirmButtonText: 'Understood'
+    });
 }
 
 // Style active tab button on load
 document.addEventListener('DOMContentLoaded', function() {
     const firstButton = document.querySelector('.tab-btn.active');
-    if (firstButton) {
-        firstButton.style.borderBottomColor = '#2c5aa0';
-    }
+    if (firstButton) firstButton.style.borderBottomColor = '#2c5aa0';
 });
 </script>
 

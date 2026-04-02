@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 require_once BASE_PATH . '/app/Core/Controller.php';
+require_once BASE_PATH . '/app/Core/CSRF.php';
 require_once BASE_PATH . '/app/Models/User.php';
+require_once BASE_PATH . '/app/Models/SupportRequest.php';
 
 class HelpController extends Controller
 {
@@ -18,7 +20,7 @@ class HelpController extends Controller
             return;
         }
 
-        // Static FAQ data
+        // Static FAQ data (these are informational, fine to keep as array)
         $faqs = [
             [
                 'question' => 'How do I submit a maintenance request?',
@@ -54,8 +56,8 @@ class HelpController extends Controller
             ]
         ];
 
-        // Recent support requests from session (in production, would query database)
-        $supportRequests = $_SESSION['support_requests'] ?? [];
+        // Get support requests from database
+        $supportRequests = SupportRequest::forUser((int)$user['id']);
 
         // Get flash messages
         $flash = $_SESSION['flash'] ?? [];
@@ -78,8 +80,7 @@ class HelpController extends Controller
     public function store(): void
     {
         // Verify CSRF token
-        $csrf = $_POST['_token'] ?? '';
-        if (!hash_equals($_SESSION['csrf_token'] ?? '', $csrf)) {
+        if (!CSRF::verify()) {
             flash('error', 'Invalid CSRF token');
             $this->back();
             return;
@@ -136,28 +137,14 @@ class HelpController extends Controller
             return;
         }
 
-        // Create support request
-        $supportRequest = [
-            'id' => uniqid(),
+        // Create support request in database
+        SupportRequest::create([
             'user_id' => $user['id'],
-            'user_name' => $user['first_name'] . ' ' . $user['last_name'],
             'subject' => $subject,
             'category' => $validCategories[$category],
-            'category_key' => $category,
             'message' => $message,
-            'status' => 'open',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s')
-        ];
-
-        // Store in session (in production, would save to database)
-        if (!isset($_SESSION['support_requests'])) {
-            $_SESSION['support_requests'] = [];
-        }
-        array_unshift($_SESSION['support_requests'], $supportRequest);
-
-        // Keep only last 10 requests in session
-        $_SESSION['support_requests'] = array_slice($_SESSION['support_requests'], 0, 10);
+            'status' => 'open'
+        ]);
 
         // Flash success message
         flash('success', 'Support request submitted successfully. We will review it shortly.');

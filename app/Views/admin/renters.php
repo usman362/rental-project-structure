@@ -220,6 +220,79 @@ ob_start();
     </div>
 </div>
 
+<!-- View Renter Modal -->
+<div class="modal-overlay" id="viewRenterModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
+    <div class="modal-content" style="background: white; border-radius: 10px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+        <div class="modal-header" style="padding: 1.5rem; border-bottom: 1px solid #eaeaea; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0; font-size: 1.5rem;">Renter Details</h2>
+            <button class="close-modal" onclick="closeModal('viewRenterModal')" style="background: none; border: none; font-size: 2rem; cursor: pointer; color: #666;">&times;</button>
+        </div>
+        <div class="modal-body" style="padding: 1.5rem;">
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <!-- Name & ID -->
+                <div style="display: flex; align-items: center; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #f0f0f0;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: #2c5aa0; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 600;">
+                        <span id="viewAvatar"></span>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.2rem;" id="viewFullName"></h3>
+                        <span style="color: #666; font-size: 13px;" id="viewRenterId"></span>
+                    </div>
+                    <span id="viewStatusBadge" style="margin-left: auto; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 12px; font-weight: 600;"></span>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h4 style="margin: 0 0 0.75rem 0; color: #333; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Contact Information</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                        <div>
+                            <span style="display: block; color: #999; font-size: 12px; margin-bottom: 0.25rem;">Email</span>
+                            <span style="color: #333; font-size: 14px;" id="viewEmail"></span>
+                        </div>
+                        <div>
+                            <span style="display: block; color: #999; font-size: 12px; margin-bottom: 0.25rem;">Phone</span>
+                            <span style="color: #333; font-size: 14px;" id="viewPhone"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property & Lease -->
+                <div style="border-top: 1px solid #f0f0f0; padding-top: 1rem;">
+                    <h4 style="margin: 0 0 0.75rem 0; color: #333; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Property & Lease</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                        <div>
+                            <span style="display: block; color: #999; font-size: 12px; margin-bottom: 0.25rem;">Property</span>
+                            <span style="color: #333; font-size: 14px;" id="viewProperty"></span>
+                        </div>
+                        <div>
+                            <span style="display: block; color: #999; font-size: 12px; margin-bottom: 0.25rem;">Monthly Rent</span>
+                            <span style="color: #333; font-size: 14px; font-weight: 600;" id="viewRent"></span>
+                        </div>
+                        <div>
+                            <span style="display: block; color: #999; font-size: 12px; margin-bottom: 0.25rem;">Move-in Date</span>
+                            <span style="color: #333; font-size: 14px;" id="viewMoveIn"></span>
+                        </div>
+                        <div>
+                            <span style="display: block; color: #999; font-size: 12px; margin-bottom: 0.25rem;">Lease End Date</span>
+                            <span style="color: #333; font-size: 14px;" id="viewLeaseEnd"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div style="border-top: 1px solid #f0f0f0; padding-top: 1rem; display: flex; gap: 0.75rem;">
+                    <button class="btn btn-primary" style="flex: 1;" onclick="closeModal('viewRenterModal'); editRenter(currentViewRenterId);">
+                        <i class="fas fa-edit"></i> Edit Renter
+                    </button>
+                    <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal('viewRenterModal');">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Edit Renter Modal -->
 <div class="modal-overlay" id="editRenterModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
     <div class="modal-content" style="background: white; border-radius: 10px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
@@ -320,7 +393,7 @@ function closeModal(modalId) {
 function editRenter(id) {
     const renter = rentersData.find(r => r.id === id);
     if (!renter) {
-        alert('Renter not found');
+        Swal.fire({ title: 'Error', text: 'Renter not found', icon: 'error', confirmButtonColor: '#2c5aa0' });
         return;
     }
 
@@ -337,7 +410,7 @@ function editRenter(id) {
     document.getElementById('editStatus').value = renter.status || 'active';
 
     // Update form action
-    document.getElementById('editRenterForm').action = '/admin/renters/' + id + '/update';
+    document.getElementById('editRenterForm').action = '<?= route("admin.renters") ?>/' + id + '/update';
 
     openEditRenterModal();
 }
@@ -348,42 +421,190 @@ function openEditRenterModal() {
 
 function deleteRenter() {
     const renterId = document.getElementById('editRenterId').value;
-    if (confirm('Are you sure you want to delete this renter? This action cannot be undone.')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/admin/renters/' + renterId + '/delete';
-        form.innerHTML = '<?= csrf_field() ?>';
-        document.body.appendChild(form);
-        form.submit();
-    }
+    Swal.fire({
+        title: 'Delete Renter?',
+        html: '<p>This action <strong>cannot be undone</strong>. All renter data will be permanently removed.</p>',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e74c3c',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-trash"></i> Yes, Delete',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?= route("admin.renters") ?>/' + renterId + '/delete';
+            form.innerHTML = '<?= csrf_field() ?>';
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
 }
 
+let currentViewRenterId = null;
+
 function viewRenter(id) {
-    alert('View renter #' + id);
+    const renter = rentersData.find(r => r.id === id);
+    if (!renter) return;
+
+    currentViewRenterId = id;
+
+    // Avatar initials
+    const initials = ((renter.first_name || '').charAt(0) + (renter.last_name || '').charAt(0)).toUpperCase();
+    document.getElementById('viewAvatar').textContent = initials;
+
+    // Name & ID
+    document.getElementById('viewFullName').textContent = (renter.first_name || '') + ' ' + (renter.last_name || '');
+    document.getElementById('viewRenterId').textContent = 'ID: R' + String(renter.id).padStart(4, '0');
+
+    // Status badge
+    const statusBadge = document.getElementById('viewStatusBadge');
+    const isActive = (renter.status || 'active') === 'active';
+    statusBadge.textContent = isActive ? 'Active' : 'Inactive';
+    statusBadge.style.background = isActive ? '#d1fae5' : '#fee2e2';
+    statusBadge.style.color = isActive ? '#065f46' : '#7f1d1d';
+
+    // Contact
+    document.getElementById('viewEmail').textContent = renter.email || 'N/A';
+    document.getElementById('viewPhone').textContent = renter.phone || 'N/A';
+
+    // Property & Lease
+    document.getElementById('viewProperty').textContent = renter.property_name || 'N/A';
+    document.getElementById('viewRent').textContent = '$' + parseFloat(renter.monthly_rent || 0).toFixed(2);
+
+    if (renter.move_in_date) {
+        const mid = new Date(renter.move_in_date + 'T00:00:00');
+        document.getElementById('viewMoveIn').textContent = mid.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    } else {
+        document.getElementById('viewMoveIn').textContent = 'N/A';
+    }
+
+    if (renter.lease_end_date) {
+        const led = new Date(renter.lease_end_date + 'T00:00:00');
+        document.getElementById('viewLeaseEnd').textContent = led.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    } else {
+        document.getElementById('viewLeaseEnd').textContent = 'N/A';
+    }
+
+    document.getElementById('viewRenterModal').style.display = 'flex';
 }
 
 function sendMessage(id) {
     const renter = rentersData.find(r => r.id === id);
     if (renter) {
-        const message = prompt('Send message to ' + renter.first_name + ' ' + renter.last_name + ':');
-        if (message) {
-            alert('Message sent to ' + renter.email);
-        }
+        Swal.fire({
+            title: 'Send Message',
+            html: `<p>Send message to <strong>${renter.first_name} ${renter.last_name}</strong></p>`,
+            input: 'textarea',
+            inputPlaceholder: 'Type your message here...',
+            showCancelButton: true,
+            confirmButtonColor: '#2c5aa0',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-paper-plane"></i> Send',
+            inputValidator: (value) => {
+                if (!value) return 'Please enter a message';
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Message Sent!',
+                    html: `Message has been sent to <strong>${renter.email}</strong>`,
+                    icon: 'success',
+                    confirmButtonColor: '#2c5aa0',
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            }
+        });
     }
 }
 
 function recordPayment(id) {
     const renter = rentersData.find(r => r.id === id);
     if (renter) {
-        const amount = prompt('Record payment for ' + renter.first_name + ' ' + renter.last_name + ' (Monthly rent: $' + renter.monthly_rent + '):', renter.monthly_rent);
-        if (amount) {
-            alert('Payment of $' + amount + ' recorded for ' + renter.first_name + ' ' + renter.last_name);
-        }
+        Swal.fire({
+            title: 'Record Payment',
+            html: `<p>Record payment for <strong>${renter.first_name} ${renter.last_name}</strong></p>
+                   <p style="color: #666; font-size: 14px;">Monthly rent: $${renter.monthly_rent}</p>`,
+            input: 'number',
+            inputValue: renter.monthly_rent,
+            inputAttributes: { min: 0, step: '0.01' },
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-check"></i> Record Payment',
+            inputValidator: (value) => {
+                if (!value || value <= 0) return 'Please enter a valid amount';
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Payment Recorded!',
+                    html: `Payment of <strong>$${parseFloat(result.value).toFixed(2)}</strong> recorded for ${renter.first_name} ${renter.last_name}`,
+                    icon: 'success',
+                    confirmButtonColor: '#2c5aa0',
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            }
+        });
     }
 }
 
 function exportRenters() {
-    alert('Exporting renters data to CSV...');
+    if (!rentersData || rentersData.length === 0) {
+        Swal.fire({ title: 'No Data', text: 'No renters to export.', icon: 'warning', confirmButtonColor: '#2c5aa0' });
+        return;
+    }
+
+    // CSV headers
+    const headers = ['ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Property', 'Move-in Date', 'Lease End Date', 'Monthly Rent', 'Status'];
+
+    // CSV rows
+    const rows = rentersData.map(r => [
+        'R' + String(r.id).padStart(4, '0'),
+        r.first_name || '',
+        r.last_name || '',
+        r.email || '',
+        r.phone || '',
+        r.property_name || 'N/A',
+        r.move_in_date || '',
+        r.lease_end_date || '',
+        parseFloat(r.monthly_rent || 0).toFixed(2),
+        (r.status || 'active').charAt(0).toUpperCase() + (r.status || 'active').slice(1)
+    ]);
+
+    // Build CSV string with proper escaping
+    const csvContent = [headers, ...rows].map(row =>
+        row.map(field => {
+            const str = String(field);
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+        }).join(',')
+    ).join('\n');
+
+    // BOM for Excel UTF-8 compatibility + download
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'renters_export_' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    Swal.fire({
+        title: 'Export Complete!',
+        text: 'Renter data has been downloaded as CSV.',
+        icon: 'success',
+        confirmButtonColor: '#2c5aa0',
+        timer: 3000,
+        timerProgressBar: true
+    });
 }
 
 // Close modal when clicking outside

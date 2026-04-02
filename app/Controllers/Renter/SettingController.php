@@ -2,8 +2,9 @@
 declare(strict_types=1);
 
 require_once BASE_PATH . '/app/Core/Controller.php';
+require_once BASE_PATH . '/app/Core/CSRF.php';
 require_once BASE_PATH . '/app/Models/User.php';
-require_once BASE_PATH . '/app/Models/Setting.php';
+require_once BASE_PATH . '/app/Models/UserSetting.php';
 
 class SettingController extends Controller
 {
@@ -19,22 +20,8 @@ class SettingController extends Controller
             return;
         }
 
-        // Load user preferences/settings from session or defaults
-        $settings = [
-            'email_notifications' => $_SESSION['settings']['email_notifications'] ?? true,
-            'sms_notifications' => $_SESSION['settings']['sms_notifications'] ?? false,
-            'payment_reminders' => $_SESSION['settings']['payment_reminders'] ?? true,
-            'maintenance_updates' => $_SESSION['settings']['maintenance_updates'] ?? true,
-            'newsletter' => $_SESSION['settings']['newsletter'] ?? false,
-            'marketing' => $_SESSION['settings']['marketing'] ?? false,
-            'show_profile' => $_SESSION['settings']['show_profile'] ?? true,
-            'show_phone' => $_SESSION['settings']['show_phone'] ?? false,
-            'show_email' => $_SESSION['settings']['show_email'] ?? false,
-            'allow_data_collection' => $_SESSION['settings']['allow_data_collection'] ?? false,
-            'language' => $_SESSION['settings']['language'] ?? 'en',
-            'timezone' => $_SESSION['settings']['timezone'] ?? 'America/Denver',
-            'date_format' => $_SESSION['settings']['date_format'] ?? 'MM/DD/YYYY'
-        ];
+        // Load user preferences/settings from database
+        $settings = UserSetting::allForUser((int)$user['id']);
 
         // Get flash messages
         $flash = $_SESSION['flash'] ?? [];
@@ -56,8 +43,7 @@ class SettingController extends Controller
     public function update(): void
     {
         // Verify CSRF token
-        $csrf = $_POST['_token'] ?? '';
-        if (!hash_equals($_SESSION['csrf_token'] ?? '', $csrf)) {
+        if (!CSRF::verify()) {
             flash('error', 'Invalid CSRF token');
             $this->back();
             return;
@@ -106,8 +92,8 @@ class SettingController extends Controller
             $settings['date_format'] = 'MM/DD/YYYY';
         }
 
-        // Store settings in session (in production, save to database)
-        $_SESSION['settings'] = $settings;
+        // Save settings to database
+        UserSetting::saveForUser((int)$user['id'], $settings);
 
         // Flash success message
         flash('success', 'Settings updated successfully');

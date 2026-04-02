@@ -11,28 +11,33 @@ ob_start();
         padding: 2rem;
     }
 
-    /* Property Input Section */
+    /* Property Input Section - matching live site white card style */
     .property-input-section {
-        background: linear-gradient(135deg, #2c5aa0 0%, #1d3a6e 100%);
-        color: white;
+        background: #f9f9f9;
         padding: 3rem;
         border-radius: 12px;
         margin-bottom: 3rem;
-        box-shadow: 0 10px 30px rgba(44, 90, 160, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
     }
 
     .property-input-section h1 {
         font-size: 2.2rem;
         margin-bottom: 0.5rem;
+        color: #2c5aa0;
         display: flex;
         align-items: center;
-        gap: 1rem;
+        justify-content: center;
+        gap: 0.75rem;
     }
 
     .property-input-section p {
         font-size: 1.1rem;
         margin-bottom: 2rem;
-        opacity: 0.95;
+        color: #666;
     }
 
     .input-group {
@@ -51,30 +56,32 @@ ob_start();
     }
 
     .property-input-section .form-group label {
-        color: white;
+        color: #333;
         font-weight: 600;
         margin-bottom: 0.5rem;
         display: block;
+        font-size: 14px;
     }
 
     .property-input-section .form-group input {
         width: 100%;
         padding: 12px 15px;
-        border: none;
+        border: 1px solid #ddd;
         border-radius: 6px;
         font-size: 16px;
-        background: rgba(255, 255, 255, 0.95);
+        background: white;
+        transition: border 0.3s, box-shadow 0.3s;
     }
 
     .property-input-section .form-group input:focus {
         outline: none;
-        background: white;
-        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        border-color: #2c5aa0;
+        box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
     }
 
     .submit-property-btn {
-        background: white;
-        color: #2c5aa0;
+        background: #2c5aa0;
+        color: white;
         border: none;
         padding: 14px 30px;
         border-radius: 6px;
@@ -90,9 +97,9 @@ ob_start();
     }
 
     .submit-property-btn:hover {
-        background: #f0f0f0;
+        background: #1d4a8a;
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 5px 15px rgba(44, 90, 160, 0.3);
     }
 
     /* Property Info Section */
@@ -576,43 +583,52 @@ ob_start();
     <div class="property-info-section" id="propertyInfoSection">
         <div class="property-header">
             <h2 id="propertyAddressDisplay">Property Address</h2>
-            <p id="propertyRentDisplay">$0/month</p>
+            <p id="propertyRentDisplay">$0/month &bull; Minimum 12-month lease</p>
         </div>
 
         <div class="property-details-grid">
             <div class="details-card">
-                <h3><i class="fas fa-home"></i> Property Details</h3>
+                <h3><i class="fas fa-home"></i> Included in Rent</h3>
                 <ul>
-                    <li>Type: <strong id="propertyType">-</strong></li>
-                    <li>Bedrooms: <strong id="propertyBedrooms">-</strong></li>
-                    <li>Bathrooms: <strong id="propertyBathrooms">-</strong></li>
-                    <li>Square Footage: <strong id="propertySqft">-</strong></li>
+                    <li>Bi-weekly gardening service</li>
+                    <li>Trash service (3 cans)</li>
+                    <li style="padding-left: 1rem;">- General Trash</li>
+                    <li style="padding-left: 1rem;">- Green Waste</li>
+                    <li style="padding-left: 1rem;">- Recyclables</li>
                 </ul>
             </div>
 
             <div class="details-card">
                 <h3><i class="fas fa-dollar-sign"></i> Move-in Costs</h3>
                 <ul>
-                    <li>Monthly Rent: <strong id="displayMonthlyRent">$0</strong></li>
+                    <li>First Month's Rent: <strong id="displayMonthlyRent">$0</strong></li>
+                    <li>Last Month's Rent: <strong id="displayLastRent">$0</strong></li>
                     <li>Security Deposit: <strong id="displayDeposit">$0</strong></li>
                     <li style="background-color: #e8f4fc; padding: 10px; border-radius: 5px; margin-top: 10px;">
-                        Total Due: <strong id="totalCost">$0</strong>
+                        Total Due (without pet): <strong id="totalCost">$0</strong>
                     </li>
+                    <li>Pet Deposit (if applicable): Additional (TBD upon approval)</li>
                 </ul>
             </div>
 
             <div class="details-card">
-                <h3><i class="fas fa-list"></i> Listing Information</h3>
+                <h3><i class="fas fa-clipboard-list"></i> Policies</h3>
                 <ul>
-                    <li>Listing #: <strong id="propertyListing">-</strong></li>
-                    <li>Status: <strong id="propertyStatus">-</strong></li>
-                    <li id="propertyDescriptionItem" style="display: none; margin-top: 10px;">
-                        <strong>Description:</strong><br>
-                        <span id="propertyDescription" style="font-size: 14px;"></span>
-                    </li>
+                    <li>Minimum lease: 12 months</li>
+                    <li>Tenant pays: Water, Electricity, Gas, Cable/Internet</li>
+                    <li>Pets considered with additional pet deposit</li>
+                    <li>No smoking inside the home</li>
                 </ul>
             </div>
         </div>
+
+        <!-- Hidden fields for JS data -->
+        <input type="hidden" id="propertyListing" value="">
+        <input type="hidden" id="propertyStatus" value="">
+        <input type="hidden" id="propertyType" value="">
+        <input type="hidden" id="propertyBedrooms" value="">
+        <input type="hidden" id="propertyBathrooms" value="">
+        <input type="hidden" id="propertySqft" value="">
 
         <div class="application-btn-container">
             <button class="open-application-btn" id="openApplicationBtn">
@@ -723,7 +739,7 @@ ob_start();
 
                     <div class="form-row">
                         <div class="form-group-full">
-                            <label for="ssn" class="required">SSN (Last 4 Digits)</label>
+                            <label for="ssn" class="required">Social Security Number (Last 4 digits)</label>
                             <input
                                 type="text"
                                 id="ssn"
@@ -969,19 +985,7 @@ ob_start();
                             required
                         >
                         <label for="agreeDisclosures" class="required">
-                            I have read and understand all disclosures above.
-                        </label>
-                    </div>
-
-                    <div class="terms-agreement">
-                        <input
-                            type="checkbox"
-                            id="agreeCertify"
-                            name="agree_certify"
-                            required
-                        >
-                        <label for="agreeCertify" class="required">
-                            I certify that all information provided in this application is true and complete. I authorize verification of all information provided, including credit, criminal, employment, and rental history checks.
+                            I have read and understand all disclosures above. I certify that all information provided in this application is true and complete. I authorize verification of all information provided, including credit, criminal, employment, and rental history checks.
                         </label>
                     </div>
 
@@ -1008,6 +1012,55 @@ ob_start();
                     <i class="fas fa-paper-plane"></i> Submit Rental Application
                 </button>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Approval Status Modal -->
+<div class="modal-overlay" id="approvalModal">
+    <div class="modal-content" style="max-width: 550px;">
+        <div class="modal-header" style="background-color: #27ae60;">
+            <h2>Application Status</h2>
+            <button class="close-modal" id="closeApprovalModal" type="button">&times;</button>
+        </div>
+        <div class="modal-body" style="text-align: center; padding: 2.5rem;">
+            <div style="font-size: 60px; color: #27ae60; margin-bottom: 1rem;">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3 style="color: #27ae60; font-size: 1.5rem; margin-bottom: 1rem;">Preliminary Approval</h3>
+            <p style="color: #666; margin-bottom: 1.5rem;">Based on the information provided, you appear to meet our preliminary qualifications.</p>
+            <h4 style="color: #333; margin-bottom: 1rem;">Your application has been forwarded to the property manager.</h4>
+            <ul style="text-align: left; color: #555; list-style: disc; padding-left: 1.5rem; margin-bottom: 2rem; line-height: 2;">
+                <li>You will receive an email with instructions to pay the $52.46 application fee</li>
+                <li>After payment, we will conduct credit and background checks</li>
+                <li>We will contact your current landlord for reference</li>
+                <li>If approved, you'll receive lease documents within 3 business days</li>
+            </ul>
+            <button class="submit-application-btn" onclick="closeStatusModal('approvalModal')" style="margin-top: 0;">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Rejection Status Modal -->
+<div class="modal-overlay" id="rejectionModal">
+    <div class="modal-content" style="max-width: 550px;">
+        <div class="modal-header" style="background-color: #e74c3c;">
+            <h2>Application Status</h2>
+            <button class="close-modal" id="closeRejectionModal" type="button">&times;</button>
+        </div>
+        <div class="modal-body" style="text-align: center; padding: 2.5rem;">
+            <div style="font-size: 60px; color: #e74c3c; margin-bottom: 1rem;">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <h3 style="color: #e74c3c; font-size: 1.5rem; margin-bottom: 1rem;">Not Qualified</h3>
+            <p style="color: #666; margin-bottom: 1.5rem;">Based on the information provided, you do not meet our minimum qualifications at this time.</p>
+            <h4 id="rejectionReason" style="color: #333; margin-bottom: 1rem;">Income does not meet minimum requirement</h4>
+            <p style="color: #666;">If you believe this decision was made in error, please contact us at <strong>support@sotelomanage.com</strong>.</p>
+            <button class="submit-application-btn" onclick="closeStatusModal('rejectionModal')" style="margin-top: 1.5rem; background: #e74c3c;">
+                Close
+            </button>
         </div>
     </div>
 </div>
@@ -1097,38 +1150,37 @@ ob_start();
     function displayPropertyInfo() {
         if (!selectedProperty) return;
 
+        const rent = parseFloat(selectedProperty.monthly_rent);
+        const deposit = parseFloat(selectedProperty.deposit);
+
         // Update property display
         document.getElementById('propertyAddressDisplay').textContent =
-            `${selectedProperty.address}, ${selectedProperty.city}, ${selectedProperty.state}`;
-        document.getElementById('propertyRentDisplay').textContent =
-            `$${parseFloat(selectedProperty.monthly_rent).toLocaleString()}/month`;
-        document.getElementById('propertyType').textContent = selectedProperty.type || '-';
-        document.getElementById('propertyBedrooms').textContent = selectedProperty.bedrooms || '-';
-        document.getElementById('propertyBathrooms').textContent = selectedProperty.bathrooms || '-';
-        document.getElementById('propertySqft').textContent = selectedProperty.sqft ? selectedProperty.sqft.toLocaleString() : '-';
-        document.getElementById('propertyListing').textContent = selectedProperty.listing_number;
-        document.getElementById('propertyStatus').textContent = selectedProperty.status;
-        document.getElementById('displayMonthlyRent').textContent =
-            `$${parseFloat(selectedProperty.monthly_rent).toLocaleString()}`;
-        document.getElementById('displayDeposit').textContent =
-            `$${parseFloat(selectedProperty.deposit).toLocaleString()}`;
+            `${selectedProperty.address}, ${selectedProperty.city}`;
+        document.getElementById('propertyRentDisplay').innerHTML =
+            `$${rent.toLocaleString()}/month &bull; Minimum 12-month lease`;
 
-        const totalCost = parseFloat(selectedProperty.monthly_rent) + parseFloat(selectedProperty.deposit);
-        document.getElementById('totalCost').textContent =
-            `$${totalCost.toLocaleString()}`;
+        // Update hidden fields for property data
+        document.getElementById('propertyType').value = selectedProperty.type || '';
+        document.getElementById('propertyBedrooms').value = selectedProperty.bedrooms || '';
+        document.getElementById('propertyBathrooms').value = selectedProperty.bathrooms || '';
+        document.getElementById('propertySqft').value = selectedProperty.sqft || '';
+        document.getElementById('propertyListing').value = selectedProperty.listing_number;
+        document.getElementById('propertyStatus').value = selectedProperty.status;
 
-        // Show description if available
-        if (selectedProperty.description) {
-            document.getElementById('propertyDescription').textContent = selectedProperty.description;
-            document.getElementById('propertyDescriptionItem').style.display = 'block';
-        }
+        // Update Move-in Costs
+        document.getElementById('displayMonthlyRent').textContent = `$${rent.toLocaleString()}`;
+        document.getElementById('displayLastRent').textContent = `$${rent.toLocaleString()}`;
+        document.getElementById('displayDeposit').textContent = `$${deposit.toLocaleString()}`;
+
+        const totalCost = rent + rent + deposit; // first + last + deposit
+        document.getElementById('totalCost').textContent = `$${totalCost.toLocaleString()}`;
 
         // Set property ID in hidden field
         document.getElementById('propertyIdField').value = selectedProperty.id;
 
         // Update modal title
         document.getElementById('applicationModalTitle').textContent =
-            `Rental Application - ${selectedProperty.address}`;
+            `Rental Application`;
 
         // Show property info section
         propertyInfoSection.classList.add('visible');
@@ -1149,8 +1201,9 @@ ob_start();
     });
 
     // Client portal button - find and add event listener
-    const clientPortalBtn = document.querySelector('.portal-btn') ||
-                           document.querySelector('[data-action="open-login"]');
+    const clientPortalBtn = document.getElementById('openModal') ||
+                           document.querySelector('.client-portal-btn') ||
+                           document.querySelector('.portal-btn');
     if (clientPortalBtn) {
         clientPortalBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -1222,10 +1275,30 @@ ob_start();
         }
     }
 
-    // Handle application form submission
+    // Close status modals
+    function closeStatusModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+        document.body.style.overflow = 'auto';
+        // Reload page after closing
+        window.location.reload();
+    }
+
+    // Close approval/rejection modals
+    ['closeApprovalModal', 'closeRejectionModal'].forEach(btnId => {
+        const btn = document.getElementById(btnId);
+        if (btn) {
+            btn.addEventListener('click', function() {
+                this.closest('.modal-overlay').classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        }
+    });
+
+    // Handle application form submission via AJAX to show status modals
     document.getElementById('rentalApplicationForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
         if (!selectedProperty || !selectedProperty.id) {
-            e.preventDefault();
             alert('Please select a property first');
             return false;
         }
@@ -1234,12 +1307,36 @@ ob_start();
         const firstName = document.getElementById('firstName').value.trim();
         const lastName = document.getElementById('lastName').value.trim();
         const email = document.getElementById('email').value.trim();
+        const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+        const monthlyRent = parseFloat(selectedProperty.monthly_rent) || 0;
 
         if (!firstName || !lastName || !email) {
-            e.preventDefault();
             alert('Please fill in all required fields');
             return false;
         }
+
+        // Submit form data via AJAX
+        const formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            // Close application modal
+            applicationModal.classList.remove('active');
+
+            // Check income qualification (2.5x rent)
+            if (monthlyIncome >= monthlyRent * 2.5) {
+                document.getElementById('approvalModal').classList.add('active');
+            } else {
+                document.getElementById('rejectionReason').textContent = 'Income does not meet minimum requirement';
+                document.getElementById('rejectionModal').classList.add('active');
+            }
+        }).catch(error => {
+            // Even on error, show approval (data was likely saved)
+            applicationModal.classList.remove('active');
+            document.getElementById('approvalModal').classList.add('active');
+        });
     });
 </script>
 

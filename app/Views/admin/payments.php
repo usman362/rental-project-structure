@@ -51,32 +51,29 @@ $collectionRate = $totalExpected > 0 ? (int) (($summary['total_collected'] / $to
     </div>
 </div>
 
-<!-- Payment Method Breakdown -->
+<!-- Payment Method Breakdown (Dynamic from DB) -->
 <div class="payment-methods">
-    <div class="method-card">
-        <div class="method-icon">
-            <i class="fas fa-university"></i>
+    <?php if (!empty($methodBreakdown)): ?>
+        <?php foreach ($methodBreakdown as $method): ?>
+        <div class="method-card">
+            <div class="method-icon">
+                <i class="<?= e($method['icon']) ?>"></i>
+            </div>
+            <div class="method-name"><?= e($method['label']) ?></div>
+            <div class="method-amount">$<?= number_format($method['total'], 0) ?></div>
+            <div class="summary-label"><?= $method['percentage'] ?>% of total</div>
         </div>
-        <div class="method-name">Bank Transfer</div>
-        <div class="method-amount">$28,500</div>
-        <div class="summary-label">65% of total</div>
-    </div>
-    <div class="method-card">
-        <div class="method-icon">
-            <i class="fab fa-cc-visa"></i>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="method-card">
+            <div class="method-icon">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="method-name">No Data</div>
+            <div class="method-amount">$0</div>
+            <div class="summary-label">No paid transactions yet</div>
         </div>
-        <div class="method-name">Credit Card</div>
-        <div class="method-amount">$9,850</div>
-        <div class="summary-label">23% of total</div>
-    </div>
-    <div class="method-card">
-        <div class="method-icon">
-            <i class="fas fa-mobile-alt"></i>
-        </div>
-        <div class="method-name">Mobile Pay</div>
-        <div class="method-amount">$4,500</div>
-        <div class="summary-label">10% of total</div>
-    </div>
+    <?php endif; ?>
 </div>
 
 <!-- Payment Calendar -->
@@ -88,7 +85,7 @@ $collectionRate = $totalExpected > 0 ? (int) (($summary['total_collected'] / $to
             <button onclick="changeMonth(1)">Next &rarr;</button>
         </div>
     </div>
-    <div class="calendar-grid">
+    <div class="calendar-grid" id="calendarGrid">
         <div class="calendar-day-header">Sun</div>
         <div class="calendar-day-header">Mon</div>
         <div class="calendar-day-header">Tue</div>
@@ -96,8 +93,8 @@ $collectionRate = $totalExpected > 0 ? (int) (($summary['total_collected'] / $to
         <div class="calendar-day-header">Thu</div>
         <div class="calendar-day-header">Fri</div>
         <div class="calendar-day-header">Sat</div>
+        <!-- Calendar days will be injected here -->
     </div>
-    <div class="calendar-body" id="calendarBody"></div>
 </div>
 
 <!-- Filter Section -->
@@ -232,7 +229,7 @@ $collectionRate = $totalExpected > 0 ? (int) (($summary['total_collected'] / $to
             <button class="close-modal" onclick="closeModal('recordPaymentModal')">&times;</button>
         </div>
         <div class="modal-body">
-            <form id="paymentForm" method="POST" action="<?= route('admin.payments') ?>/store">
+            <form id="paymentForm" method="POST" action="<?= route('admin.payments') ?>">
                 <?= csrf_field() ?>
 
                 <div class="form-section">
@@ -395,7 +392,7 @@ $collectionRate = $totalExpected > 0 ? (int) (($summary['total_collected'] / $to
 <style>
 .payment-methods {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
 }
@@ -436,35 +433,88 @@ $collectionRate = $totalExpected > 0 ? (int) (($summary['total_collected'] / $to
     align-items: center;
     margin-bottom: 1rem;
 }
-.calendar-header h3 { margin: 0; }
+.calendar-header h3 { margin: 0; font-size: 1.25rem; color: #333; }
 .calendar-nav button {
     background: white;
     border: 1px solid #ddd;
     padding: 0.5rem 1rem;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+.calendar-nav button:hover {
+    background: #f0f0f0;
+    border-color: #ccc;
 }
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 1px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
 }
 .calendar-day-header {
     padding: 0.75rem;
     text-align: center;
     font-weight: 600;
-    color: #666;
-    background: #f8f9fa;
+    font-size: 13px;
+    color: #555;
+    background: #f1f5f9;
+    border-bottom: 1px solid #e5e7eb;
 }
 .calendar-day {
-    padding: 0.75rem;
-    text-align: right;
-    min-height: 60px;
-    border: 1px solid #eee;
+    padding: 0.5rem;
+    min-height: 80px;
+    border: 1px solid #f0f0f0;
     background: white;
+    position: relative;
+    transition: background 0.15s;
 }
-.calendar-day.empty { background: #f9f9f9; }
-.calendar-day.today { background: #e8f4fc; }
+.calendar-day:hover { background: #fafbfc; }
+.calendar-day .day-number {
+    display: block;
+    text-align: right;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 4px;
+}
+.calendar-day.empty {
+    background: #fafafa;
+}
+.calendar-day.today {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+.calendar-day.today .day-number {
+    color: #2c5aa0;
+    font-weight: 700;
+}
+.calendar-day .payment-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: 1px;
+}
+.calendar-day .payment-dot.paid { background: #10b981; }
+.calendar-day .payment-dot.pending { background: #f59e0b; }
+.calendar-day .payment-dot.overdue { background: #ef4444; }
+.calendar-day .payment-label {
+    display: block;
+    font-size: 10px;
+    padding: 1px 4px;
+    border-radius: 3px;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+.calendar-day .payment-label.paid { background: #d1fae5; color: #065f46; }
+.calendar-day .payment-label.pending { background: #fef3c7; color: #92400e; }
+.calendar-day .payment-label.overdue { background: #fee2e2; color: #991b1b; }
 </style>
 
 <script>
@@ -513,7 +563,7 @@ function editPayment(id) {
     document.getElementById('edit_notes').value = payment.notes || '';
 
     const form = document.getElementById('editPaymentForm');
-    form.action = '<?= route("admin.payments") ?>/' + id;
+    form.action = '<?= route("admin.payments") ?>/' + id + '/update';
 
     document.getElementById('editPaymentModal').classList.add('active');
 }
@@ -529,7 +579,7 @@ function viewReceipt(id) {
         <div class="modal-content" style="max-width: 500px;">
             <div class="modal-header">
                 <h2>Payment Receipt #${payment.id}</h2>
-                <button class="close-modal" onclick="this.parentElement.parentElement.remove()">&times;</button>
+                <button class="close-modal" onclick="this.closest('.modal-overlay').remove()">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="details-grid">
@@ -563,7 +613,7 @@ function viewReceipt(id) {
                     </div>
                 </div>
                 <div style="text-align: center; margin-top: 2rem;">
-                    <button class="btn btn-primary" onclick="alert('Printing...')">
+                    <button class="btn btn-primary" onclick="Swal.fire({title:'Printing...', html:'Preparing receipt for print', icon:'info', confirmButtonColor:'#2c5aa0', timer:1500, timerProgressBar:true, didOpen:()=>{Swal.showLoading()}})">
                         <i class="fas fa-print"></i> Print
                     </button>
                 </div>
@@ -581,21 +631,157 @@ function viewReceipt(id) {
 
 function sendReceipt(id) {
     const payment = paymentsData.find(p => p.id === id);
-    if (payment) {
-        alert(`Receipt email sent to ${payment.first_name} ${payment.last_name}`);
-    }
+    if (!payment) return;
+
+    Swal.fire({
+        title: 'Send Receipt?',
+        html: `Send payment receipt to <strong>${payment.first_name} ${payment.last_name}</strong> (${payment.email || 'No email'})`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#2c5aa0',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-paper-plane"></i> Send',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Receipt Sent!',
+                html: `Payment receipt has been emailed to <strong>${payment.first_name} ${payment.last_name}</strong>`,
+                icon: 'success',
+                confirmButtonColor: '#2c5aa0',
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+    });
 }
 
 function exportPayments() {
-    alert('Exporting payments data...');
+    if (!paymentsData || paymentsData.length === 0) {
+        Swal.fire({ title: 'No Data', text: 'No payments to export.', icon: 'warning', confirmButtonColor: '#2c5aa0' });
+        return;
+    }
+
+    const headers = ['ID', 'Renter', 'Property', 'Amount', 'Due Date', 'Paid Date', 'Method', 'Status', 'Period From', 'Period To', 'Notes'];
+
+    const methodLabels = { bank_transfer: 'Bank Transfer', credit_card: 'Credit Card', cash: 'Cash', check: 'Check', mobile_pay: 'Mobile Pay' };
+
+    const rows = paymentsData.map(p => [
+        p.id,
+        (p.first_name || '') + ' ' + (p.last_name || ''),
+        p.property_name || 'N/A',
+        parseFloat(p.amount || 0).toFixed(2),
+        p.due_date || '',
+        p.paid_date || '',
+        methodLabels[p.method] || p.method || 'N/A',
+        (p.status || '').charAt(0).toUpperCase() + (p.status || '').slice(1),
+        p.period_from || '',
+        p.period_to || '',
+        p.notes || ''
+    ]);
+
+    const csvContent = [headers, ...rows].map(row =>
+        row.map(field => {
+            const str = String(field);
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+        }).join(',')
+    ).join('\n');
+
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'payments_export_' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    Swal.fire({
+        title: 'Export Complete!',
+        text: 'Payment data has been downloaded as CSV.',
+        icon: 'success',
+        confirmButtonColor: '#2c5aa0',
+        timer: 3000,
+        timerProgressBar: true
+    });
 }
 
 function sendReminders() {
-    alert('Payment reminders sent to all tenants with pending payments.');
+    // Find pending and overdue payments
+    const duePayments = paymentsData.filter(p => p.status === 'pending' || p.status === 'overdue');
+
+    if (duePayments.length === 0) {
+        Swal.fire({
+            title: 'No Pending Payments',
+            text: 'All payments are up to date. No reminders needed.',
+            icon: 'info',
+            confirmButtonColor: '#2c5aa0'
+        });
+        return;
+    }
+
+    // Build list of renters with due payments
+    const renterMap = {};
+    duePayments.forEach(p => {
+        const name = (p.first_name || '') + ' ' + (p.last_name || '');
+        if (!renterMap[name]) {
+            renterMap[name] = { total: 0, count: 0, status: p.status };
+        }
+        renterMap[name].total += parseFloat(p.amount || 0);
+        renterMap[name].count++;
+        if (p.status === 'overdue') renterMap[name].status = 'overdue';
+    });
+
+    let listHtml = '<div style="text-align:left;max-height:250px;overflow-y:auto;margin-top:0.5rem;">';
+    listHtml += '<table style="width:100%;font-size:13px;border-collapse:collapse;">';
+    listHtml += '<tr style="border-bottom:2px solid #eee;"><th style="padding:6px;text-align:left;">Renter</th><th style="padding:6px;text-align:right;">Amount</th><th style="padding:6px;text-align:center;">Status</th></tr>';
+    Object.entries(renterMap).forEach(([name, info]) => {
+        const color = info.status === 'overdue' ? '#ef4444' : '#f59e0b';
+        const badge = info.status === 'overdue' ? 'Overdue' : 'Pending';
+        listHtml += `<tr style="border-bottom:1px solid #f0f0f0;">
+            <td style="padding:6px;">${name}</td>
+            <td style="padding:6px;text-align:right;font-weight:600;">$${info.total.toFixed(2)}</td>
+            <td style="padding:6px;text-align:center;"><span style="background:${color};color:white;padding:2px 8px;border-radius:4px;font-size:11px;">${badge}</span></td>
+        </tr>`;
+    });
+    listHtml += '</table></div>';
+
+    Swal.fire({
+        title: 'Send Payment Reminders?',
+        html: `<p style="margin-bottom:0.5rem;">Reminders will be sent to <strong>${Object.keys(renterMap).length} renter(s)</strong> with <strong>${duePayments.length}</strong> outstanding payment(s).</p>${listHtml}`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#2c5aa0',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-bell"></i> Send Reminders',
+        cancelButtonText: 'Cancel',
+        width: 500
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // POST to backend to send reminders
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?= route("admin.payments") ?>/send-reminders';
+            form.innerHTML = '<?= csrf_field() ?>';
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
 }
 
 // Calendar functionality
 let currentCalendarDate = new Date();
+
+function getPaymentsForDate(year, month, day) {
+    const dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+    return paymentsData.filter(p => {
+        return (p.due_date && p.due_date.startsWith(dateStr)) || (p.paid_date && p.paid_date.startsWith(dateStr));
+    });
+}
 
 function renderCalendar() {
     const month = currentCalendarDate.getMonth();
@@ -605,19 +791,58 @@ function renderCalendar() {
 
     document.getElementById('calendarMonth').textContent = monthNames[month] + ' ' + year;
 
+    const grid = document.getElementById('calendarGrid');
+    // Remove old day cells but keep headers
+    grid.querySelectorAll('.calendar-day').forEach(el => el.remove());
+
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const today = new Date();
 
-    let html = '';
+    // Empty cells before first day
     for (let i = 0; i < firstDay; i++) {
-        html += '<div class="calendar-day empty"></div>';
+        const cell = document.createElement('div');
+        cell.className = 'calendar-day empty';
+        grid.appendChild(cell);
     }
+
+    // Day cells
     for (let day = 1; day <= daysInMonth; day++) {
         const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
-        html += '<div class="calendar-day' + (isToday ? ' today' : '') + '">' + day + '</div>';
+        const cell = document.createElement('div');
+        cell.className = 'calendar-day' + (isToday ? ' today' : '');
+
+        let inner = '<span class="day-number">' + day + '</span>';
+
+        // Show payments on this day
+        const dayPayments = getPaymentsForDate(year, month, day);
+        if (dayPayments.length > 0) {
+            const maxShow = 2;
+            dayPayments.slice(0, maxShow).forEach(p => {
+                const name = (p.first_name || '').split(' ')[0];
+                const amt = '$' + parseFloat(p.amount || 0).toFixed(0);
+                const cls = p.status || 'pending';
+                inner += '<div class="payment-label ' + cls + '" title="' + (p.first_name || '') + ' ' + (p.last_name || '') + ' - $' + parseFloat(p.amount || 0).toFixed(2) + ' (' + cls + ')">' +
+                    '<span class="payment-dot ' + cls + '"></span> ' + name + ' ' + amt +
+                    '</div>';
+            });
+            if (dayPayments.length > maxShow) {
+                inner += '<div style="font-size:10px;color:#666;margin-top:2px;">+' + (dayPayments.length - maxShow) + ' more</div>';
+            }
+        }
+
+        cell.innerHTML = inner;
+        grid.appendChild(cell);
     }
-    document.getElementById('calendarBody').innerHTML = html;
+
+    // Fill remaining cells to complete the last row
+    const totalCells = firstDay + daysInMonth;
+    const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+    for (let i = 0; i < remaining; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-day empty';
+        grid.appendChild(cell);
+    }
 }
 
 function changeMonth(offset) {

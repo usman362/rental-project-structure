@@ -37,6 +37,9 @@ class PaymentController extends Controller
         // Get payment summary
         $summary = Payment::summary();
 
+        // Get payment method breakdown (dynamic from DB)
+        $methodBreakdown = Payment::methodBreakdown();
+
         // Get all renters for dropdown
         $renters = Renter::all();
 
@@ -46,6 +49,7 @@ class PaymentController extends Controller
             'user' => auth(),
             'payments' => $payments,
             'summary' => $summary,
+            'methodBreakdown' => $methodBreakdown,
             'renters' => $renters
         ]);
     }

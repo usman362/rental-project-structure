@@ -177,6 +177,32 @@ ob_start();
 </div>
 
 <script>
+// Show SweetAlert for flash messages
+<?php
+$helpFlash = $_SESSION['_flash'] ?? [];
+?>
+<?php if (!empty($helpFlash['success'] ?? '')): ?>
+document.addEventListener('DOMContentLoaded', function() {
+    Swal.fire({
+        icon: 'success',
+        title: 'Submitted!',
+        text: '<?= e($helpFlash['success']) ?>',
+        confirmButtonColor: '#2c5aa0',
+        timer: 3000,
+        timerProgressBar: true
+    });
+});
+<?php elseif (!empty($helpFlash['error'] ?? '')): ?>
+document.addEventListener('DOMContentLoaded', function() {
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: '<?= e($helpFlash['error']) ?>',
+        confirmButtonColor: '#2c5aa0'
+    });
+});
+<?php endif; ?>
+
 function toggleFaq(element) {
     const parent = element.closest('.faq-item');
     const answer = parent.querySelector('p');
