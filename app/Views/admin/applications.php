@@ -267,7 +267,7 @@ ob_start();
                     <div class="details-grid">
                         <div class="detail-item">
                             <label>Temporary Password</label>
-                            <span>Welcome@123</span>
+                            <span>Welcome@<?= date('Y') ?>!</span>
                         </div>
                     </div>
                     <p style="color: #999; font-size: 0.9rem; margin-top: 1rem;">

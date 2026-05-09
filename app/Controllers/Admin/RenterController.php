@@ -96,7 +96,7 @@ class RenterController extends Controller
 
         try {
             // Generate default password
-            $defaultPassword = 'Welcome@123';
+            $defaultPassword = 'Welcome@' . date('Y') . '!';
 
             // Create user record
             $userId = User::create([
@@ -104,7 +104,7 @@ class RenterController extends Controller
                 'last_name' => $lastName,
                 'email' => $email,
                 'phone' => $phone,
-                'username' => strtolower(substr($firstName, 0, 1) . $lastName . time()),
+                'username' => strtolower(substr($firstName, 0, 1) . $lastName . '_' . substr(uniqid(), -6)),
                 'password' => $defaultPassword,
                 'role' => 'renter'
             ]);
@@ -121,8 +121,7 @@ class RenterController extends Controller
                 'status' => 'active'
             ]);
 
-            $generatedUsername = strtolower(substr($firstName, 0, 1) . $lastName . time());
-            flash('success', "Renter {$firstName} {$lastName} created successfully! Default password: {$defaultPassword}");
+            flash('success', "Renter {$firstName} {$lastName} created successfully! Please share login credentials securely.");
             $this->redirect(route('admin.renters'));
         } catch (Exception $e) {
             flash('error', 'An error occurred while creating the renter. Please try again.');

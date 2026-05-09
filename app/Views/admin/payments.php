@@ -121,9 +121,12 @@ $collectionRate = $totalExpected > 0 ? (int) (($summary['total_collected'] / $to
                     <option value="">All Methods</option>
                     <option value="bank_transfer" <?= ($_GET['method'] ?? '') === 'bank_transfer' ? 'selected' : '' ?>>Bank Transfer</option>
                     <option value="credit_card" <?= ($_GET['method'] ?? '') === 'credit_card' ? 'selected' : '' ?>>Credit Card</option>
+                    <option value="debit_card" <?= ($_GET['method'] ?? '') === 'debit_card' ? 'selected' : '' ?>>Debit Card</option>
                     <option value="cash" <?= ($_GET['method'] ?? '') === 'cash' ? 'selected' : '' ?>>Cash</option>
                     <option value="check" <?= ($_GET['method'] ?? '') === 'check' ? 'selected' : '' ?>>Check</option>
                     <option value="mobile_pay" <?= ($_GET['method'] ?? '') === 'mobile_pay' ? 'selected' : '' ?>>Mobile Pay</option>
+                    <option value="paypal" <?= ($_GET['method'] ?? '') === 'paypal' ? 'selected' : '' ?>>PayPal</option>
+                    <option value="ethereum" <?= ($_GET['method'] ?? '') === 'ethereum' ? 'selected' : '' ?>>Ethereum</option>
                 </select>
             </div>
             <div class="filter-group">
@@ -268,9 +271,12 @@ $collectionRate = $totalExpected > 0 ? (int) (($summary['total_collected'] / $to
                                 <option value="">Select Method</option>
                                 <option value="bank_transfer">Bank Transfer</option>
                                 <option value="credit_card">Credit Card</option>
+                                <option value="debit_card">Debit Card</option>
                                 <option value="cash">Cash</option>
                                 <option value="check">Check</option>
                                 <option value="mobile_pay">Mobile Payment</option>
+                                <option value="paypal">PayPal</option>
+                                <option value="ethereum">Ethereum</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -344,9 +350,12 @@ $collectionRate = $totalExpected > 0 ? (int) (($summary['total_collected'] / $to
                             <select id="edit_method" name="method" required>
                                 <option value="bank_transfer">Bank Transfer</option>
                                 <option value="credit_card">Credit Card</option>
+                                <option value="debit_card">Debit Card</option>
                                 <option value="cash">Cash</option>
                                 <option value="check">Check</option>
                                 <option value="mobile_pay">Mobile Payment</option>
+                                <option value="paypal">PayPal</option>
+                                <option value="ethereum">Ethereum</option>
                             </select>
                         </div>
                     </div>
@@ -664,7 +673,7 @@ function exportPayments() {
 
     const headers = ['ID', 'Renter', 'Property', 'Amount', 'Due Date', 'Paid Date', 'Method', 'Status', 'Period From', 'Period To', 'Notes'];
 
-    const methodLabels = { bank_transfer: 'Bank Transfer', credit_card: 'Credit Card', cash: 'Cash', check: 'Check', mobile_pay: 'Mobile Pay' };
+    const methodLabels = { bank_transfer: 'Bank Transfer', credit_card: 'Credit Card', debit_card: 'Debit Card', cash: 'Cash', check: 'Check', mobile_pay: 'Mobile Pay', paypal: 'PayPal', ethereum: 'Ethereum' };
 
     const rows = paymentsData.map(p => [
         p.id,

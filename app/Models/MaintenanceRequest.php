@@ -107,7 +107,7 @@ class MaintenanceRequest
             $data['category'] ?? null,
             $data['priority'] ?? 'medium',
             $data['status'] ?? 'open',
-            isset($data['assigned_to']) ? (int) $data['assigned_to'] : null,
+            $data['assigned_to'] ?? null,
             isset($data['estimated_cost']) ? (float) $data['estimated_cost'] : null,
             isset($data['actual_cost']) ? (float) $data['actual_cost'] : null
         ];
@@ -143,8 +143,10 @@ class MaintenanceRequest
             if (isset($data[$field])) {
                 $updates[] = "$field = ?";
 
-                if (in_array($field, ['property_id', 'renter_id', 'assigned_to'])) {
+                if (in_array($field, ['property_id', 'renter_id'])) {
                     $params[] = isset($data[$field]) ? (int) $data[$field] : null;
+                } elseif ($field === 'assigned_to') {
+                    $params[] = $data[$field] ?? null;
                 } elseif (in_array($field, ['estimated_cost', 'actual_cost'])) {
                     $params[] = isset($data[$field]) ? (float) $data[$field] : null;
                 } else {

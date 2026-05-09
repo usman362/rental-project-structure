@@ -294,9 +294,12 @@ class Payment
         $methodConfig = [
             'bank_transfer' => ['label' => 'Bank Transfer', 'icon' => 'fas fa-university'],
             'credit_card'   => ['label' => 'Credit Card',   'icon' => 'fab fa-cc-visa'],
+            'debit_card'    => ['label' => 'Debit Card',    'icon' => 'fab fa-cc-mastercard'],
             'mobile_pay'    => ['label' => 'Mobile Pay',     'icon' => 'fas fa-mobile-alt'],
             'cash'          => ['label' => 'Cash',           'icon' => 'fas fa-money-bill-wave'],
             'check'         => ['label' => 'Check',          'icon' => 'fas fa-money-check'],
+            'paypal'        => ['label' => 'PayPal',         'icon' => 'fab fa-paypal'],
+            'ethereum'      => ['label' => 'Ethereum',       'icon' => 'fab fa-ethereum'],
         ];
 
         $breakdown = [];

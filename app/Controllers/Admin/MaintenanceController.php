@@ -95,7 +95,7 @@ class MaintenanceController extends Controller
         }
 
         if (!empty($errors)) {
-            session_flash_errors(['error' => $errors]);
+            flash('error', implode(' ', $errors));
             session_flash_old_input($_POST);
             $this->back();
             return;
@@ -155,7 +155,7 @@ class MaintenanceController extends Controller
         // Update additional fields if provided
         $updateData = [];
         if (!empty($_POST['assigned_to'])) {
-            $updateData['assigned_to'] = (int) $_POST['assigned_to'];
+            $updateData['assigned_to'] = $_POST['assigned_to'];
         }
         if (!empty($_POST['actual_cost'])) {
             $updateData['actual_cost'] = (float) $_POST['actual_cost'];

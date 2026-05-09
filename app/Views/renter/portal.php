@@ -834,9 +834,9 @@ ob_start();
                 <?php endif; ?>
             </div>
             <?php if ($pStatus !== 'paid'): ?>
-            <button class="btn-primary" style="margin-top: 1rem;" onclick="switchToTab('payments')">
+            <a href="/renter/payments/checkout/<?= (int)($nextPendingPayment['id'] ?? 0) ?>" class="btn-primary" style="margin-top: 1rem; display: inline-block; text-decoration: none;">
                 <i class="fas fa-credit-card"></i> Pay Now
-            </button>
+            </a>
             <?php endif; ?>
         </div>
         <?php else: ?>
@@ -935,23 +935,11 @@ ob_start();
                 <?php endif; ?>
             </div>
             <?php if ($pStatus !== 'paid'): ?>
-            <form method="POST" action="/renter/payments" style="margin-top: 1rem;">
-                <?= csrf_field() ?>
-                <input type="hidden" name="payment_id" value="<?= e($payment['id'] ?? '') ?>">
-                <input type="hidden" name="amount" value="<?= e($payment['amount'] ?? 0) ?>">
-                <div class="form-group" style="margin-bottom: 0.5rem; max-width: 300px;">
-                    <select name="method" required style="padding: 8px 12px;">
-                        <option value="">Select payment method</option>
-                        <option value="credit_card">Credit Card</option>
-                        <option value="debit_card">Debit Card</option>
-                        <option value="bank_transfer">Bank Transfer</option>
-                        <option value="check">Check</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-primary" style="padding: 8px 16px; font-size: 14px;">
+            <div style="margin-top: 1rem;">
+                <a href="/renter/payments/checkout/<?= (int)($payment['id'] ?? 0) ?>" class="btn-primary" style="padding: 8px 16px; font-size: 14px; display: inline-block; text-decoration: none;">
                     <i class="fas fa-credit-card"></i> Pay Now
-                </button>
-            </form>
+                </a>
+            </div>
             <?php endif; ?>
         </div>
         <?php endforeach; ?>

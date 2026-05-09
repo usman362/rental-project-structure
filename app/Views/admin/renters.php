@@ -521,35 +521,8 @@ function sendMessage(id) {
 }
 
 function recordPayment(id) {
-    const renter = rentersData.find(r => r.id === id);
-    if (renter) {
-        Swal.fire({
-            title: 'Record Payment',
-            html: `<p>Record payment for <strong>${renter.first_name} ${renter.last_name}</strong></p>
-                   <p style="color: #666; font-size: 14px;">Monthly rent: $${renter.monthly_rent}</p>`,
-            input: 'number',
-            inputValue: renter.monthly_rent,
-            inputAttributes: { min: 0, step: '0.01' },
-            showCancelButton: true,
-            confirmButtonColor: '#10b981',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: '<i class="fas fa-check"></i> Record Payment',
-            inputValidator: (value) => {
-                if (!value || value <= 0) return 'Please enter a valid amount';
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Payment Recorded!',
-                    html: `Payment of <strong>$${parseFloat(result.value).toFixed(2)}</strong> recorded for ${renter.first_name} ${renter.last_name}`,
-                    icon: 'success',
-                    confirmButtonColor: '#2c5aa0',
-                    timer: 3000,
-                    timerProgressBar: true
-                });
-            }
-        });
-    }
+    // Redirect to checkout page for this renter
+    window.location.href = '/admin/payments/checkout/' + id;
 }
 
 function exportRenters() {

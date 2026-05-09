@@ -141,6 +141,98 @@ ob_start();
                         <input type="text" id="bank_account" name="bank_account" value="<?= e($settings['bank_account']) ?>" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
                     </div>
                 </div>
+
+                <!-- Payment Gateways -->
+                <h4 style="margin-top: 2.5rem; color: #2c5aa0; font-size: 18px; padding-bottom: 0.5rem; border-bottom: 2px solid #eef2ff;">
+                    <i class="fas fa-plug"></i> Payment Gateways
+                </h4>
+                <p style="color: #6b7280; font-size: 13px; margin: 0.5rem 0 1.5rem;">Enable and configure the payment gateways renters can use to pay. At least one gateway must be enabled.</p>
+
+                <!-- PayPal Gateway -->
+                <div style="border: 1px solid #e5e7eb; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; background: <?= ($settings['pg_paypal_enabled'] ?? '0') === '1' ? '#f0fdf4' : '#fff' ?>;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 44px; height: 44px; background: #003087; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fab fa-paypal" style="color: #fff; font-size: 22px;"></i>
+                            </div>
+                            <div>
+                                <h4 style="margin: 0; font-size: 16px; color: #1f2937;">PayPal</h4>
+                                <p style="margin: 2px 0 0; font-size: 12px; color: #6b7280;">Accept credit/debit card and PayPal payments</p>
+                            </div>
+                        </div>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" name="pg_paypal_enabled" value="1" <?= ($settings['pg_paypal_enabled'] ?? '0') === '1' ? 'checked' : '' ?> onchange="toggleGateway('paypal', this.checked)" style="width: 18px; height: 18px; accent-color: #10b981;">
+                            <span style="font-weight: 600; font-size: 14px; color: <?= ($settings['pg_paypal_enabled'] ?? '0') === '1' ? '#10b981' : '#6b7280' ?>;">
+                                <?= ($settings['pg_paypal_enabled'] ?? '0') === '1' ? 'Enabled' : 'Disabled' ?>
+                            </span>
+                        </label>
+                    </div>
+                    <div id="paypal_fields" style="display: <?= ($settings['pg_paypal_enabled'] ?? '0') === '1' ? 'block' : 'none' ?>;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                            <div>
+                                <label for="pg_paypal_client_id" style="font-size: 13px; font-weight: 600; color: #374151;">Client ID</label>
+                                <input type="text" id="pg_paypal_client_id" name="pg_paypal_client_id" value="<?= e($settings['pg_paypal_client_id'] ?? '') ?>" placeholder="PayPal Client ID" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;">
+                            </div>
+                            <div>
+                                <label for="pg_paypal_secret" style="font-size: 13px; font-weight: 600; color: #374151;">Client Secret</label>
+                                <input type="password" id="pg_paypal_secret" name="pg_paypal_secret" value="<?= e($settings['pg_paypal_secret'] ?? '') ?>" placeholder="PayPal Client Secret" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;">
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <label for="pg_paypal_mode" style="font-size: 13px; font-weight: 600; color: #374151;">Mode</label>
+                            <select id="pg_paypal_mode" name="pg_paypal_mode" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px; max-width: 300px;">
+                                <option value="sandbox" <?= ($settings['pg_paypal_mode'] ?? 'sandbox') === 'sandbox' ? 'selected' : '' ?>>Sandbox (Testing)</option>
+                                <option value="live" <?= ($settings['pg_paypal_mode'] ?? 'sandbox') === 'live' ? 'selected' : '' ?>>Live (Production)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ethereum Gateway -->
+                <div style="border: 1px solid #e5e7eb; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; background: <?= ($settings['pg_eth_enabled'] ?? '0') === '1' ? '#f0fdf4' : '#fff' ?>;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 44px; height: 44px; background: #627eea; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fab fa-ethereum" style="color: #fff; font-size: 22px;"></i>
+                            </div>
+                            <div>
+                                <h4 style="margin: 0; font-size: 16px; color: #1f2937;">Ethereum (ETH)</h4>
+                                <p style="margin: 2px 0 0; font-size: 12px; color: #6b7280;">Accept cryptocurrency payments via Ethereum</p>
+                            </div>
+                        </div>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" name="pg_eth_enabled" value="1" <?= ($settings['pg_eth_enabled'] ?? '0') === '1' ? 'checked' : '' ?> onchange="toggleGateway('eth', this.checked)" style="width: 18px; height: 18px; accent-color: #10b981;">
+                            <span style="font-weight: 600; font-size: 14px; color: <?= ($settings['pg_eth_enabled'] ?? '0') === '1' ? '#10b981' : '#6b7280' ?>;">
+                                <?= ($settings['pg_eth_enabled'] ?? '0') === '1' ? 'Enabled' : 'Disabled' ?>
+                            </span>
+                        </label>
+                    </div>
+                    <div id="eth_fields" style="display: <?= ($settings['pg_eth_enabled'] ?? '0') === '1' ? 'block' : 'none' ?>;">
+                        <div style="margin-top: 1rem;">
+                            <label for="pg_eth_wallet" style="font-size: 13px; font-weight: 600; color: #374151;">Wallet Address (receives payments)</label>
+                            <input type="text" id="pg_eth_wallet" name="pg_eth_wallet" value="<?= e($settings['pg_eth_wallet'] ?? '') ?>" placeholder="0x..." style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px; font-family: monospace;">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                            <div>
+                                <label for="pg_eth_network" style="font-size: 13px; font-weight: 600; color: #374151;">Network</label>
+                                <select id="pg_eth_network" name="pg_eth_network" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;">
+                                    <option value="mainnet" <?= ($settings['pg_eth_network'] ?? 'mainnet') === 'mainnet' ? 'selected' : '' ?>>Mainnet (Production)</option>
+                                    <option value="sepolia" <?= ($settings['pg_eth_network'] ?? 'mainnet') === 'sepolia' ? 'selected' : '' ?>>Sepolia (Testnet)</option>
+                                    <option value="goerli" <?= ($settings['pg_eth_network'] ?? 'mainnet') === 'goerli' ? 'selected' : '' ?>>Goerli (Testnet)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="pg_eth_api_key" style="font-size: 13px; font-weight: 600; color: #374151;">Etherscan API Key (for verification)</label>
+                                <input type="text" id="pg_eth_api_key" name="pg_eth_api_key" value="<?= e($settings['pg_eth_api_key'] ?? '') ?>" placeholder="Etherscan API Key" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;">
+                            </div>
+                            <div style="margin-top: 12px;">
+                                <label for="pg_eth_rate" style="font-size: 13px; font-weight: 600; color: #374151;">ETH/USD Rate (for conversion)</label>
+                                <input type="number" step="0.01" id="pg_eth_rate" name="pg_eth_rate" value="<?= e($settings['pg_eth_rate'] ?? '2000') ?>" placeholder="e.g. 2000" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; margin-top: 4px;">
+                                <p style="font-size: 11px; color: #9ca3af; margin-top: 4px;">Current ETH price in USD used for payment conversion.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -338,12 +430,12 @@ ob_start();
 
                 <?php
                 $integrations = [
-                    ['key' => 'integration_quickbooks', 'name' => 'QuickBooks Online', 'icon' => 'fas fa-file-invoice-dollar', 'color' => '#2c5aa0', 'desc' => 'Sync financial data with QuickBooks'],
-                    ['key' => 'integration_google_analytics', 'name' => 'Google Analytics', 'icon' => 'fas fa-chart-line', 'color' => '#2c5aa0', 'desc' => 'Track website and application analytics'],
-                    ['key' => 'integration_google_maps', 'name' => 'Google Maps', 'icon' => 'fas fa-map-marker-alt', 'color' => '#2c5aa0', 'desc' => 'Display property locations on maps'],
-                    ['key' => 'integration_dropbox', 'name' => 'Dropbox', 'icon' => 'fab fa-dropbox', 'color' => '#2c5aa0', 'desc' => 'Backup documents and files'],
-                    ['key' => 'integration_twilio', 'name' => 'Twilio', 'icon' => 'fas fa-sms', 'color' => '#2c5aa0', 'desc' => 'Send SMS notifications'],
-                    ['key' => 'integration_google_calendar', 'name' => 'Google Calendar', 'icon' => 'fas fa-calendar-alt', 'color' => '#2c5aa0', 'desc' => 'Sync maintenance schedules'],
+                    ['key' => 'integration_quickbooks', 'name' => 'QuickBooks Online', 'icon' => 'fas fa-file-invoice-dollar', 'color' => '#2c5aa0', 'desc' => 'Sync financial data with QuickBooks', 'soon' => true],
+                    ['key' => 'integration_google_analytics', 'name' => 'Google Analytics', 'icon' => 'fas fa-chart-line', 'color' => '#2c5aa0', 'desc' => 'Track website and application analytics', 'soon' => true],
+                    ['key' => 'integration_google_maps', 'name' => 'Google Maps', 'icon' => 'fas fa-map-marker-alt', 'color' => '#2c5aa0', 'desc' => 'Display property locations on maps', 'soon' => false],
+                    ['key' => 'integration_dropbox', 'name' => 'Dropbox', 'icon' => 'fab fa-dropbox', 'color' => '#2c5aa0', 'desc' => 'Backup documents and files', 'soon' => true],
+                    ['key' => 'integration_twilio', 'name' => 'Twilio', 'icon' => 'fas fa-sms', 'color' => '#2c5aa0', 'desc' => 'Send SMS notifications', 'soon' => true],
+                    ['key' => 'integration_google_calendar', 'name' => 'Google Calendar', 'icon' => 'fas fa-calendar-alt', 'color' => '#2c5aa0', 'desc' => 'Sync maintenance schedules', 'soon' => true],
                 ];
                 ?>
 
@@ -356,14 +448,20 @@ ob_start();
                             <i class="<?= $intg['icon'] ?>"></i>
                         </div>
                         <h4 style="margin: 0 0 0.25rem; color: #1a1a1a;"><?= $intg['name'] ?></h4>
+                        <?php if (!empty($intg['soon'])): ?>
+                        <div style="font-size: 11px; font-weight: 700; color: #2c5aa0; background: #eef2ff; padding: 3px 10px; border-radius: 12px; display: inline-block; margin-bottom: 0.5rem;">Coming Soon</div>
+                        <?php else: ?>
                         <div style="font-size: 13px; font-weight: 600; color: <?= $connected ? '#10b981' : '#ef4444' ?>; margin-bottom: 0.5rem;">
                             <?= $connected ? 'Connected' : 'Not Connected' ?>
                         </div>
+                        <?php endif; ?>
                         <p style="color: #666; font-size: 13px; margin-bottom: 1rem;"><?= $intg['desc'] ?></p>
+                        <?php if (empty($intg['soon'])): ?>
                         <label style="display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                             <input type="checkbox" name="<?= $intg['key'] ?>" value="1" <?= $connected ? 'checked' : '' ?>>
                             <span style="font-size: 13px;"><?= $connected ? 'Enabled' : 'Enable' ?></span>
                         </label>
+                        <?php endif; ?>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -495,6 +593,18 @@ function showTab(event, tabName) {
 
 function saveAllSettings() {
     document.getElementById('settingsForm').submit();
+}
+
+function toggleGateway(gateway, enabled) {
+    const fields = document.getElementById(gateway + '_fields');
+    if (fields) fields.style.display = enabled ? 'block' : 'none';
+    // Update label text
+    const checkbox = fields.closest('div[style*="border"]').querySelector('input[type="checkbox"]');
+    const label = checkbox.closest('label').querySelector('span');
+    label.textContent = enabled ? 'Enabled' : 'Disabled';
+    label.style.color = enabled ? '#10b981' : '#6b7280';
+    // Update card background
+    fields.closest('div[style*="border"]').style.background = enabled ? '#f0fdf4' : '#fff';
 }
 
 function resetForm() {

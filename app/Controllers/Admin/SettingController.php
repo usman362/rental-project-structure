@@ -40,6 +40,16 @@ class SettingController extends Controller
             'session_timeout_minutes' => $allSettings['session_timeout_minutes'] ?? '30',
             'two_factor_enabled' => $allSettings['two_factor_enabled'] ?? '0',
             'max_login_attempts' => $allSettings['max_login_attempts'] ?? '5',
+            // Payment Gateway settings
+            'pg_paypal_enabled' => $allSettings['pg_paypal_enabled'] ?? '0',
+            'pg_paypal_client_id' => $allSettings['pg_paypal_client_id'] ?? '',
+            'pg_paypal_secret' => $allSettings['pg_paypal_secret'] ?? '',
+            'pg_paypal_mode' => $allSettings['pg_paypal_mode'] ?? 'sandbox',
+            'pg_eth_enabled' => $allSettings['pg_eth_enabled'] ?? '0',
+            'pg_eth_wallet' => $allSettings['pg_eth_wallet'] ?? '',
+            'pg_eth_network' => $allSettings['pg_eth_network'] ?? 'mainnet',
+            'pg_eth_api_key' => $allSettings['pg_eth_api_key'] ?? '',
+            'pg_eth_rate' => $allSettings['pg_eth_rate'] ?? '2000',
             // Integration settings
             'integration_quickbooks' => $allSettings['integration_quickbooks'] ?? '0',
             'integration_google_analytics' => $allSettings['integration_google_analytics'] ?? '0',
@@ -99,6 +109,22 @@ class SettingController extends Controller
             $paymentFields = ['late_fee_percent', 'grace_period_days', 'payment_methods',
                               'bank_name', 'bank_account', 'bank_routing'];
             foreach ($paymentFields as $field) {
+                if (isset($_POST[$field])) {
+                    Setting::set($field, (string) $_POST[$field]);
+                }
+            }
+
+            // Payment Gateway Settings
+            Setting::set('pg_paypal_enabled', isset($_POST['pg_paypal_enabled']) ? '1' : '0');
+            $paypalFields = ['pg_paypal_client_id', 'pg_paypal_secret', 'pg_paypal_mode'];
+            foreach ($paypalFields as $field) {
+                if (isset($_POST[$field])) {
+                    Setting::set($field, (string) $_POST[$field]);
+                }
+            }
+            Setting::set('pg_eth_enabled', isset($_POST['pg_eth_enabled']) ? '1' : '0');
+            $ethFields = ['pg_eth_wallet', 'pg_eth_network', 'pg_eth_api_key', 'pg_eth_rate'];
+            foreach ($ethFields as $field) {
                 if (isset($_POST[$field])) {
                     Setting::set($field, (string) $_POST[$field]);
                 }

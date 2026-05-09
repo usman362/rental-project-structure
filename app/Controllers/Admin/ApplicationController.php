@@ -111,8 +111,8 @@ class ApplicationController extends Controller
         $firstName = $application['first_name'] ?? '';
         $lastName = $application['last_name'] ?? '';
         $email = $application['email'] ?? '';
-        $username = strtolower(str_replace(' ', '.', "{$firstName} {$lastName}"));
-        $defaultPassword = 'Welcome@123';
+        $username = strtolower(str_replace(' ', '.', "{$firstName}.{$lastName}")) . '_' . substr(uniqid(), -6);
+        $defaultPassword = 'Welcome@' . date('Y') . '!';
 
         try {
             // Check if user already exists
@@ -154,14 +154,7 @@ class ApplicationController extends Controller
             $reviewedBy = $user['id'] ?? null;
             Application::updateStatus($id, 'approved', $reviewedBy);
 
-            // Flash success message with credentials
-            $message = "Application approved successfully!\n";
-            $message .= "Renter Account Created:\n";
-            $message .= "Email: {$email}\n";
-            $message .= "Username: {$username}\n";
-            $message .= "Temporary Password: {$defaultPassword}";
-
-            flash('success', $message);
+            flash('success', "Application approved! Renter account created for {$email}. Please share login credentials securely.");
         } catch (Exception $e) {
             flash('error', 'Error approving application: ' . $e->getMessage());
         }

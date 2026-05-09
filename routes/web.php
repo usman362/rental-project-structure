@@ -5,6 +5,7 @@ declare(strict_types=1);
 $router->get('/', 'HomeController@index');
 $router->get('/application', 'ApplicationController@index');
 $router->post('/application', 'ApplicationController@store');
+$router->get('/login', 'AuthController@login');
 $router->post('/login', 'AuthController@login');
 $router->get('/logout', 'AuthController@logout');
 $router->get('/init-db', 'SetupController@initDb');
@@ -27,6 +28,7 @@ $router->group('/admin', function($router) {
     $router->get('/properties/documents/download', 'Admin\\PropertyController@downloadDocument')->middleware('admin');
     $router->post('/properties/documents/{id}/delete', 'Admin\\PropertyController@deleteDocument')->middleware('admin');
     $router->get('/payments', 'Admin\\PaymentController@index')->middleware('admin');
+    $router->get('/payments/checkout/{renterId}', 'Admin\\PaymentController@checkout')->middleware('admin');
     $router->post('/payments', 'Admin\\PaymentController@store')->middleware('admin');
     $router->post('/payments/{id}/update', 'Admin\\PaymentController@update')->middleware('admin');
     $router->get('/maintenance', 'Admin\\MaintenanceController@index')->middleware('admin');
@@ -44,12 +46,13 @@ $router->group('/admin', function($router) {
 // Renter Group
 $router->group('/renter', function($router) {
     $router->get('/portal', 'Renter\\PortalController@index')->middleware('renter');
+    $router->get('/payments/checkout/{paymentId}', 'Renter\\PaymentController@checkout')->middleware('renter');
     $router->post('/payments', 'Renter\\PaymentController@store')->middleware('renter');
     $router->post('/maintenance', 'Renter\\MaintenanceController@store')->middleware('renter');
     $router->post('/documents', 'Renter\\DocumentController@store')->middleware('renter');
     $router->get('/documents/download', 'Renter\\DocumentController@download')->middleware('renter');
     $router->post('/notifications/mark-all-read', 'Renter\\NotificationController@markAllRead')->middleware('renter');
-    $router->get('/notifications/read', 'Renter\\NotificationController@markRead')->middleware('renter');
+    $router->post('/notifications/read', 'Renter\\NotificationController@markRead')->middleware('renter');
     $router->get('/profile', 'Renter\\ProfileController@index')->middleware('renter');
     $router->post('/profile', 'Renter\\ProfileController@update')->middleware('renter');
     $router->get('/settings', 'Renter\\SettingController@index')->middleware('renter');

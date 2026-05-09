@@ -55,6 +55,34 @@ class PaymentController extends Controller
     }
 
     /**
+     * Show checkout page for a renter
+     */
+    public function checkout(int $renterId): void
+    {
+        $renter = Renter::find($renterId);
+        if (!$renter) {
+            flash('error', 'Renter not found.');
+            $this->redirect(route('admin.renters'));
+            return;
+        }
+
+        // Get pending payments for this renter
+        $payments = Payment::forRenter($renterId);
+        $pendingPayments = array_filter($payments, fn($p) => ($p['status'] ?? '') !== 'paid');
+        $paidPayments = array_filter($payments, fn($p) => ($p['status'] ?? '') === 'paid');
+
+        $this->view('admin.checkout', [
+            'title' => 'Payment Checkout',
+            'active' => 'payments',
+            'user' => auth(),
+            'renter' => $renter,
+            'pendingPayments' => array_values($pendingPayments),
+            'paidPayments' => array_values($paidPayments),
+            'allPayments' => $payments
+        ]);
+    }
+
+    /**
      * Store a new payment
      */
     public function store(): void
@@ -82,7 +110,7 @@ class PaymentController extends Controller
         }
 
         if (!empty($errors)) {
-            session_flash_errors(['error' => $errors]);
+            flash('error', implode(' ', $errors));
             session_flash_old_input($_POST);
             $this->back();
             return;
@@ -97,7 +125,7 @@ class PaymentController extends Controller
         }
 
         // Generate receipt number
-        $receiptNumber = 'RCP-' . date('Ym') . '-' . str_pad((string) (Payment::count() + 1), 4, '0', STR_PAD_LEFT);
+        $receiptNumber = 'RCP-' . date('Ym') . '-' . strtoupper(substr(uniqid(), -6));
 
         // Create payment
         $paymentData = [

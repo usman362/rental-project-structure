@@ -9,6 +9,14 @@ try {
     // Enable foreign keys
     $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
 
+    // Run migrations for existing databases (safe to run multiple times)
+    $migrations = [
+        "ALTER TABLE properties ADD COLUMN IF NOT EXISTS updated_at DATETIME AFTER created_at",
+    ];
+    foreach ($migrations as $migration) {
+        try { $pdo->exec($migration); } catch (PDOException $e) { /* Column may already exist */ }
+    }
+
     // Create users table
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS users (
@@ -50,6 +58,7 @@ try {
             description TEXT,
             amenities TEXT,
             created_at DATETIME NOT NULL,
+            updated_at DATETIME,
             INDEX idx_name (name),
             INDEX idx_status (status),
             INDEX idx_city_state (city, state),
@@ -72,7 +81,7 @@ try {
             desired_move_in DATE,
             lease_term INT DEFAULT 12,
             source VARCHAR(100),
-            status VARCHAR(30) DEFAULT 'submitted',
+            status VARCHAR(30) DEFAULT 'pending',
             notes TEXT,
             submitted_at DATETIME NOT NULL,
             reviewed_by INT UNSIGNED,
@@ -265,8 +274,9 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     ");
 
-    // Seed admin user (username: admin, password: password)
-    $adminPassword = password_hash('password', PASSWORD_BCRYPT);
+    // Seed admin user (username: admin, password: Admin@2026!)
+    // IMPORTANT: Change this password immediately after first login in production
+    $adminPassword = password_hash('Admin@2026!', PASSWORD_BCRYPT);
     $adminCreatedAt = date('Y-m-d H:i:s');
 
     $pdo->prepare("
@@ -279,8 +289,9 @@ try {
     $adminRow = $pdo->query("SELECT id FROM users WHERE username = 'admin' LIMIT 1")->fetch(PDO::FETCH_ASSOC);
     $adminId = $adminRow ? (int) $adminRow['id'] : null;
 
-    // Seed renter user (username: test, password: password)
-    $renterPassword = password_hash('password', PASSWORD_BCRYPT);
+    // Seed renter user (username: test, password: Renter@2026!)
+    // IMPORTANT: Change this password immediately after first login in production
+    $renterPassword = password_hash('Renter@2026!', PASSWORD_BCRYPT);
     $renterCreatedAt = date('Y-m-d H:i:s');
 
     $pdo->prepare("

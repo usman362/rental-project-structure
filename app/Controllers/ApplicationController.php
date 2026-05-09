@@ -74,7 +74,7 @@ class ApplicationController extends Controller
 
         // If validation fails, flash errors and go back
         if (!empty($errors)) {
-            session_flash_errors($errors);
+            flash('error', implode(' ', $errors));
             session_flash_old_input($_POST);
             $this->back();
             return;

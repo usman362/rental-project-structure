@@ -6,9 +6,66 @@ require_once BASE_PATH . '/app/Core/CSRF.php';
 require_once BASE_PATH . '/app/Models/Renter.php';
 require_once BASE_PATH . '/app/Models/Payment.php';
 require_once BASE_PATH . '/app/Models/Notification.php';
+require_once BASE_PATH . '/app/Models/Setting.php';
 
 class PaymentController extends Controller
 {
+    /**
+     * Show checkout page for a specific payment
+     */
+    public function checkout(int $paymentId): void
+    {
+        $user = auth();
+        if (!$user || !isset($user['id'])) {
+            $this->redirect(route('login'));
+            return;
+        }
+
+        $userId = (int) $user['id'];
+        $renter = Renter::findByUserId($userId);
+        if (!$renter) {
+            flash('error', 'Renter record not found.');
+            $this->redirect(route('renter.portal'));
+            return;
+        }
+
+        $renterId = (int) $renter['id'];
+
+        // Get the specific payment
+        $payment = Payment::find($paymentId);
+        if (!$payment || (int)($payment['renter_id'] ?? 0) !== $renterId) {
+            flash('error', 'Payment not found.');
+            $this->redirect(route('renter.portal') . '?tab=payments');
+            return;
+        }
+
+        // Don't allow checkout for already paid payments
+        if (($payment['status'] ?? '') === 'paid') {
+            flash('info', 'This payment has already been processed.');
+            $this->redirect(route('renter.portal') . '?tab=payments');
+            return;
+        }
+
+        // Get all payments for history sidebar
+        $allPayments = Payment::forRenter($renterId);
+        $paidPayments = array_filter($allPayments, fn($p) => ($p['status'] ?? '') === 'paid');
+
+        // Get payment gateway settings
+        $gatewaySettings = Setting::getMultiple([
+            'pg_paypal_enabled', 'pg_paypal_client_id', 'pg_paypal_mode',
+            'pg_eth_enabled', 'pg_eth_wallet', 'pg_eth_network', 'pg_eth_rate'
+        ]);
+
+        $this->view('renter.checkout', [
+            'title' => 'Payment Checkout',
+            'user' => $user,
+            'renter' => $renter,
+            'payment' => $payment,
+            'paidPayments' => array_values($paidPayments),
+            'gateways' => $gatewaySettings
+        ]);
+    }
+
     /**
      * Process a rent payment from the renter portal
      */
@@ -53,7 +110,7 @@ class PaymentController extends Controller
             $errors[] = 'Invalid payment amount.';
         }
 
-        $validMethods = ['credit_card', 'debit_card', 'bank_transfer', 'check', 'cash', 'mobile_pay'];
+        $validMethods = ['credit_card', 'debit_card', 'bank_transfer', 'check', 'cash', 'mobile_pay', 'paypal', 'ethereum'];
         if (empty($method) || !in_array($method, $validMethods)) {
             $errors[] = 'Please select a valid payment method.';
         }

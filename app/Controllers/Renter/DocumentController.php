@@ -91,6 +91,16 @@ class DocumentController extends Controller
             return;
         }
 
+        // Verify MIME type server-side using finfo
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $detectedMime = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+        if ($detectedMime && !in_array($detectedMime, $allowedMimes)) {
+            flash('error', 'Invalid file type detected. The file content does not match an allowed format.');
+            $this->redirect(route('renter.portal') . '?tab=documents');
+            return;
+        }
+
         // Validate file size (max 10MB)
         $maxSize = 10 * 1024 * 1024;
         if ($file['size'] > $maxSize) {
@@ -207,8 +217,9 @@ class DocumentController extends Controller
         $mimeType = $document['mime_type'] ?? 'application/octet-stream';
         $fileName = $document['file_name'] ?? basename($filePath);
 
+        $safeName = str_replace(['"', "\r", "\n", "\0"], '', $fileName);
         header('Content-Type: ' . $mimeType);
-        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        header("Content-Disposition: attachment; filename*=UTF-8''" . rawurlencode($safeName));
         header('Content-Length: ' . filesize($filePath));
         header('Cache-Control: no-cache, must-revalidate');
         readfile($filePath);

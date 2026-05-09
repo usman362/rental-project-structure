@@ -212,7 +212,86 @@
             }
 
             .nav-links {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 0;
+                right: -280px;
+                width: 280px;
+                height: 100vh;
+                background: #fff;
+                box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+                padding: 5rem 0 2rem;
+                z-index: 1000;
+                transition: right 0.3s ease;
+                overflow-y: auto;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links li {
+                padding: 0;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            .nav-links li a {
+                display: block;
+                padding: 1rem 1.5rem;
+                color: #333;
+                text-decoration: none;
+                font-size: 15px;
+                font-weight: 500;
+                transition: background 0.2s, color 0.2s;
+            }
+
+            .nav-links li a:hover {
+                background: #f0f4ff;
+                color: #2c5aa0;
+            }
+
+            .nav-links li .client-portal-btn {
+                width: calc(100% - 3rem);
+                margin: 1rem 1.5rem;
+                text-align: center;
+                justify-content: center;
+                border-radius: 8px;
+            }
+
+            /* Overlay behind drawer */
+            .mobile-overlay {
                 display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.4);
+                z-index: 999;
+                transition: opacity 0.3s ease;
+            }
+
+            .mobile-overlay.active {
+                display: block;
+            }
+
+            /* Close button inside drawer */
+            .drawer-close {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                background: none;
+                border: none;
+                font-size: 24px;
+                color: #666;
+                cursor: pointer;
+                padding: 0.5rem;
+                line-height: 1;
+            }
+
+            .drawer-close:hover {
+                color: #333;
             }
 
             body {
@@ -241,8 +320,10 @@
                 </div>
             </div>
             <button class="mobile-menu-toggle" id="mobileMenuToggle"><i class="fas fa-bars"></i></button>
+            <div class="mobile-overlay" id="mobileOverlay"></div>
             <nav class="public-nav" id="mainNav">
                 <ul class="nav-links">
+                    <button class="drawer-close" id="drawerClose"><i class="fas fa-times"></i></button>
                     <?php if (isset($title) && $title !== 'Home'): ?>
                     <li><a href="<?= route('home') ?>">HOME</a></li>
                     <?php endif; ?>
@@ -297,5 +378,62 @@
         </div>
     </footer>
 
+<script>
+(function() {
+    // Mobile slide drawer
+    var menuToggle = document.getElementById('mobileMenuToggle');
+    var navLinks = document.querySelector('.nav-links');
+    var overlay = document.getElementById('mobileOverlay');
+    var drawerClose = document.getElementById('drawerClose');
+
+    function openDrawer() {
+        if (navLinks) navLinks.classList.add('active');
+        if (overlay) overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+        if (navLinks) navLinks.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (navLinks && navLinks.classList.contains('active')) {
+                closeDrawer();
+            } else {
+                openDrawer();
+            }
+        });
+    }
+
+    // Close via X button inside drawer
+    if (drawerClose) {
+        drawerClose.addEventListener('click', closeDrawer);
+    }
+
+    // Close via overlay tap
+    if (overlay) {
+        overlay.addEventListener('click', closeDrawer);
+    }
+
+    // Close when a nav link is clicked
+    if (navLinks) {
+        navLinks.querySelectorAll('a').forEach(function(link) {
+            link.addEventListener('click', closeDrawer);
+        });
+    }
+
+    // Client Portal fallback (redirect to login if modal not present)
+    var btn = document.getElementById('openModal');
+    if (btn && !document.getElementById('loginModal')) {
+        btn.addEventListener('click', function() {
+            window.location.href = '<?= route("login") ?>';
+        });
+    }
+})();
+</script>
 </body>
 </html>

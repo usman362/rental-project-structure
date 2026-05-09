@@ -11,7 +11,7 @@ class Notification
     public static function forUser(int $userId, int $limit = 20): array
     {
         return Database::all(
-            'SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT ' . $limit,
+            'SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT ' . (int) $limit,
             [$userId]
         );
     }

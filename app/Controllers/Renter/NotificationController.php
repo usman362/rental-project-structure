@@ -36,13 +36,19 @@ class NotificationController extends Controller
      */
     public function markRead(): void
     {
+        if (!CSRF::verify()) {
+            flash('error', 'Invalid security token.');
+            $this->back();
+            return;
+        }
+
         $user = auth();
         if (!$user || !isset($user['id'])) {
             $this->json(['error' => 'Unauthorized'], 401);
             return;
         }
 
-        $notifId = (int) ($_POST['notification_id'] ?? $_GET['id'] ?? 0);
+        $notifId = (int) ($_POST['notification_id'] ?? 0);
         if ($notifId <= 0) {
             flash('error', 'Invalid notification.');
             $this->back();
@@ -58,9 +64,9 @@ class NotificationController extends Controller
 
         Notification::markRead($notifId);
 
-        // If there's a link, redirect to it
+        // If there's a link, redirect to it (only allow relative URLs to prevent open redirect)
         $link = $notification['link'] ?? '';
-        if (!empty($link)) {
+        if (!empty($link) && str_starts_with($link, '/')) {
             $this->redirect($link);
         } else {
             $this->back();

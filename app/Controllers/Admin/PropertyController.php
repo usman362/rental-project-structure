@@ -354,8 +354,9 @@ class PropertyController extends Controller
         $mimeType = $document['mime_type'] ?? 'application/octet-stream';
         $fileName = $document['file_name'] ?? basename($filePath);
 
+        $safeName = str_replace(['"', "\r", "\n", "\0"], '', $fileName);
         header('Content-Type: ' . $mimeType);
-        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        header("Content-Disposition: attachment; filename*=UTF-8''" . rawurlencode($safeName));
         header('Content-Length: ' . filesize($filePath));
         header('Cache-Control: no-cache, must-revalidate');
         readfile($filePath);
